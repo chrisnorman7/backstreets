@@ -1,0 +1,15 @@
+name: backstreets
+description: The Backstreets game server.
+version: 0.0.1
+author: Chris Norman <chris.norman2@googlemail.com>
+
+environment:
+  sdk: ">=2.0.0 <3.0.0"
+
+dependencies:
+  aqueduct:
+  path:
+
+dev_dependencies:
+  test: ^1.0.0
+  aqueduct_test: ^1.0.0
