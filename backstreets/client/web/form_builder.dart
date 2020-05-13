@@ -119,10 +119,11 @@ class FormBuilder {
         for (final FormBuilderElement e in elements) {
           data[e.name] = e.element.value;
         }
-        done(data);
+        keyboardArea.hidden = false;
         currentFormBuilder = null;
         form.remove();
         keyboardArea.focus();
+        done(data);
       }
     });
   }
@@ -151,6 +152,7 @@ class FormBuilder {
         currentFormBuilder.form.remove();
       }
       currentFormBuilder = this;
+      keyboardArea.hidden = true;
       buildFormElement();
       document.body.append(form);
       if (autofocus && elements.isNotEmpty) {
