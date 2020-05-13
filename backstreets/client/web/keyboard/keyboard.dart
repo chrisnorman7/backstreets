@@ -77,10 +77,16 @@ class Keyboard {
   ///
   /// ```dart
   /// element.onKeyDown.listen((KeyboardEvent e) => keyboard.press(
-  ///   KeyState(e.key, control: e.ctrlKey, shift: e.shiftKey, alt: e.altKey)
+  ///   e.key, control: e.ctrlKey, shift: e.shiftKey, alt: e.altKey
   /// ));
   /// ```
-  void press(KeyState state) {
+  void press(
+    String key, {
+      bool shift = false,
+      bool control = false,
+      bool alt = false
+    }) {
+    final KeyState state = KeyState(key, shift: shift, control: control, alt: alt);
     if (!keyHeld(state.key)) {
       heldKeys.add(state);
     }

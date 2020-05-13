@@ -7,10 +7,11 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:path/path.dart' as path;
 
 import '../channel.dart';
+import '../sound.dart' as sound;
 import 'game_map.dart';
 
 /// The directory where tile sounds are kept.
-final Directory tileSoundsDirectory = Directory('client/web/sounds/tiles');
+final Directory tileSoundsDirectory = Directory(path.join(sound.soundsDirectory, 'tiles'));
 
 /// A tile on a [GameMap] instance.
 ///
@@ -25,13 +26,12 @@ class Tile {
   /// final Tile t = Tile('wood');
   Tile(this.name) {
     logger = Logger(name);
-    soundsDirectory = Directory(path.join(tileSoundsDirectory.path, name));
-    final Directory footstepSoundsDirectory = Directory(path.join(soundsDirectory.path, 'footsteps'));
+    soundsDirectory = path.join(tileSoundsDirectory.path, name);
+    final Directory footstepSoundsDirectory = Directory(path.join(soundsDirectory, 'footsteps'));
     footstepSoundsDirectory.list(recursive: true).listen((FileSystemEntity entity) {
       if (entity is File) {
-        final FileStat stat = entity.statSync();
-        footstepSounds.add('${entity.path}?${stat.modified.millisecondsSinceEpoch}');
-        logger.info('Added footstep sound ${footstepSounds.last} to $name tile.');
+        footstepSounds.add(sound.Sound(entity.path.substring(sound.soundsDirectory.length + 1)));
+        logger.info('Added footstep sound ${footstepSounds.last.url} to $name tile.');
       }
     });
   }
@@ -42,12 +42,12 @@ class Tile {
   /// The directory where sounds relating to this tile are stored.
   ///
   /// This directory should be a sub directory of [tileSoundsDirectory].
-  Directory soundsDirectory;
+  String soundsDirectory;
 
   /// A list of all the footstep sounds.
   ///
   /// This will be set automatically by [BackstreetsChannel.prepare].
-  List<String> footstepSounds = <String>[];
+  List<sound.Sound> footstepSounds = <sound.Sound>[];
 
   /// The logger to use when adding sounds.
   Logger logger;

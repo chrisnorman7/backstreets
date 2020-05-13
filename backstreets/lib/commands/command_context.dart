@@ -8,6 +8,7 @@ import 'package:aqueduct/aqueduct.dart';
 
 import '../game/account.dart';
 import '../game/game_object.dart';
+import '../sound.dart';
 import 'commands.dart';
 
 /// Used when calling commands.
@@ -46,7 +47,7 @@ class CommandContext{
   }
 
   /// Alert the player to an error.
-  void sendError(String text, {String sound}) {
+  void sendError(String text, {Sound sound}) {
     sendMessage(text);
     if (sound != null) {
       sendInterfaceSound(sound);
@@ -58,8 +59,8 @@ class CommandContext{
   /// This sound will have no panning applied, and no convolver.
   ///
   /// This sort of sound should not be used for playing game-related sounds (firing weapons, rocks falling or whatever), but for sending alerts, incoming log messages and the like.
-  void sendInterfaceSound(String url) {
-    send('interfaceSound', <String>[url]);
+  void sendInterfaceSound(Sound sound) {
+    send('interfaceSound', <String>[sound.url]);
   }
 
   /// Tell the player about their account.
