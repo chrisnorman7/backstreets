@@ -7,6 +7,7 @@ import 'dart:web_audio';
 
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
+import 'form_builder.dart';
 import 'hotkeys/menu.dart';
 import 'keyboard/hotkey.dart';
 import 'keyboard/keyboard.dart';
@@ -74,7 +75,14 @@ void main() {
           titleString: 'Main Menu',
           lines: <Line>[
             Line(
-              book, (Book b) => b.message('Authenticate'),
+              book, (Book b) {
+                final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) {
+                  messageArea.innerText = jsonEncode(data);
+                }, subtitle: 'Log into your account', submitLabel: 'Login');
+                loginForm.addElement('username', TextInputElement(), validator: notEmptyValidator);
+                loginForm.addElement('password', PasswordInputElement(), validator: notEmptyValidator);
+                loginForm.render();
+              },
               titleString: 'Login'
             ),
             Line(
