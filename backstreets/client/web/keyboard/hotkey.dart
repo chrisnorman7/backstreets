@@ -12,7 +12,7 @@ class Hotkey {
   ///
   /// ```dart
   /// final Hotkey hk = Hotkey(
-  ///   't', () => print('Test.'),
+  ///   't', (KeyState ks) => print('Test.'),
   ///   titleString: 'Test hotkeys'
   /// );
   /// ```

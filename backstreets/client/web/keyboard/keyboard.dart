@@ -23,10 +23,10 @@ class Keyboard {
 
   /// The hotkeys registered to this instance.
   List<Hotkey> hotkeys = <Hotkey>[];
-  
+
   /// The one-time [Hotkey] instances which have already been handled. This list will be cleared as the keys for those hotkeys are released.
   List<Hotkey> handledHotkeys = <Hotkey>[];
-  
+
   /// The timer which will fire every [keyPressInterval] milliseconds.
   Timer keyTimer;
 
@@ -128,5 +128,14 @@ class Keyboard {
   /// ```
   void removeHotkey(Hotkey hk) {
     hotkeys.remove(hk);
+  }
+
+  /// Add multiple hotkeys.
+  /// ```
+  /// final List<Hotkey> hotkeys = <Hotkey>[...];
+  /// keyboard.addHotkeys(hotkeys);
+  /// ```
+  void addHotkeys(List<Hotkey> hotkeys) {
+    hotkeys.forEach(addHotkey);
   }
 }

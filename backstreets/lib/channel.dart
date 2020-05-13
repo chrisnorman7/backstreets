@@ -11,7 +11,6 @@ import 'commands/builder.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'game/tile.dart';
-import 'sound.dart';
 
 /// Store context for all connected sockets.
 Map<WebSocket, CommandContext> contexts = <WebSocket, CommandContext>{};
@@ -56,13 +55,11 @@ class BackstreetsChannel extends ApplicationChannel {
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
       final File motdFile = File('motd.txt');
-      final Sound sound = Sound('general/motd.wav');
       final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
       final CommandContext ctx = CommandContext(socket, socketLogger);
       contexts[socket] = ctx;
       final String motd = motdFile.readAsStringSync();
       ctx.sendMessage(motd);
-      ctx.sendInterfaceSound(sound);
       socketLogger.info('Connection established.');
       socket.listen(
         (dynamic payload) {

@@ -7,8 +7,16 @@ import 'dart:web_audio';
 
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
+import 'hotkeys/menu.dart';
+import 'keyboard/hotkey.dart';
 import 'keyboard/keyboard.dart';
+import 'menus/book.dart';
+import 'menus/line.dart';
+import 'menus/page.dart';
 import 'sound/sound.dart';
+
+/// A book for menus.
+Book book;
 
 /// The context to call commands with.
 CommandContext commandContext;
@@ -31,9 +39,21 @@ final Element keyboardArea = querySelector('#keyboardArea');
 void main() {
   setTitle();
   final Keyboard keyboard = Keyboard();
+  keyboard.addHotkeys(
+    <Hotkey>[
+      moveUp,
+      moveDown,
+      activateSpace,
+      activateEnter,
+      activateRightArrow ,
+      cancelEscape,
+      cancelLeftArrow,
+    ]
+  );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) => keyboard.press(
-    e.key.toLowerCase(), shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey
+    e.key, shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey
   ));
+  keyboardArea.onKeyUp.listen((KeyboardEvent e) => keyboard.release(e.key));
   final Element startDiv = querySelector('#startDiv');
   final Element startButton = querySelector('#startButton');
   final Element mainDiv = querySelector('#main');
@@ -47,6 +67,23 @@ void main() {
     final WebSocket socket = WebSocket('ws://${window.location.hostname}:8888/ws');
     setTitle(state: 'Connecting');
     socket.onOpen.listen((Event e) {
+      keyboardArea.focus();
+      book = Book(sounds, (String message) => messageArea.innerText = message);
+      book.push(
+        Page(
+          titleString: 'Main Menu',
+          lines: <Line>[
+            Line(
+              book, (Book b) => b.message('Authenticate'),
+              titleString: 'Login'
+            ),
+            Line(
+              book, (Book b) => b.message('Create'),
+              titleString: 'Create Account',
+            )
+          ], dismissible: false
+        )
+      );
       commandContext = CommandContext(socket, (String message) {
         commandContext.messages.add(message);
         messageArea.innerText = message;

@@ -1,9 +1,16 @@
+/// Provides the [Page] class, which holds a list of [Line] instances.
+library page;
+
 import '../keyboard/hotkey.dart';
 import '../keyboard/keyboard.dart';
 import 'book.dart';
 import 'line.dart';
 
+/// A page of [Line] instances.
 class Page {
+  /// Create a page.
+  ///
+  /// if [dismissible] is true, then [Book.cancel] will dismiss it without any fuss.
   Page(
     {
       this.titleString,
@@ -14,6 +21,7 @@ class Page {
     }
   );
 
+  /// Create a page that can be used for confirmations.
   Page confirmPage(
     Book book,
     BookFunctionType okFunc,
@@ -42,6 +50,7 @@ class Page {
     );
   }
 
+  /// Creates a page which lists all [Hotkey] instances, bound to a [Keyboard] instance.
   Page hotkeysPage(Keyboard keyboard, Book book) {
     final List<Line> lines = <Line>[];
     for (final Hotkey hk in keyboard.hotkeys) {
@@ -62,13 +71,25 @@ class Page {
     );
   }
 
-  bool isLevel = false, playDefaultSounds;
+  /// If true, then any [Line] instances contained by this page will not be silent, even if their [Line.soundUrl] attributes are null.
+  bool playDefaultSounds;
+  
+  /// If true, then [Book.cancel] will dismiss this page.
   final bool dismissible;
+  
+  /// The current position in this page's list of [Line] instances.
   int focus = -1;
+  
+  /// The lines contained by this page.
   final List<Line> lines;
+  
+  /// The title of this page as a string.
   String titleString;
+  
+  /// A function which when called, will return the title of this page.
   TitleFunctionType titleFunc;
   
+  /// Get the title of this page as a string. If [titleString] is null, then [titleFunc] will be called. Otherwise, [titleString] will be returned.
   String getTitle() {
     if (titleString == null) {
       return titleFunc();
@@ -76,6 +97,7 @@ class Page {
     return titleString;
   }
 
+  /// Get the currently focussed line.
   Line getLine() {
     if (focus == -1) {
       return null;
