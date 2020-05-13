@@ -126,7 +126,7 @@ class FormBuilder {
     }
     final ParagraphElement submitParagraph = ParagraphElement();
     final SubmitButtonInputElement submitButton = SubmitButtonInputElement();
-    submitButton.innerText = submitLabel;
+    submitButton.value = submitLabel;
     submitParagraph.append(submitButton);
     form.append(submitParagraph);
     form.onSubmit.listen((Event e) {
@@ -147,6 +147,9 @@ class FormBuilder {
     keyboardArea.hidden = false;
     currentFormBuilder = null;
     form.remove();
+    if (book != null) {
+      book.showFocus();
+    }
     keyboardArea.focus();
   }
 

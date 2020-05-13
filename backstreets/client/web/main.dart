@@ -79,7 +79,9 @@ void main() {
           lines: <Line>[
             Line(
               book, (Book b) {
-                final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) => commandContext.sendCommand('login', <String>[data['username'], data['password']]),
+                final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) => commandContext.sendCommand(
+                  'login', <String>[data['username'], data['password']]
+                ),
                 subtitle: 'Log into your account', submitLabel: 'Login');
                 loginForm.addElement('username', validator: notEmptyValidator);
                 loginForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
@@ -92,7 +94,7 @@ void main() {
                 final FormBuilder createForm = FormBuilder(
                   'Create Account', (Map<String, String> data) => commandContext.sendCommand(
                     'createAccount', <dynamic>[data['username'], data['password']]
-                  )
+                  ), submitLabel: 'Create Account'
                 );
                 createForm.addElement('username', validator: notEmptyValidator);
                 createForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
