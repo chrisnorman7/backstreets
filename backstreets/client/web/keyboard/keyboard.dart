@@ -13,10 +13,17 @@ class Keyboard {
   /// ```dart
   /// final Keyboard kb = Keyboard();
   /// ```
-  Keyboard({this.keyPressInterval = 50});
+  ///
+  /// A second argument is also supported, for cases where a key is pressed that is not handled by any of the [Hotkey]s you have added to this keyboard..
+  ///
+  /// final Keyboard keyboard = Keyboard(unhandledKey: (KeyState ks) => print(ks));
+  Keyboard({this.keyPressInterval = 50, this.unhandledKey});
 
   /// The length of time between [Hotkey]s firing.
   int keyPressInterval;
+
+  /// The function to call when a key is pressed that is not handled by any of the hotkeys added with [addHotkey].
+  void Function(KeyState) unhandledKey;
 
   /// The keys which are currently held down.
   List<KeyState> heldKeys = <KeyState>[];
@@ -58,6 +65,7 @@ class Keyboard {
   /// Run through [heldKeys], and figure out if there are associated [Hotkey] instances in the [hotkeys] list.
   void handleKeys(Timer t) {
     for (final KeyState key in heldKeys) {
+      bool handled = false;
       for (final Hotkey hotkey in hotkeys) {
         if (hotkey.state == key) {
           if (hotkey.oneTime) {
@@ -68,7 +76,12 @@ class Keyboard {
             }
           }
           hotkey.func(key);
+          handled = true;
+          break;
         }
+      }
+      if (!handled && unhandledKey != null) {
+        unhandledKey(key);
       }
     }
   }

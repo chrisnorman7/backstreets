@@ -33,5 +33,5 @@ void cancel(KeyState ks) {
   }
 }
 
-final Hotkey cancelEscape = Hotkey('escape', cancel);
+final Hotkey cancelEscape = Hotkey('Escape', cancel);
 final Hotkey cancelLeftArrow = Hotkey('ArrowLeft', cancel);
