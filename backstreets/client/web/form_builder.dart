@@ -6,12 +6,12 @@ import 'dart:html';
 import 'main.dart';
 
 /// The type of all validators.
-typedef ValidatorType = String Function(String);
+typedef ValidatorType = String Function(String name, Map<String, String>, String);
 
 /// A validator which will complain if [value] is empty.
-String notEmptyValidator(String value) {
+String notEmptyValidator(String name, Map<String, String> values, String value) {
   if (value.isEmpty) {
-    return 'You must provide a value.';
+    return 'You must provide a $name.';
   }
   return null;
 }
@@ -71,11 +71,12 @@ class FormBuilder {
 
   /// Add an element to this builder.
   FormBuilderElement addElement(
-    String name, InputElementBase element, {
-      String label, ValidatorType validator
+    String name, {
+      InputElementBase element, String label, ValidatorType validator
     }
   ) {
-    validator ??= (String value) => null;
+    element ??= TextInputElement();
+    validator ??= (String name, Map<String, String> values, String value) => null;
     elements.add(FormBuilderElement(name, label, element, validator));
     return elements.last;
   }
@@ -119,6 +120,7 @@ class FormBuilder {
           data[e.name] = e.element.value;
         }
         done(data);
+        currentFormBuilder = null;
         form.remove();
         keyboardArea.focus();
       }
@@ -127,13 +129,15 @@ class FormBuilder {
 
   /// Validate the form, return true if successful, false otherwise.
   bool validate() {
+    final Map<String, String> values = <String, String>{};
     for (final FormBuilderElement e in elements) {
-      final String result = e.validator(e.element.value);
+      final String result = e.validator(e.name, values, e.element.value);
       if (result != null) {
         messageArea.innerText = result;
         e.element.focus();
         return false;
       }
+      values[e.name] = e.element.value;
     }
     return true;
   }
@@ -141,12 +145,18 @@ class FormBuilder {
   /// Render the form, and add it to the document.
   ///
   /// If you want to add the form to the document yourself, you can use the [buildFormElement] method.
-  void render() {
-    buildFormElement();
-    document.body.append(form);
-    if (autofocus && elements.isNotEmpty) {
-      elements[0].element.focus();
+  void render({bool override = true}) {
+    if (currentFormBuilder == null || override) {
+      if (currentFormBuilder != null) {
+        currentFormBuilder.form.remove();
+      }
+      currentFormBuilder = this;
+      buildFormElement();
+      document.body.append(form);
+      if (autofocus && elements.isNotEmpty) {
+        elements[0].element.focus();
+      }
+      form.focus();
     }
-    form.focus();
   }
 }

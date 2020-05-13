@@ -16,6 +16,9 @@ import 'menus/line.dart';
 import 'menus/page.dart';
 import 'sound/sound.dart';
 
+/// The currently activate form builder.
+FormBuilder currentFormBuilder;
+
 /// A book for menus.
 Book book;
 
@@ -76,18 +79,29 @@ void main() {
           lines: <Line>[
             Line(
               book, (Book b) {
-                final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) {
-                  messageArea.innerText = jsonEncode(data);
-                }, subtitle: 'Log into your account', submitLabel: 'Login');
-                loginForm.addElement('username', TextInputElement(), validator: notEmptyValidator);
-                loginForm.addElement('password', PasswordInputElement(), validator: notEmptyValidator);
+                final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) => commandContext.sendCommand('login', <String>[data['username'], data['password']]),
+                subtitle: 'Log into your account', submitLabel: 'Login');
+                loginForm.addElement('username', validator: notEmptyValidator);
+                loginForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
                 loginForm.render();
               },
               titleString: 'Login'
             ),
             Line(
-              book, (Book b) => b.message('Create'),
-              titleString: 'Create Account',
+              book, (Book b) {
+                final FormBuilder createForm = FormBuilder(
+                  'Create Account', (Map<String, String> data) => commandContext.sendCommand(
+                    'createAccount', <dynamic>[data['username'], data['password']]
+                  )
+                );
+                createForm.addElement('username', validator: notEmptyValidator);
+                createForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
+                createForm.addElement(
+                  'confirm', element: PasswordInputElement(), label: 'Confirm Password',
+                  validator: (String name, Map<String, String> values, String value) => value == values['password'] ? null : 'Passwords do not match.'
+                );
+                createForm.render();
+              }, titleString: 'Create Account',
             )
           ], dismissible: false
         )

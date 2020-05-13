@@ -1,6 +1,7 @@
 /// provides the [CommandContext] class.
 library command_context;
 
+import 'dart:convert';
 import 'dart:html';
 
 import '../sound/sound.dart';
@@ -24,4 +25,10 @@ class CommandContext {
 
   /// Every message that is sent from the server.
   List<String> messages = <String>[];
+  
+  /// Send arbitrary commands to the server.
+  void sendCommand(String name, List<dynamic> arguments) {
+    final List<dynamic> data = <dynamic>[name, arguments];
+    socket.send(jsonEncode(data));
+  }
 }
