@@ -1,9 +1,19 @@
+/// Provides the BackstreetsChannel class.
+library channel;
+
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
 import 'backstreets.dart';
+import 'commands/builder.dart';
+import 'commands/command_context.dart';
+import 'commands/commands.dart';
 import 'game/tile.dart';
+
+/// Store context for all connected sockets.
+Map<WebSocket, CommandContext> contexts = <WebSocket, CommandContext>{};
 
 /// This type initializes an application.
 ///
@@ -19,6 +29,8 @@ class BackstreetsChannel extends ApplicationChannel {
   @override
   Future<void> prepare() async {
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
+    buildCommands();
+    logger.info('Commands: ${commands.length}.');
     logger.info('Gathering tile sounds.');
     tileSoundsDirectory.list().listen((FileSystemEntity entity) {
       if (entity is Directory) {
@@ -42,12 +54,41 @@ class BackstreetsChannel extends ApplicationChannel {
     // Setup the websocket first.
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
-      socket.listen((dynamic payload) {
-        if (payload is String) {
-          print(payload);
+      final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
+      contexts[socket] = CommandContext(socket, socketLogger);
+      socketLogger.info('Connection established.');
+      socket.listen(
+        (dynamic payload) {
+          if (payload is String) {
+            final CommandContext ctx = contexts[socket];
+            try {
+              final List<dynamic> data = jsonDecode(payload) as List<dynamic>;
+              final String name = data[0] as String;
+              final List<dynamic> arguments = data[1] as List<dynamic>;
+              if (commands.containsKey(name)) {
+                ctx.args = arguments;
+                final Function command = commands[name];
+                command(ctx);
+              } else {
+                logger.warning('Invalid command: $name.');
+                ctx.sendError('Invalid JSON: $name.');
+              }
+            }
+            on FormatException {
+              socketLogger.severe('Invalid JSON received: $payload');
+              ctx.sendError('Invalid JSON: $payload.');
+            }
+          }
+        },
+        onDone: () {
+          final CommandContext ctx = contexts[socket];
+          if (ctx.player != null) {
+            ctx.player.socket = null;
+          }
+          contexts.remove(socket);
+          socketLogger.info('Websocket closed.');
         }
-        socket.add(payload);
-      });
+      );
       return null;
     });
     return router;

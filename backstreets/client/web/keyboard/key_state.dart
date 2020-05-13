@@ -1,7 +1,17 @@
+/// Provides the KeyState class.
+library key_state;
+
 import 'package:meta/meta.dart';
 
+/// A key with modifiers.
 @immutable
 class KeyState {
+  /// Create a instance.
+  ///
+  /// ```dart
+  /// final KeyState printKey = KeyState('p', control: true);
+  /// final KeyState escapeKey = KeyState('escape');
+  /// ```
   const KeyState(
     this.key,
     {
@@ -11,7 +21,10 @@ class KeyState {
     }
   );
 
+  /// A non-modifier key.
   final String key;
+
+  /// Modifier keys.
   final bool shift, control, alt;
 
   @override
@@ -27,6 +40,7 @@ class KeyState {
     return false;
   }
 
+  /// Returns a human-readable string, like "ctrl+p", or "f12".
   @override
   String toString() {
     final List<String> keys = <String>[];

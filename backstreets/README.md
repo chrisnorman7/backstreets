@@ -14,7 +14,7 @@ To run all tests for this application, run the following in this directory:
 pub run test
 ```
 
-The default configuration file used when testing is `config.src.yaml`. This file should be checked into version control. It also the template for configuration files used in deployment.
+The default configuration file used when testing is `config.src.yaml`. This file should be checked into version control. It is also the template for configuration files used in deployment.
 
 ## Deploying an Application
 

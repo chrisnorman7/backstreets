@@ -1,6 +1,6 @@
 /// backstreets
 ///
-/// A Aqueduct web server.
+/// An Aqueduct web server.
 library backstreets;
 
 export 'dart:async';
