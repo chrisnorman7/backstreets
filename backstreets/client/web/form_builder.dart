@@ -40,7 +40,8 @@ class FormBuilder {
   /// Create with a title and a callback.
   FormBuilder(
     this.title, this.done, {
-      this.subtitle, this.autofocus = true, this.submitLabel = 'Submit'
+      this.subtitle, this.autofocus = true, this.submitLabel = 'Submit',
+      this.cancellable = true, this.cancelLabel = 'Cancel'
     }
   );
 
@@ -62,6 +63,12 @@ class FormBuilder {
 
   /// The label of the submit button.
   String submitLabel;
+
+  /// If true, it will be possible to cancel this form.
+  bool cancellable;
+
+  /// The label for the cancel button which will be present on this form, if [cancellable] is true.
+  String cancelLabel;
 
   /// All the [FormBuilderElement] instances contained by this form.
   List<FormBuilderElement> elements = <FormBuilderElement>[];
@@ -94,6 +101,16 @@ class FormBuilder {
       h2.innerText = subtitle;
       form.append(h2);
     }
+    if (cancellable) {
+      final ParagraphElement cancelParagraph = ParagraphElement();
+      final ButtonElement cancelButton = ButtonElement();
+      cancelButton.innerText = cancelLabel;
+      cancelParagraph.append(cancelButton);
+      form.append(cancelParagraph);
+      cancelButton.onClick.listen((MouseEvent e) {
+        destroy();
+      });
+    }
     for (final FormBuilderElement e in elements) {
       final ParagraphElement p = ParagraphElement();
       final LabelElement label = LabelElement();
@@ -119,13 +136,18 @@ class FormBuilder {
         for (final FormBuilderElement e in elements) {
           data[e.name] = e.element.value;
         }
-        keyboardArea.hidden = false;
-        currentFormBuilder = null;
-        form.remove();
-        keyboardArea.focus();
+        destroy();
         done(data);
       }
     });
+  }
+
+  /// Remove the [form] element from the DOM, unhide and give focus to [keyboardArea].
+  void destroy() {
+    keyboardArea.hidden = false;
+    currentFormBuilder = null;
+    form.remove();
+    keyboardArea.focus();
   }
 
   /// Validate the form, return true if successful, false otherwise.
