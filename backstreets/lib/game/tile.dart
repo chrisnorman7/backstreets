@@ -2,9 +2,16 @@ import 'dart:io';
 
 import 'package:aqueduct/aqueduct.dart';
 
-final Directory tileSoundsDirectory = Directory('sounds/tiles');
+import '../channel.dart';
+import 'game_map.dart';
 
+final Directory tileSoundsDirectory = Directory('client/web/sounds/tiles');
+
+/// A tile on a [GameMap].
+///
+/// Tiles dictate certain things about the terrain, such as the footstep sound, and (eventually), the sound made by objects as they die, and fall to earth.
 class Tile {
+  /// Create a tile with a name. Actually called when [BackstreetsChannel] is prepared.
   Tile(this.name) {
     logger = Logger(name);
     soundsDirectory = Directory('${tileSoundsDirectory.path}/$name');

@@ -1,7 +1,7 @@
 import 'package:backstreets/backstreets.dart';
 
 Future<void> main() async {
-  final Application<ServerChannel> app = Application<ServerChannel>()
+  final Application<BackstreetsChannel> app = Application<BackstreetsChannel>()
       ..options.configurationFilePath = 'config.yaml'
       ..options.port = 8888;
 

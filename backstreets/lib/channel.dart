@@ -9,7 +9,7 @@ import 'game/tile.dart';
 ///
 /// Override methods in this class to set up routes and initialize services like
 /// database connections. See http://aqueduct.io/docs/http/channel/.
-class ServerChannel extends ApplicationChannel {
+class BackstreetsChannel extends ApplicationChannel {
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -39,14 +39,17 @@ class ServerChannel extends ApplicationChannel {
   Controller get entryPoint {
     final Router router = Router();
 
-    // Prefer to use `link` instead of `linkFunction`.
-    // See: https://aqueduct.io/docs/http/request_controller/
-    router
-      .route('/example')
-      .linkFunction((Request request) async {
-        return Response.ok(<String, String>{'key': 'value'});
+    // Setup the websocket first.
+    router.route('/ws').linkFunction((Request request) async {
+      final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
+      socket.listen((dynamic payload) {
+        if (payload is String) {
+          print(payload);
+        }
+        socket.add(payload);
       });
-
+      return null;
+    });
     return router;
   }
 }
