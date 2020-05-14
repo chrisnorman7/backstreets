@@ -88,6 +88,8 @@ class Keyboard {
 
   /// Register a key as pressed.
   ///
+  /// Returns the key that was pressed, converted to a [KeyState] instance.
+  ///
   /// ```dart
   /// element.onKeyDown.listen((KeyboardEvent e) => keyboard.press(
   ///   e.key, control: e.ctrlKey, shift: e.shiftKey, alt: e.altKey
@@ -121,6 +123,13 @@ class Keyboard {
     if (heldKeys.isEmpty && keyTimer != null) {
       stopKeyTimer();
       }
+  }
+
+  /// Release all held keys.
+  void releaseAll() {
+    for (final KeyState state in heldKeys) {
+      release(state.key);
+    }
   }
 
   /// Add a [Hotkey] instance to this keyboard.

@@ -83,6 +83,9 @@ class FormBuilder {
   /// The subscription for listening to submit events emitted by [form].
   StreamSubscription<Event> submitListener;
 
+  /// The subscription for listening to key events in [form].
+  StreamSubscription<KeyboardEvent> keyListener;
+
   /// Add an element to this builder.
   FormBuilderElement addElement(
     String name, {
@@ -138,9 +141,10 @@ class FormBuilder {
         done(data);
       }
     });
+    ButtonElement cancelButton;
     if (cancellable) {
       final ParagraphElement cancelParagraph = ParagraphElement();
-      final ButtonElement cancelButton = ButtonElement();
+      cancelButton = ButtonElement();
       cancelButton.innerText = cancelLabel;
       cancelListener = cancelButton.onClick.listen((MouseEvent e) {
         destroy();
@@ -148,12 +152,36 @@ class FormBuilder {
       cancelParagraph.append(cancelButton);
       form.append(cancelParagraph);
     }
+    keyListener = form.onKeyDown.listen((KeyboardEvent e) {
+      if (e.shiftKey || e.ctrlKey || e.altKey) {
+        return;
+      }
+      if (e.key == 'Enter') {
+        if (cancellable && document.activeElement== cancelButton) {
+          destroy();
+        } else if (document.activeElement == submitButton) {
+          form.submit();
+        } else {
+          return;
+        }
+      } else if (e.key == 'Escape') {
+        if (cancellable) {
+          destroy();
+        }
+        return;
+      } else {
+        return;
+      }
+      e.stopPropagation();
+      e.preventDefault();
+    });
   }
 
   /// Remove the [form] element from the DOM, unhide and give focus to [keyboardArea].
   void destroy() {
     cancelListener.cancel();
     submitListener.cancel();
+    keyListener.cancel();
     keyboardArea.hidden = false;
     currentFormBuilder = null;
     if (book != null) {
@@ -181,7 +209,10 @@ class FormBuilder {
   /// Render the form, and add it to the document.
   ///
   /// If you want to add the form to the document yourself, you can use the [buildFormElement] method.
+  ///
+  /// If you do, just make sure to run [keyboard.releaseAll] where appropriate.
   void render({bool override = true}) {
+    keyboard.releaseAll();
     if (currentFormBuilder == null || override) {
       if (currentFormBuilder != null) {
         currentFormBuilder.destroy();
