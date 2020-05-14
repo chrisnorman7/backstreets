@@ -41,7 +41,8 @@ Map<String, CommandType> commands = <String, CommandType>{
             'New Character',
             (Map<String, String> data) => ctx.sendCommand('createCharacter', <String>[data['name']]),
             subTitle: 'Enter the name for your new character',
-            submitLabel: 'Create Character'
+            submitLabel: 'Create Character',
+            cancellable: true
           );
           createForm.addElement('name', label: 'Character Name');
           createForm.render();
