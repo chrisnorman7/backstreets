@@ -1,6 +1,7 @@
 /// Contains the [FormBuilder> class.
 library form_builder;
 
+import 'dart:async';
 import 'dart:html';
 
 import 'main.dart';
@@ -76,6 +77,12 @@ class FormBuilder {
   /// The form element of this builder.
   FormElement form;
 
+  /// The subscription for listening to onclick events emitted by [cancelButton].
+  StreamSubscription<Event> cancelListener;
+
+  /// The subscription for listening to submit events emitted by [form].
+  StreamSubscription<Event> submitListener;
+
   /// Add an element to this builder.
   FormBuilderElement addElement(
     String name, {
@@ -107,7 +114,7 @@ class FormBuilder {
       cancelButton.innerText = cancelLabel;
       cancelParagraph.append(cancelButton);
       form.append(cancelParagraph);
-      cancelButton.onClick.listen((MouseEvent e) {
+      cancelListener = cancelButton.onClick.listen((MouseEvent e) {
         destroy();
       });
     }
@@ -129,7 +136,7 @@ class FormBuilder {
     submitButton.value = submitLabel;
     submitParagraph.append(submitButton);
     form.append(submitParagraph);
-    form.onSubmit.listen((Event e) {
+    submitListener = form.onSubmit.listen((Event e) {
       e.preventDefault();
       if (validate()) {
         final Map<String, String> data = <String, String>{};
@@ -144,6 +151,8 @@ class FormBuilder {
 
   /// Remove the [form] element from the DOM, unhide and give focus to [keyboardArea].
   void destroy() {
+    cancelListener.cancel();
+    submitListener.cancel();
     keyboardArea.hidden = false;
     currentFormBuilder = null;
     form.remove();
