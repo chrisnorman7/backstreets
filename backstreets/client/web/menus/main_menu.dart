@@ -18,7 +18,7 @@ final Page mainMenu = Page(
         final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) => commandContext.sendCommand(
           'login', <String>[data['username'], data['password']]
         ),
-        subtitle: 'Log into your account', submitLabel: 'Login');
+        subTitle: 'Log into your account', submitLabel: 'Login');
         loginForm.addElement('username', validator: notEmptyValidator);
         loginForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
         loginForm.render();

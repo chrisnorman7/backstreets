@@ -41,7 +41,7 @@ class FormBuilder {
   /// Create with a title and a callback.
   FormBuilder(
     this.title, this.done, {
-      this.subtitle, this.autofocus = true, this.submitLabel = 'Submit',
+      this.subTitle, this.autofocus = true, this.submitLabel = 'Submit',
       this.cancellable = true, this.cancelLabel = 'Cancel'
     }
   );
@@ -51,10 +51,10 @@ class FormBuilder {
   /// The title will be shown in a [HeadingElement.h1] element.
   final String title;
 
-  /// The subtitle of this form.
+  /// The sub title of this form.
   ///
-  /// If present, the subtitle will be shown in a [HeadingElement.h2] element.
-  final String subtitle;
+  /// If present, the sub title will be shown in a [HeadingElement.h2] element.
+  final String subTitle;
 
   /// The callback to be called when the form is submitted.
   final void Function(Map<String, String>) done;
@@ -103,9 +103,9 @@ class FormBuilder {
     final HeadingElement h1 = HeadingElement.h1();
     h1.innerText = title;
     form.append(h1);
-    if (subtitle != null) {
+    if (subTitle != null) {
       final HeadingElement h2 = HeadingElement.h2();
-      h2.innerText = subtitle;
+      h2.innerText = subTitle;
       form.append(h2);
     }
     if (cancellable) {
