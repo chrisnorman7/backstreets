@@ -12,8 +12,7 @@ import 'hotkeys/menu.dart';
 import 'keyboard/hotkey.dart';
 import 'keyboard/keyboard.dart';
 import 'menus/book.dart';
-import 'menus/line.dart';
-import 'menus/page.dart';
+import 'menus/main_menu.dart';
 import 'sound/sound.dart';
 
 /// The currently activate form builder.
@@ -73,41 +72,7 @@ void main() {
     socket.onOpen.listen((Event e) {
       keyboardArea.focus();
       book = Book(sounds, (String message) => messageArea.innerText = message);
-      book.push(
-        Page(
-          titleString: 'Main Menu',
-          lines: <Line>[
-            Line(
-              book, (Book b) {
-                final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) => commandContext.sendCommand(
-                  'login', <String>[data['username'], data['password']]
-                ),
-                subtitle: 'Log into your account', submitLabel: 'Login');
-                loginForm.addElement('username', validator: notEmptyValidator);
-                loginForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
-                loginForm.render();
-              },
-              titleString: 'Login'
-            ),
-            Line(
-              book, (Book b) {
-                final FormBuilder createForm = FormBuilder(
-                  'Create Account', (Map<String, String> data) => commandContext.sendCommand(
-                    'createAccount', <dynamic>[data['username'], data['password']]
-                  ), submitLabel: 'Create Account'
-                );
-                createForm.addElement('username', validator: notEmptyValidator);
-                createForm.addElement('password', element: PasswordInputElement(), validator: notEmptyValidator);
-                createForm.addElement(
-                  'confirm', element: PasswordInputElement(), label: 'Confirm Password',
-                  validator: (String name, Map<String, String> values, String value) => value == values['password'] ? null : 'Passwords do not match.'
-                );
-                createForm.render();
-              }, titleString: 'Create Account',
-            )
-          ], dismissible: false
-        )
-      );
+      book.push(mainMenu);
       commandContext = CommandContext(socket, (String message) {
         commandContext.messages.add(message);
         messageArea.innerText = message;

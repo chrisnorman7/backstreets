@@ -1,14 +1,22 @@
 /// Provides the [commands] dictionary, as well as containing other command imports.
+///
+/// To create more commands, add them to the [commandsList].
+///
+/// ```
+/// commandsList.add(Command('time', (CommandContext ctx) => ctx.sendMessage('The current time is ${DateTime.now()}.')));
+/// ```
+///
+/// The [buildCommands] function will handle moving them into the [commands] dictionary.
 library commands;
 
+import 'builder.dart';
 import 'command.dart';
-import 'command_context.dart';
+import 'general.dart';
 import 'login.dart';
 
-typedef CommandType = void Function(CommandContext);
-
-Map<String, CommandType> commands = <String, CommandType>{};
-
-List<CommandCollection> commandCollections = <CommandCollection>[ 
-LoginCommands(),
+List<Command> commandsList = <Command>[
+  login,
+  createAccount,
+  serverTime
 ];
+Map<String, Command> commands = <String, Command>{};

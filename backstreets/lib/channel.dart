@@ -8,12 +8,10 @@ import 'package:path/path.dart' as path;
 
 import 'backstreets.dart';
 import 'commands/builder.dart';
+import 'commands/command.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'game/tile.dart';
-
-/// Store context for all connected sockets.
-Map<WebSocket, CommandContext> contexts = <WebSocket, CommandContext>{};
 
 /// This type initializes an application.
 ///
@@ -57,22 +55,32 @@ class BackstreetsChannel extends ApplicationChannel {
       final File motdFile = File('motd.txt');
       final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
       final CommandContext ctx = CommandContext(socket, socketLogger);
-      contexts[socket] = ctx;
       final String motd = motdFile.readAsStringSync();
       ctx.sendMessage(motd);
       socketLogger.info('Connection established.');
       socket.listen(
         (dynamic payload) {
           if (payload is String) {
-            final CommandContext ctx = contexts[socket];
             try {
               final List<dynamic> data = jsonDecode(payload) as List<dynamic>;
               final String name = data[0] as String;
               final List<dynamic> arguments = data[1] as List<dynamic>;
               if (commands.containsKey(name)) {
+                final Command command = commands[name];
+                ///Let's check that the player is as authenticated as the command wants them to be.
+                //
+                // When checking AuthenticationTypes.anonymous, we only need to check ctx.account, since if they have a player, and no account, then there's a larger bug going on.
+                if (command.authenticationType == AuthenticationTypes.anonymous && ctx.account != null) {
+                  throw 'Attempting to call an anonymous command while connected to an account.';
+                // When checking AuthenticationTypes.account, check to see if they have an invalid account or a valid player.
+                } else if (command.authenticationType == AuthenticationTypes.account && (ctx.account == null || ctx.player != null)) {
+                  throw 'Attempting to call an account command with an invalid account or a valid player.';
+                // When checking AuthenticationTypes.authenticated, check to see if they have no player.
+                } else if (command.authenticationType == AuthenticationTypes.authenticated && ctx.player == null) {
+                  throw 'Attempting to call an authenticated command without being connected to a player.';
+                }
                 ctx.args = arguments;
-                final Function command = commands[name];
-                command(ctx);
+                command.func(ctx);
               } else {
                 logger.warning('Invalid command: $name.');
                 ctx.sendError('Invalid JSON: $name.');
@@ -82,14 +90,16 @@ class BackstreetsChannel extends ApplicationChannel {
               socketLogger.severe('Invalid JSON received: $payload');
               ctx.sendError('Invalid JSON: $payload.');
             }
+            catch(e) {
+              socketLogger.severe(e);
+              ctx.sendError(e.toString());
+            }
           }
         },
         onDone: () {
-          final CommandContext ctx = contexts[socket];
           if (ctx.player != null) {
             ctx.player.socket = null;
           }
-          contexts.remove(socket);
           socketLogger.info('Websocket closed.');
         }
       );
