@@ -138,13 +138,14 @@ class FormBuilder {
     form.append(submitParagraph);
     submitListener = form.onSubmit.listen((Event e) {
       e.preventDefault();
+      e.stopPropagation();
       if (validate()) {
         final Map<String, String> data = <String, String>{};
         for (final FormBuilderElement e in elements) {
           data[e.name] = e.element.value;
         }
-        destroy();
         done(data);
+        destroy();
       }
     });
   }
@@ -155,11 +156,11 @@ class FormBuilder {
     submitListener.cancel();
     keyboardArea.hidden = false;
     currentFormBuilder = null;
-    form.remove();
     if (book != null) {
       book.showFocus();
     }
     keyboardArea.focus();
+    form.remove();
   }
 
   /// Validate the form, return true if successful, false otherwise.
@@ -183,12 +184,12 @@ class FormBuilder {
   void render({bool override = true}) {
     if (currentFormBuilder == null || override) {
       if (currentFormBuilder != null) {
-        currentFormBuilder.form.remove();
+        currentFormBuilder.destroy();
       }
       currentFormBuilder = this;
       keyboardArea.hidden = true;
       buildFormElement();
-      document.body.append(form);
+      formBuilderDiv.append(form);
       if (autofocus && elements.isNotEmpty) {
         elements[0].element.focus();
       }

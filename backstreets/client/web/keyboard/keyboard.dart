@@ -93,12 +93,13 @@ class Keyboard {
   ///   e.key, control: e.ctrlKey, shift: e.shiftKey, alt: e.altKey
   /// ));
   /// ```
-  void press(
+  KeyState press(
     String key, {
       bool shift = false,
       bool control = false,
       bool alt = false
-    }) {
+    }
+  ) {
     final KeyState state = KeyState(key, shift: shift, control: control, alt: alt);
     if (!keyHeld(state.key)) {
       heldKeys.add(state);
@@ -106,6 +107,7 @@ class Keyboard {
     if (keyTimer == null) {
       startKeyTimer();
     }
+    return state;
   }
 
   /// Release a key.

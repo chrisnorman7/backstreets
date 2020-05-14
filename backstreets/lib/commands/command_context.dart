@@ -65,9 +65,12 @@ class CommandContext{
 
   /// Tell the player about their account.
   void sendAccount(Account account) {
-    final Map<String, String> objects = <String, String>{};
+    final List<Map<String, String>> objects = <Map<String, String>>[];
     for (final GameObject object in account.objects) {
-      objects[object.id] = object.name;
+      objects.add(<String, String>{
+        'id': object.id,
+        'name': object.name,
+      });
     }
     send('account', <dynamic>[account.username, objects]);
   }

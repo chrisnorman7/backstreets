@@ -26,6 +26,9 @@ class CommandContext {
   /// Every message that is sent from the server.
   List<String> messages = <String>[];
   
+  /// The username of the account we are connected to.
+  String username;
+  
   /// Send arbitrary commands to the server.
   void sendCommand(String name, List<dynamic> arguments) {
     final List<dynamic> data = <dynamic>[name, arguments];

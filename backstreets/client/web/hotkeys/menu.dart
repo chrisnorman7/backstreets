@@ -25,7 +25,7 @@ void activate(KeyState ks) {
 
 final Hotkey activateSpace = Hotkey(' ', activate);
 final Hotkey activateEnter = Hotkey('Enter', activate);
-final Hotkey activateRightArrow = Hotkey('RightArrow', activate);
+final Hotkey activateRightArrow = Hotkey('ArrowRight', activate);
 
 void cancel(KeyState ks) {
   if (book != null) {

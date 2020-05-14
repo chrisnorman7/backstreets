@@ -26,7 +26,7 @@ typedef BookFunctionType = void Function(Book);
 /// You can return to the previous [Page] with [Book.cancel], which uses [Book.pop] to "pop" the most recently added [Page].
 /// You can activate items with [Book.activate].
 class Book{
-  /// Give it the ability to make sounds.
+  /// Give it the ability to make sounds, and the ability to send messages.
   Book(this.soundPool, this.message) {
     searchFailSound = soundPool.getSound(searchFailSoundUrl);
     searchSuccessSound = soundPool.getSound(searchSuccessSoundUrl);

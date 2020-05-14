@@ -10,6 +10,7 @@ import 'commands/commands.dart';
 import 'form_builder.dart';
 import 'hotkeys/menu.dart';
 import 'keyboard/hotkey.dart';
+import 'keyboard/key_state.dart';
 import 'keyboard/keyboard.dart';
 import 'menus/book.dart';
 import 'menus/main_menu.dart';
@@ -17,6 +18,9 @@ import 'sound/sound.dart';
 
 /// The currently activated form builder.
 FormBuilder currentFormBuilder;
+
+/// Where to put new [FormBuilder]s, when calling [FormBuilder.render].
+final Element formBuilderDiv = querySelector('#formBuilderDiv');
 
 /// A book for menus.
 Book book;
@@ -53,9 +57,15 @@ void main() {
       cancelLeftArrow,
     ]
   );
-  keyboardArea.onKeyDown.listen((KeyboardEvent e) => keyboard.press(
-    e.key, shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey
-  ));
+  keyboardArea.onKeyDown.listen((KeyboardEvent e) {
+    if (currentFormBuilder != null) {
+      return;
+    }
+    final KeyState ks = keyboard.press(e.key, shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey);
+    if (keyboard.hotkeys.where((Hotkey hk) => hk.state == ks).isNotEmpty) {
+      e.preventDefault();
+    }
+  });
   keyboardArea.onKeyUp.listen((KeyboardEvent e) => keyboard.release(e.key));
   final Element startDiv = querySelector('#startDiv');
   final Element startButton = querySelector('#startButton');
