@@ -15,7 +15,7 @@ import 'menus/book.dart';
 import 'menus/main_menu.dart';
 import 'sound/sound.dart';
 
-/// The currently activate form builder.
+/// The currently activated form builder.
 FormBuilder currentFormBuilder;
 
 /// A book for menus.
