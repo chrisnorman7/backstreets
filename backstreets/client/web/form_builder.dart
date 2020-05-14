@@ -108,16 +108,6 @@ class FormBuilder {
       h2.innerText = subTitle;
       form.append(h2);
     }
-    if (cancellable) {
-      final ParagraphElement cancelParagraph = ParagraphElement();
-      final ButtonElement cancelButton = ButtonElement();
-      cancelButton.innerText = cancelLabel;
-      cancelParagraph.append(cancelButton);
-      form.append(cancelParagraph);
-      cancelListener = cancelButton.onClick.listen((MouseEvent e) {
-        destroy();
-      });
-    }
     for (final FormBuilderElement e in elements) {
       final ParagraphElement p = ParagraphElement();
       final LabelElement label = LabelElement();
@@ -144,10 +134,20 @@ class FormBuilder {
         for (final FormBuilderElement e in elements) {
           data[e.name] = e.element.value;
         }
-        done(data);
         destroy();
+        done(data);
       }
     });
+    if (cancellable) {
+      final ParagraphElement cancelParagraph = ParagraphElement();
+      final ButtonElement cancelButton = ButtonElement();
+      cancelButton.innerText = cancelLabel;
+      cancelListener = cancelButton.onClick.listen((MouseEvent e) {
+        destroy();
+      });
+      cancelParagraph.append(cancelButton);
+      form.append(cancelParagraph);
+    }
   }
 
   /// Remove the [form] element from the DOM, unhide and give focus to [keyboardArea].
