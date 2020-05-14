@@ -5,13 +5,15 @@ import 'dart:io';
 import 'dart:math';
 
 import '../util.dart';
+
+import 'dump_util.dart';
 import 'game_map.dart';
 
 /// Map ids to [GameObject] instances.
 Map<String, GameObject> objects = <String, GameObject>{};
 
 /// An object in a game. Contained by a [GameMap] instance.
-class GameObject {
+class GameObject with DumpHelper {
   /// Create this object with a name.
   ///
   /// ```dart
@@ -22,9 +24,13 @@ class GameObject {
   }
 
   /// The name of this object.
+  @loadable
+  @dumpable
   String name;
 
   /// The ID of this object.
+  @loadable
+  @dumpable
   String id;
 
   /// The location of this object.

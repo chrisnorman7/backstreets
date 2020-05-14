@@ -4,6 +4,8 @@ library game_map;
 import 'dart:math';
 
 import '../util.dart';
+
+import 'dump_util.dart';
 import 'game_object.dart';
 import 'sound.dart';
 import 'tile.dart';
@@ -23,7 +25,7 @@ Map<String, GameMap> maps = <String, GameMap>{};
 ///
 /// Maps contain tiles, walls, and objects.
 /// All coordinates are specified as [Point] instances.
-class GameMap {
+class GameMap with DumpHelper {
   /// Create a standard map.
   GameMap() {
     name = 'Untitled Map';
@@ -46,9 +48,13 @@ class GameMap {
   }
 
   /// The name of this map.
+  @loadable
+  @dumpable
   String name;
 
   /// The ID of this map.
+  @loadable
+  @dumpable
   String id;
 
   /// The [Map] of all [Tile] instances on this map.

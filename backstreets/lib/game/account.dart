@@ -1,10 +1,10 @@
 /// Provides the [Account] class.
-
 library account;
 
 import 'package:password/password.dart';
 
-import 'game_object.dart';
+import 'dump_util.dart';
+import 'game_object.dart' as gobj;
 
 /// The [Algorithm] to use for [Password.hash].
 final PBKDF2 algorithm = PBKDF2();
@@ -20,18 +20,42 @@ Map<String, Account> accounts = <String, Account>{};
 /// a.verify('password'); // true
 /// a.verify('not right'); // false
 /// ```
-class Account {
+class Account with DumpHelper {
   /// Create an account with a username, before using [Account.setPassword] to set the password.
   Account(this.username);
 
   /// The account's username.
+  @loadable
+  @dumpable
   String username;
 
   /// The password hash.
+  @loadable
+  @dumpable
   String _password;
 
   /// The list of objects assigned to this account.
-  List<GameObject> objects = <GameObject>[];
+  ///
+  @dumpable
+  List<gobj.GameObject> objects = <gobj.GameObject>[];
+
+  /// Load [objects].
+  @Loader('objects')
+  void loadObjects(List<String> ids) {
+    for (final String id in ids) {
+      objects.add(gobj.objects[id]);
+    }
+  }
+
+  /// Dump [objects].
+  @Dumper('objects')
+  List<String> dumpObjects() {
+    final List<String> objectIds = <String>[];
+    for (final gobj.GameObject obj in objects) {
+      objectIds.add(obj.id);
+    }
+    return objectIds;
+  }
 
   /// Set the password for this account, using [Password.hash].
   ///
