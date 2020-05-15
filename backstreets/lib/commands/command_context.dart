@@ -6,19 +6,16 @@ import 'dart:io';
 
 import 'package:aqueduct/aqueduct.dart';
 
-import '../game/account.dart';
-import '../game/game_object.dart';
+import '../model/account.dart';
+import '../model/game_object.dart';
 import '../sound.dart';
+
 import 'commands.dart';
 
 /// Used when calling commands.
 class CommandContext{
   /// Pass this object to a command in the [commands] dictionary.
-  ///
-  /// ```
-  /// CommandArguments(socket, player, <String>['a', 'b', 'c']);
-  /// ```
-  CommandContext(this.socket, this.logger);
+  CommandContext(this.socket, this.logger, this.db);
 
   /// The [WebSocket] that called this command.
   final WebSocket socket;
@@ -26,17 +23,50 @@ class CommandContext{
   /// The logger for this socket.
   final Logger logger;
 
-  /// The player that is logged in on [socket], or null.
-  Account account;
+  /// The interface to the database.
+  ManagedContext db;
 
-  /// The character that is logged in on [socket], or null.
-  GameObject player;
+  /// The id of the [Account] that is logged in on [socket], or null.
+  int accountId;
+
+  /// The id of the [GameObject] that is logged in on [socket], or null.
+  int characterId;
 
   /// The arguments provided to the command.
   List<dynamic> args;
 
+  /// Get an [Account] instance, with an id of [accountId].
+  Future<Account> getAccount() async {
+    if (accountId == null) {
+      return null;
+    }
+    final Query<Account> q = Query<Account>(db)
+      ..where((Account a) => a.id).equalTo(accountId);
+    return await q.fetchOne();
+  }
+
+  /// Set [accountId] to the id of the provided [Account] instance.
+  set account(Account a) {
+    accountId = a.id;
+  }
+
+  /// Get a [GameObject] instance, with an id of [characterId].
+  Future<GameObject> getCharacter() async {
+    if (characterId == null) {
+      return null;
+    }
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..where((GameObject c) => c.id).equalTo(characterId);
+    return await q.fetchOne();
+  }
+
+  /// Set [characterId] to the id of the provided [GameObject] instance.
+  set character(GameObject c) {
+    characterId = c.id;
+  }
+
   /// Send an arbitrary command to [socket].
-  void send(String name, List<dynamic> arguments) {
+  void send(String name, dynamic arguments) {
     final String data = jsonEncode(<dynamic>[name, arguments]);
     socket.add(data);
   }
@@ -65,13 +95,6 @@ class CommandContext{
 
   /// Tell the player about their account.
   void sendAccount(Account account) {
-    final List<Map<String, String>> objects = <Map<String, String>>[];
-    for (final GameObject object in account.objects) {
-      objects.add(<String, String>{
-        'id': object.id,
-        'name': object.name,
-      });
-    }
-    send('account', <dynamic>[account.username, objects]);
+    send('account', account.asMap());
   }
 }

@@ -7,8 +7,8 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:path/path.dart' as path;
 
 import '../channel.dart';
+import '../model/game_map.dart';
 import '../sound.dart' as sound;
-import 'game_map.dart';
 
 /// The directory where tile sounds are kept.
 final Directory tileSoundsDirectory = Directory(path.join(sound.soundsDirectory, 'tiles'));
@@ -55,5 +55,5 @@ class Tile {
 
 /// All instantiated tiles.
 ///
-/// If creating tiles by hand, you should probably add them to this list, so they can be accessed by the online creation tools.
-List<Tile> tiles = <Tile>[];
+/// If creating tiles by hand, you should add them to this dictionary, so they can be accessed by the online creation tools, and from within the database.
+Map<String, Tile> tiles = <String, Tile>{};
