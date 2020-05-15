@@ -12,4 +12,5 @@ Dart_Packages.xml
 .DS_Store
 .idea/
 *.aqueduct.pid
-game
+config.yaml
+database.yaml
