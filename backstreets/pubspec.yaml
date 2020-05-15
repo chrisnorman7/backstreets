@@ -10,7 +10,6 @@ dependencies:
   aqueduct:
   path:
   password:
-  uuid:
 
 dev_dependencies:
   test: ^1.0.0
