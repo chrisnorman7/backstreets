@@ -7,9 +7,10 @@ import 'account.dart';
 import 'game_map.dart';
 import 'mixins.dart';
 
-/// The objects table.
+/// The game_objects table.
 ///
 /// To deal with game objects directly, use the [GameObject] class instead.
+@Table(name: 'game_objects')
 class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
   /// The location of this object.
   @Relate(#objects)

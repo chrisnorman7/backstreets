@@ -14,7 +14,6 @@ import 'commands/commands.dart';
 import 'config.dart';
 import 'game/tile.dart';
 import 'model/account.dart';
-import 'model/game_map.dart';
 import 'model/game_object.dart';
 
 /// This type initializes an application.
@@ -34,15 +33,7 @@ class BackstreetsChannel extends ApplicationChannel {
   @override
   Future<void> prepare() async {
     final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
-    final ManagedDataModel dataModel = ManagedDataModel(
-      <Type>[
-        Account,
-        GameObject,
-        GameMap,
-        MapTile,
-        MapWall 
-      ]
-    );
+    final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final PostgreSQLPersistentStore psc = PostgreSQLPersistentStore.fromConnectionInfo(
       config.database.username,
       config.database.password,

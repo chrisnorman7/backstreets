@@ -29,7 +29,7 @@ class _MapWall with PrimaryKeyMixin, CoordinatesMixin {
 
   /// The map this wall is part of.
   @Relate(#walls, isRequired: true, onDelete: DeleteRule.cascade)
-  GameMap map;
+  GameMap location;
 }
 
 /// A wall on a map.
@@ -45,7 +45,7 @@ class _MapTile with PrimaryKeyMixin, CoordinatesMixin {
 
   /// The map this tile is part of.
   @Relate(#tiles, isRequired: true, onDelete: DeleteRule.cascade)
-  GameMap map;
+  GameMap location;
 }
 
 /// A tile on a map.
@@ -61,8 +61,10 @@ class MapTile extends ManagedObject<_MapTile> implements _MapTile {
   }
 }
 
-/// The maps table. If you want to work with maps directly, use the [GameMap] class.
-@Table(name: 'maps')
+/// The game_maps table.
+///
+/// If you want to work with maps directly, use the [GameMap] class.
+@Table(name: 'game_maps')
 class _GameMap with PrimaryKeyMixin, NameMixin {
   /// All the [GameObject] instances on this map.
   ManagedSet<GameObject> objects;
@@ -73,10 +75,12 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
   /// All the [MapTile] instances contained by this map.
   ManagedSet<MapTile> tiles;
 
-  /// The convolver for this map.
+  /// The convolver URL for this map.
+  @Column(nullable: true)
   String convolverUrl;
 
   /// The volume of the convolver.
+  @Column(defaultValue: '1.0')
   double volume;
 }
 
@@ -85,11 +89,11 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
 /// Maps contain tiles, walls, and objects.
 class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   /// Create an empty map.
-  GameMap();
+  // GameMap();
 
   /// Used to create a map which is pre-populated with tiles.
   ///
-  /// ```dart
+  /// ```
   /// final GameMap m = GameMap.fromSize(x: 200, y: 200, tile: tiles[0]);
   /// ```
   GameMap.fromSize({int x, int y, Tile tile}) {
@@ -111,7 +115,7 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   MapTile addTile(double x, double y, Tile tile) {
     final MapTile t = MapTile();
     t.tile = tile;
-    t.map = this;
+    t.location = this;
     t.x = x;
     t.y = y;
     return t;
