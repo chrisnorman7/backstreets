@@ -41,9 +41,9 @@ class Account with DumpHelper {
 
   /// Load [objects].
   @Loader('objects')
-  void loadObjects(List<String> ids) {
-    for (final String id in ids) {
-      objects.add(gobj.objects[id]);
+  void loadObjects(List<dynamic> ids) {
+    for (final dynamic id in ids) {
+      objects.add(gobj.objects[id as String]);
     }
   }
 

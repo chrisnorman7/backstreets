@@ -11,7 +11,19 @@ import 'commands/builder.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
+import 'game/account.dart';
+import 'game/game_map.dart';
+import 'game/game_object.dart';
 import 'game/tile.dart';
+
+/// The file that will store [Account] instances.
+const String accountsFile = 'game/accounts.json';
+
+/// The file that will store [GameObject] instances.
+const String objectsFile = 'game/objects.json';
+
+/// The file that will store [GameMap] instances.
+const String mapsFile = 'game/maps.json';
 
 /// This type initializes an application.
 ///
@@ -29,6 +41,46 @@ class BackstreetsChannel extends ApplicationChannel {
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
     buildCommands();
     logger.info('Commands: ${commands.length}.');
+    dynamic data;
+    File f = File(objectsFile);
+    if (f.existsSync()) {
+      logger.info('Loading objects from $objectsFile.');
+      data = jsonDecode(f.readAsStringSync());
+      for (final dynamic objectData in data as List<dynamic>) {
+        final GameObject obj = GameObject('not loaded yet');
+        obj.updateFromJson(objectData as Map<String, dynamic>);
+        objects[obj.id] = obj;
+      }
+      logger.info('Objects loaded: ${objects.length}.');
+    } else {
+      logger.info('No objects file to load from.');
+    }
+    f = File(mapsFile);
+    if (f.existsSync()) {
+      logger.info('Loading maps from $mapsFile.');
+      data = jsonDecode(f.readAsStringSync());
+      for (final dynamic mapData in data as List<dynamic>) {
+        final GameMap m = GameMap();
+        m.updateFromJson(mapData as Map<String, dynamic>);
+        maps[m.id] = m;
+      }
+      logger.info('Maps loaded: ${maps.length}.');
+    } else {
+      logger.info('No maps file to load from.');
+    }
+    f = File(accountsFile);
+    if (f.existsSync()) {
+      logger.info('Loading accounts from $accountsFile.');
+      data = jsonDecode(f.readAsStringSync());
+      for (final dynamic accountData in data as List<dynamic>) {
+        final Account a = Account('not loaded yet');
+        a.updateFromJson(accountData as Map<String, dynamic>);
+        accounts[a.username] = a;
+      }
+      logger.info('Accounts loaded: ${accounts.length}.');
+    } else {
+      logger.info('No accounts file to load from.');
+    }
     logger.info('Gathering tile sounds.');
     tileSoundsDirectory.list().listen((FileSystemEntity entity) {
       if (entity is Directory) {
@@ -106,5 +158,40 @@ class BackstreetsChannel extends ApplicationChannel {
       return null;
     });
     return router;
+  }
+
+  @override
+  Future<void> close() async {
+    logger.info('Dumping the database.');
+    dump();
+    logger.info('Database dumped.');
+    return super.close();
+  }
+
+  Future<void> backup(File f) async {
+    final DateTime now = DateTime.now();
+    await f.rename('${path.dirname(f.path)}/${now.year}-${now.month}-${now.day} ${now.hour}.${now.minute}.${now.second} ${path.basename(f.path)}');
+  }
+
+  void dump() {
+    const JsonEncoder json = JsonEncoder.withIndent('  ');
+    File f = File(accountsFile);
+    backup(f);
+    final List<Map<String, dynamic>> accountsData = <Map<String, dynamic>>[];
+    accounts.forEach((String id, Account a) => accountsData.add(a.toJson()));
+    f.writeAsString(json.convert(accountsData));
+    logger.info('Accounts dumped: ${accountsData.length}.');
+    f = File(objectsFile);
+    backup(f);
+    final List<Map<String, dynamic>> objectsData = <Map<String, dynamic>>[];
+    objects.forEach((String id, GameObject obj) => objectsData.add(obj.toJson()));
+    f.writeAsString(json.convert(objectsData));
+    logger.info('Objects dumped: ${objectsData.length}.');
+    f = File(mapsFile);
+    backup(f);
+    final List<Map<String, dynamic>> mapsData = <Map<String, dynamic>>[];
+    maps.forEach((String id, GameMap m) => accountsData.add(m.toJson()));
+    f.writeAsString(json.convert(mapsData));
+    logger.info('Maps dumped: ${mapsData.length}.');
   }
 }

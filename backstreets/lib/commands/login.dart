@@ -1,6 +1,8 @@
 /// Provides login commands.
 library login;
 
+import 'package:aqueduct/aqueduct.dart';
+
 import '../game/account.dart';
 import '../sound.dart';
 
@@ -20,6 +22,7 @@ final Command createAccount = Command(
     if (accounts.containsKey(username)) {
       return ctx.sendError('That username is already taken.', sound: Sound(loginError));
     }
+    Logger('Account Creation').info('Created account $username.');
     ctx.account = Account(username);
     accounts[ctx.account.username] = ctx.account;
     ctx.account.setPassword(password);
