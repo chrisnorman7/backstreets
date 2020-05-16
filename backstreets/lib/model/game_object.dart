@@ -23,6 +23,11 @@ class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
 
   /// The connections which have been made to this object.
   ManagedSet<ConnectionRecord> connectionRecords;
+
+  /// The number of times this object has died.
+  ///
+  /// It is unlikely this property will be used for NPC's, but players love to know their stats.
+  int deaths = 0;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
