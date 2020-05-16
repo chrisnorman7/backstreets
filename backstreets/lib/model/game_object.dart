@@ -4,6 +4,7 @@ library game_object;
 import 'package:aqueduct/aqueduct.dart';
 
 import 'account.dart';
+import 'connection_record.dart';
 import 'game_map.dart';
 import 'mixins.dart';
 
@@ -15,10 +16,13 @@ class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
   /// The location of this object.
   @Relate(#objects)
   GameMap location;
-  
+
   /// The account that is bound to this object.
   @Relate(#objects)
   Account account;
+
+  /// The connections which have been made to this object.
+  ManagedSet<ConnectionRecord> connectionRecords;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.

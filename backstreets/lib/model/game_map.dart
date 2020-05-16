@@ -89,7 +89,7 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
 /// Maps contain tiles, walls, and objects.
 class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   /// Create an empty map.
-  // GameMap();
+  GameMap();
 
   /// Used to create a map which is pre-populated with tiles.
   ///
