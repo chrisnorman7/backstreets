@@ -89,11 +89,10 @@ class BackstreetsChannel extends ApplicationChannel {
             await socket.close(400, 'Invalid JSON: $payload.');
             return null;
           }
-          if (data.length != 2) {
-            await socket.close(400, 'Invalid command sent.');
-            return null;
-          }
           try {
+            if (data.length != 2) {
+              throw 'Invalid command sent.';
+            }
             final String name = data[0] as String;
             final List<dynamic> arguments = data[1] as List<dynamic>;
             if (commands.containsKey(name)) {
@@ -113,7 +112,7 @@ class BackstreetsChannel extends ApplicationChannel {
                 throw 'Attempting to call an authenticated command without being connected to a player.';
               }
               ctx.args = arguments;
-              command.func(ctx);
+              await command.func(ctx);
             } else {
               logger.warning('Invalid command: $name.');
               ctx.sendError('Invalid JSON: $name.');
@@ -124,6 +123,7 @@ class BackstreetsChannel extends ApplicationChannel {
             ctx.sendError(e.toString());
           }
         },
+        onError: (dynamic error) => logger.warning(error),
         onDone: () {
           socketLogger.info('Websocket closed.');
         }

@@ -35,6 +35,7 @@ final Command login = Command(
     final String username = ctx.args[0] as String;
     final String password = ctx.args[1] as String;
     final Query<Account> q = Query<Account>(ctx.db)
+      ..join(set: (Account a) => a.objects)
       ..where((Account a) => a.username).equalTo(username);
     final Account a = await q.fetchOne();
     if (a != null && a.verify(password)) {

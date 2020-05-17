@@ -6,7 +6,7 @@ import '../model/game_object.dart';
 import 'command_context.dart';
 
 /// The type for all command functions.
-typedef CommandType = void Function(CommandContext);
+typedef CommandType = Future<void> Function(CommandContext);
 
 /// The various authentication types for commands.
 enum AuthenticationTypes {
