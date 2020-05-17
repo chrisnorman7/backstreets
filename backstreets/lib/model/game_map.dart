@@ -9,6 +9,7 @@ import 'package:aqueduct/aqueduct.dart';
 
 import '../game/tile.dart';
 
+import 'exit.dart';
 import 'game_object.dart';
 import 'mixins.dart';
 
@@ -81,7 +82,13 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
 
   /// The volume of the convolver.
   @Column(defaultValue: '1.0')
-  double volume;
+  double convolverVolume;
+
+  /// All the exits from this map.
+  ManagedSet<Exit> exits;
+
+  // All the entrances to this map.
+  ManagedSet<Exit> entrances;
 }
 
 /// A map.
