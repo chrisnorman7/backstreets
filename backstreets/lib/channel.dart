@@ -1,12 +1,12 @@
-/// Provides the BackstreetsChannel class.
+/// Provides the [BackstreetsChannel] class.
 library channel;
 
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:aqueduct/aqueduct.dart';
 import 'package:path/path.dart' as path;
 
-import 'backstreets.dart';
 import 'commands/builder.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';

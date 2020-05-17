@@ -1,4 +1,4 @@
-/// Provides the CommandArguments class.
+/// Provides the [CommandContext] class.
 library command_arguments;
 
 import 'dart:convert';

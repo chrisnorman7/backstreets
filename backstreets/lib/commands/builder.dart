@@ -1,4 +1,4 @@
-/// Provides the [buildCommands] function, for populating the [commands] dictionary.
+/// Provides the [buildCommands] function, for populating the [commands.commands] dictionary.
 library builder;
 
 import 'command.dart';

@@ -1,6 +1,6 @@
-/// Provides the [commands] dictionary, as well as containing other command imports.
+/// Used for storing commands.
 ///
-/// To create more commands, add them to the [commandsList].
+/// To create more commands, add them to [commandsList].
 ///
 /// ```
 /// commandsList.add(Command('time', (CommandContext ctx) => ctx.sendMessage('The current time is ${DateTime.now()}.')));
