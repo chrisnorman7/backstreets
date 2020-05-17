@@ -95,14 +95,14 @@ void main() {
       mainDiv.hidden = true;
       startDiv.hidden = false;
     });
-    socket.onMessage.listen((MessageEvent e) {
+    socket.onMessage.listen((MessageEvent e) async {
       final List<dynamic> data = jsonDecode(e.data as String) as List<dynamic>;
       final String commandName = data[0] as String;
       final List<dynamic> commandArgs = data[1] as List<dynamic>;
       if (commands.containsKey(commandName)) {
         commandContext.args = commandArgs;
         final CommandType command = commands[commandName];
-        command(commandContext);
+        await command(commandContext);
       } else {
         commandContext.message('Unrecognised command: $commandName.');
       }

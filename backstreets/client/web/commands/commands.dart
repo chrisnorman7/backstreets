@@ -11,25 +11,27 @@ import 'command_context.dart';
 import 'sound.dart';
 
 /// The type for all command functions.
-typedef CommandType = void Function(CommandContext);
+typedef CommandType = Future<void> Function(CommandContext);
 
 /// A map containing all the commands which can be called by the server.
 Map<String, CommandType> commands = <String, CommandType>{
-  'message': (CommandContext ctx) => ctx.message(ctx.args[0] as String),
+  'message': (CommandContext ctx) async {
+    ctx.message(ctx.args[0] as String);
+  },
   'interfaceSound': interfaceSound,
-  'account': (CommandContext ctx) {
+  'account': (CommandContext ctx) async {
     book = Book(ctx.sounds, ctx.message);
     final List<Line> lines = <Line>[];
     final List<dynamic> characterList = ctx.args[1] as List<dynamic>;
     for (final dynamic characterData in characterList) {
-      final Map<String, String> data = characterData as Map<String, String>;
-      final String id = data['id'];
-      final String name = data['name'];
+      final Map<String, dynamic> data = characterData as Map<String, dynamic>;
+      final int id = data['id'] as int;
+      final String name = data['name'] as String;
       lines.add(
         Line(
           book, (Book b) {
             book = null;
-            ctx.sendCommand('connectCharacter', <String>[id]);
+            ctx.sendCommand('connectCharacter', <int>[id]);
           }, titleString: name
         )
       );
