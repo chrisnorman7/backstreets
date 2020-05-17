@@ -114,8 +114,9 @@ class BackstreetsChannel extends ApplicationChannel {
               ctx.args = arguments;
               await command.func(ctx);
             } else {
-              logger.warning('Invalid command: $name.');
-              ctx.sendError('Invalid JSON: $name.');
+              final String msg = 'Invalid command: $name.';
+              logger.warning(msg);
+              ctx.sendError(msg);
             }
           }
           catch(e) {
