@@ -1,6 +1,7 @@
 /// Provides login commands.
 library login;
 
+import '../authentication.dart';
 import '../form_builder.dart';
 import '../main.dart';
 import '../menus/book.dart';
@@ -10,10 +11,10 @@ import '../menus/page.dart';
 import 'command_context.dart';
 
 Future<void> account(CommandContext ctx) async {
-  ctx.message('Account.');
+  authenticationStage = AuthenticationStages.account;
   book = Book(ctx.sounds, ctx.message);
   final List<Line> lines = <Line>[];
-  final List<dynamic> characterList = ctx.args[1] as List<dynamic>;
+  characterList = ctx.args[1] as List<dynamic>;
   for (final dynamic characterData in characterList) {
     final Map<String, dynamic> data = characterData as Map<String, dynamic>;
     final int id = data['id'] as int;
@@ -32,8 +33,7 @@ Future<void> account(CommandContext ctx) async {
       book, (Book b) {
         book = null;
         final FormBuilder createForm = FormBuilder(
-          'New Character',
-          (Map<String, String> data) {
+          'New Character', (Map<String, String> data) {
             ctx.message('Creating character...');
             ctx.sendCommand('createCharacter', <String>[data['name']]);
           },
@@ -57,6 +57,9 @@ Future<void> account(CommandContext ctx) async {
 }
 
 Future<void> character(CommandContext ctx) async {
+  // Don't keep the character list lying around.
+  characterList = null;
+  authenticationStage = AuthenticationStages.connected;
   final Map<String, dynamic> characterData = ctx.args[0] as Map<String, dynamic>;
   ctx.message(characterData.toString());
 }

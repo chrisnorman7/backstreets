@@ -5,17 +5,27 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:web_audio';
 
+import 'authentication.dart';
+
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
+import 'commands/login.dart';
+
 import 'form_builder.dart';
+
 import 'hotkeys/menu.dart';
+
 import 'keyboard/hotkey.dart';
 import 'keyboard/key_state.dart';
 import 'keyboard/keyboard.dart';
+
 import 'menus/book.dart';
 import 'menus/main_menu.dart';
+
 import 'sound/sound.dart';
 
+/// Character data, as sent to the [account] command.
+List<dynamic> characterList;
 /// The currently activated form builder.
 FormBuilder currentFormBuilder;
 
@@ -27,6 +37,9 @@ Book book;
 
 /// The context to call commands with.
 CommandContext commandContext;
+
+/// The current stage in the authentication process.
+AuthenticationStages authenticationStage;
 
 /// Set the document title. [state] will be shown in square brackets.
 void setTitle({String state}) {
@@ -89,6 +102,7 @@ void main() {
     final WebSocket socket = WebSocket('ws://${window.location.hostname}:8888/ws');
     setTitle(state: 'Connecting');
     socket.onOpen.listen((Event e) {
+      authenticationStage = AuthenticationStages.anonymous;
       keyboardArea.focus();
       book = Book(sounds, showMessage);
       book.push(mainMenu());

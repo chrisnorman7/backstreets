@@ -1,12 +1,34 @@
 /// General commands.
 library general;
 
+import '../authentication.dart';
+import '../main.dart';
+
+import '../menus/book.dart';
+import '../menus/main_menu.dart';
+
 import 'command_context.dart';
+import 'login.dart';
 
 Future<void> message(CommandContext ctx) async {
   ctx.message(ctx.args[0] as String);
 }
 
 Future<void> error(CommandContext ctx) async {
-  ctx.message('Error: ${ctx.args[0]}');
+  final String msg = ctx.args[0] as String;
+  if (authenticationStage == AuthenticationStages.anonymous) {
+    // Probably a login failure.
+    book = Book(ctx.sounds, ctx.message);
+    book.push(mainMenu());
+  } else if (authenticationStage == AuthenticationStages.account) {
+    // A problem creating or connecting to a player.
+    ctx.args = <dynamic>[ctx.username, characterList];
+    ctx.username = null;
+    await account(ctx);
+  } else if (authenticationStage == AuthenticationStages.connected) {
+    // Do nothing but show the message.
+  } else {
+    ctx.message('Unknown authentication stage: $authenticationStage.');
+  }
+  ctx.message('Error: $msg');
 }
