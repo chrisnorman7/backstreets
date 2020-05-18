@@ -17,6 +17,9 @@ import 'login.dart';
 List<Command> commandsList = <Command>[
   login,
   createAccount,
+  createCharacter,
+  connectCharacter,
   serverTime
 ];
+
 Map<String, Command> commands = <String, Command>{};

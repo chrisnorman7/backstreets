@@ -17,7 +17,10 @@ class Keyboard {
   /// A second argument is also supported, for cases where a key is pressed that is not handled by any of the [Hotkey]s you have added to this keyboard..
   ///
   /// final Keyboard keyboard = Keyboard(unhandledKey: (KeyState ks) => print(ks));
-  Keyboard({this.keyPressInterval = 50, this.unhandledKey});
+  Keyboard(this.onError, {this.keyPressInterval = 50, this.unhandledKey});
+
+  /// The function which is called when [Hotkey] instances throw an error.
+  void Function(dynamic) onError;
 
   /// The length of time between [Hotkey]s firing.
   int keyPressInterval;
@@ -75,7 +78,12 @@ class Keyboard {
               handledHotkeys.add(hotkey);
             }
           }
-          hotkey.func(key);
+          try {
+            hotkey.func(key);
+          }
+          catch(e) {
+            onError(e);
+          }
           handled = true;
           break;
         }

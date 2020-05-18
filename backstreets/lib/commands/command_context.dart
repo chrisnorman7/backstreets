@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:aqueduct/aqueduct.dart';
 
 import '../model/account.dart';
+import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../sound.dart';
 
@@ -78,7 +79,7 @@ class CommandContext{
 
   /// Alert the player to an error.
   void sendError(String text, {Sound sound}) {
-    sendMessage(text);
+    send('error', <String>[text]);
     if (sound != null) {
       sendInterfaceSound(sound);
     }
@@ -94,11 +95,32 @@ class CommandContext{
   }
 
   /// Tell the player about their account.
-  void sendAccount(Account account) {
+  Future<void> sendAccount(Account account) async {
     final List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
     for (final GameObject obj in account.objects) {
-      objects.add(obj.asMap());
+      objects.add(<String, dynamic>{
+        'id': obj.id,
+        'name': obj.name,
+      });
     }
-    return send('account', <dynamic>[account.username, objects]);
+    final List<Map<String, dynamic>> maps = <Map<String, dynamic>>[];
+    final Query<GameMap> q = Query<GameMap>(db);
+    for (final GameMap m in await q.fetch()) {
+      maps.add(<String, dynamic>{
+        'id': m.id,
+        'name': m.name
+      });
+    }
+    send('account', <dynamic>[account.username, objects, maps]);
+  }
+
+  Future<void> sendCharacter(GameObject c) async {
+    send('character', <dynamic>[<String, dynamic>{
+      'location': c.location == null ? null : c.location.id,
+      'name': c.name,
+      'x': c.x,
+      'y': c.y,
+      'deaths': c.deaths,
+    }]);
   }
 }

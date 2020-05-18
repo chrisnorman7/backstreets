@@ -39,11 +39,19 @@ void setTitle({String state}) {
 /// The message aread.
 final Element messageArea = querySelector('#message');
 
+/// Show a message.
+void showMessage(String text) {
+  messageArea.innerText = text;
+}
+
 /// The keyboard area. This is a paragraph element that can be focussed.
 final Element keyboardArea = querySelector('#keyboardArea');
 
 /// The interface to [Hotkey] processing.
-final Keyboard keyboard = Keyboard();
+final Keyboard keyboard = Keyboard((dynamic e) {
+  showMessage(e.toString());
+  throw e;
+});
 
 /// Main entry point.
 void main() {
@@ -82,18 +90,21 @@ void main() {
     setTitle(state: 'Connecting');
     socket.onOpen.listen((Event e) {
       keyboardArea.focus();
-      book = Book(sounds, (String message) => messageArea.innerText = message);
-      book.push(mainMenu);
+      book = Book(sounds, showMessage);
+      book.push(mainMenu());
       commandContext = CommandContext(socket, (String message) {
         commandContext.messages.add(message);
-        messageArea.innerText = message;
+        showMessage(message);
       }, sounds);
       setTitle(state: 'Connected');
     });
-    socket.onClose.listen((Event e) {
+    socket.onClose.listen((CloseEvent e) {
+      startButton.innerText = 'Reconnect';
+      showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
       setTitle(state: 'Disconnected');
       mainDiv.hidden = true;
       startDiv.hidden = false;
+      startButton.focus();
     });
     socket.onMessage.listen((MessageEvent e) async {
       final List<dynamic> data = jsonDecode(e.data as String) as List<dynamic>;
