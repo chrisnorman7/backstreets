@@ -139,8 +139,9 @@ class BackstreetsChannel extends ApplicationChannel {
               ctx.sendError(msg);
             }
           }
-          catch(e) {
+          catch(e, s) {
             socketLogger.severe(e);
+            logger.severe(s.toString());
             ctx.sendError(e.toString());
           }
         },
