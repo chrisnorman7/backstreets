@@ -14,6 +14,7 @@ import 'commands/commands.dart';
 import 'config.dart';
 import 'game/tile.dart';
 import 'model/account.dart';
+import 'model/game_map.dart';
 import 'model/game_object.dart';
 
 /// This type initializes an application.
@@ -32,6 +33,7 @@ class BackstreetsChannel extends ApplicationChannel {
   /// This method is invoked prior to [entryPoint] being accessed.
   @override
   Future<void> prepare() async {
+    bool mapBuilt = false;
     final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
     final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final PostgreSQLPersistentStore psc = PostgreSQLPersistentStore.fromConnectionInfo(
@@ -46,11 +48,29 @@ class BackstreetsChannel extends ApplicationChannel {
     buildCommands();
     logger.info('Commands: ${commands.length}.');
     logger.info('Gathering tile sounds.');
-    tileSoundsDirectory.list().listen((FileSystemEntity entity) {
+    tileSoundsDirectory.list().listen((FileSystemEntity entity) async {
       if (entity is Directory) {
         final String name = path.basename(entity.path);
-        tiles[name] = Tile(name);
+        final Tile tile = Tile(name);
+        tiles[name] = tile;
         logger.info('Added tile $name.');
+        if (tiles.length == 1 && !mapBuilt) {
+          mapBuilt = true;
+          // Let's see if we need to build a map.
+          final Query<GameMap> q = Query<GameMap>(databaseContext);
+          final int mapCount = await q.reduce.count();
+          if (mapCount < 1) {
+            logger.info('Creating default map.');
+            GameMap m = GameMap();
+            m.name = 'Map 1';
+            q.values = m;
+            m = await q.insert();
+            await m.fillSize(databaseContext, 200, 200, tile);
+            logger.info('Map created.');
+          } else {
+            logger.info('Maps: $mapCount.');
+          }
+        }
       }
     });
   }

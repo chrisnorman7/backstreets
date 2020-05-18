@@ -89,42 +89,49 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
 
   // All the entrances to this map.
   ManagedSet<Exit> entrances;
+
+  /// The x coordinate where players should pop.
+  @Column(defaultValue: '0.0')
+  double popX = 0;
+
+  /// The y coordinate where players should pop.
+  @Column(defaultValue: '0.0')
+  double popY = 0;
 }
 
 /// A map.
 ///
 /// Maps contain tiles, walls, and objects.
 class GameMap extends ManagedObject<_GameMap> implements _GameMap {
-  /// Create an empty map.
-  GameMap();
-
-  /// Used to create a map which is pre-populated with tiles.
+  /// Fille the map with tiles.
   ///
   /// ```
-  /// final GameMap m = GameMap.fromSize(x: 200, y: 200, tile: tiles[0]);
+  /// final GameMap m = GameMap();
+  /// m.fillSize(datebaseContext, x: 200, y: 200, tile: tiles[0]);
   /// ```
-  GameMap.fromSize({int x, int y, Tile tile}) {
-    name = '$x x $y Map';
-    for (double i = 0; i < x; i++) {
-      for (double j = 0; j < y; j++) {
-        addTile(i, j, tile);
+  Future<void> fillSize(ManagedContext ctx, int x, int y, Tile tile) async {
+    await ctx.transaction((ManagedContext transaction) async {
+      for (double i = 0; i < x; i++) {
+        for (double j = 0; j < y; j++) {
+          await addTile(transaction, i, j, tile);
+        }
       }
-    }
+    });
   }
 
   /// Add a tile to this map at the given coordinates.
   ///
   /// ```dart
   /// // Add 2 tiles to this map.
-  /// map.addTile(5, 5, tiles[1]);
-  /// map.addTile(6, 5, tiles[1]);
+  /// await map.addTile(databaseContext, 5, 5, tiles[1]);
+  /// await map.addTile(databaseContext, 6, 5, tiles[1]);
   /// ```
-  MapTile addTile(double x, double y, Tile tile) {
-    final MapTile t = MapTile();
-    t.tile = tile;
-    t.location = this;
-    t.x = x;
-    t.y = y;
-    return t;
+  Future<MapTile> addTile(ManagedContext ctx, double x, double y, Tile tile) async {
+    final Query<MapTile> q = Query<MapTile>(ctx)
+    ..values.tileName = tile.name
+    ..values.location = this
+    ..values.x = x
+    ..values.y = y;
+    return await q.insert();
   }
 }
