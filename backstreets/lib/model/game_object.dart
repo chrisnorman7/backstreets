@@ -32,4 +32,10 @@ class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
-class GameObject extends ManagedObject<_GameObject> implements _GameObject {}
+class GameObject extends ManagedObject<_GameObject> implements _GameObject {
+
+  @override
+  String toString() {
+    return '<Map $name (#$id)>';
+  }
+}

@@ -23,6 +23,7 @@ Future<void> account(CommandContext ctx) async {
       Line(
         book, (Book b) {
           book = null;
+          ctx.message('Please wait.');
           ctx.sendCommand('connectCharacter', <int>[id]);
         }, titleString: name
       )
@@ -56,10 +57,10 @@ Future<void> account(CommandContext ctx) async {
   );
 }
 
-Future<void> character(CommandContext ctx) async {
+Future<void> characterName(CommandContext ctx) async {
   // Don't keep the character list lying around.
   characterList = null;
   authenticationStage = AuthenticationStages.connected;
-  final Map<String, dynamic> characterData = ctx.args[0] as Map<String, dynamic>;
-  ctx.message(characterData.toString());
+  ctx.characterName = ctx.args[0] as String;
+  setTitle(state: ctx.characterName);
 }

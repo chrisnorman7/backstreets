@@ -3,6 +3,7 @@ library command_context;
 
 import 'dart:convert';
 import 'dart:html';
+import 'dart:math';
 
 import '../sound/sound.dart';
 
@@ -25,10 +26,32 @@ class CommandContext {
 
   /// Every message that is sent from the server.
   List<String> messages = <String>[];
-  
+
   /// The username of the account we are connected to.
+  ///
+  /// Sent by [account].
   String username;
-  
+
+  /// The name of the connected character.
+  ///
+  /// Send by [characterName].
+  String characterName;
+
+  /// The coordinates of the connected character.
+  ///
+  /// Send by [characterCoordinates].
+  Point<double> coordinates;
+
+  /// The name of the map the connected character is on.
+  ///
+  /// Sent by [mapName].
+  String mapName;
+
+  /// Every tile on the current map.
+  ///
+  /// Tiles updated by [tile].
+  Map<Point<double>, String> tiles;
+
   /// Send arbitrary commands to the server.
   void sendCommand(String name, List<dynamic> arguments) {
     final List<dynamic> data = <dynamic>[name, arguments];

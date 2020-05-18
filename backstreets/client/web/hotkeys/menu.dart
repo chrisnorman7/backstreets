@@ -3,6 +3,7 @@ library menu;
 
 import '../keyboard/hotkey.dart';
 import '../keyboard/key_state.dart';
+
 import '../main.dart';
 
 final Hotkey moveUp = Hotkey('ArrowUp', (KeyState ks) {

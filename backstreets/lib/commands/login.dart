@@ -71,7 +71,8 @@ final Command createCharacter = Command('createCharacter', (CommandContext ctx) 
     ..y = m.popY;
   character = await ctx.db.insertObject(character);
   ctx.character = character;
-  ctx.sendCharacter(character);
+  await ctx.sendCharacter();
+  ctx.logger.info('Created character $character.');
 }, authenticationType: AuthenticationTypes.account);
 
 final Command connectCharacter = Command('connectCharacter', (CommandContext ctx) async {
@@ -84,6 +85,6 @@ final Command connectCharacter = Command('connectCharacter', (CommandContext ctx
     return ctx.sendError('That character is not registered to your account.');
   }
   ctx.character = c;
-  ctx.sendCharacter(c);
-  ctx.logger.info('Connected to object ${c.name} (#${c.id}).');
+  await ctx.sendCharacter();
+  ctx.logger.info('Connected to object $c.');
 }, authenticationType: AuthenticationTypes.account);

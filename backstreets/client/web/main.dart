@@ -14,6 +14,7 @@ import 'commands/login.dart';
 import 'form_builder.dart';
 
 import 'hotkeys/menu.dart';
+import 'hotkeys/movement.dart';
 
 import 'keyboard/hotkey.dart';
 import 'keyboard/key_state.dart';
@@ -71,6 +72,7 @@ void main() {
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
+      // Menu hotkeys.
       moveUp,
       moveDown,
       activateSpace,
@@ -78,6 +80,10 @@ void main() {
       activateRightArrow ,
       cancelEscape,
       cancelLeftArrow,
+
+      /// Movement hotkeys.
+      coordinates,
+      mapName,
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
@@ -115,7 +121,9 @@ void main() {
     socket.onClose.listen((CloseEvent e) {
       startButton.innerText = 'Reconnect';
       showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
+      authenticationStage = null;
       setTitle(state: 'Disconnected');
+      commandContext = null;
       mainDiv.hidden = true;
       startDiv.hidden = false;
       startButton.focus();

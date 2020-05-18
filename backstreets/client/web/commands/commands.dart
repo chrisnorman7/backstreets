@@ -4,6 +4,7 @@ library commands;
 import 'command_context.dart';
 import 'general.dart';
 import 'login.dart';
+import 'movement.dart';
 import 'sound.dart';
 
 /// The type for all command functions.
@@ -20,5 +21,8 @@ Map<String, CommandType> commands = <String, CommandType>{
 
   // Login commands:
   'account': account,
-  'character': character,
+  'characterName': characterName,
+  'characterCoordinates': characterCoordinates,
+  'mapName': mapName,
+  'tile': tile,
 };

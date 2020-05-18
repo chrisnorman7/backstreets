@@ -134,4 +134,9 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
     ..values.y = y;
     return await q.insert();
   }
+
+  @override
+  String toString() {
+    return '<Map $name (#$id)>';
+  }
 }

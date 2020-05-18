@@ -66,6 +66,20 @@ class CommandContext{
     characterId = c.id;
   }
 
+  /// Get the map this context's character is on.
+  Future<GameMap> getMap() async {
+    return await db.transaction((ManagedContext t) async {
+      final Query<GameObject> characterQuery = Query<GameObject>(t)
+        ..where((GameObject o) => o.id).equalTo(characterId)
+        ..join(object: (GameObject o) => o.location);
+      final GameObject c = await characterQuery.fetchOne();
+      final Query<GameMap> mapQuery = Query<GameMap>(t)
+        ..where((GameMap m) => m.id).equalTo(c.location.id)
+        ..join(set: (GameMap m) => m.tiles);
+      return await mapQuery.fetchOne();
+    });
+  }
+
   /// Send an arbitrary command to [socket].
   void send(String name, dynamic arguments) {
     final String data = jsonEncode(<dynamic>[name, arguments]);
@@ -118,13 +132,22 @@ class CommandContext{
     send('account', <dynamic>[account.username, objects, maps]);
   }
 
-  Future<void> sendCharacter(GameObject c) async {
-    send('character', <dynamic>[<String, dynamic>{
-      'location': c.location == null ? null : c.location.id,
-      'name': c.name,
-      'x': c.x,
-      'y': c.y,
-      'deaths': c.deaths,
-    }]);
+  Future<void> sendCharacter() async {
+    final GameObject c = await getCharacter();
+    send('characterName', <String>[c.name]);
+    send('characterCoordinates', <double>[c.x, c.y]);
+    logger.info('Sent character name and coordinates.');
+    await sendMap();
+  }
+
+  Future<void> sendMap() async {
+    logger.info('Sending map data.');
+    final GameMap m = await getMap();
+    for (final MapTile t in m.tiles) {
+      send('tile', <String>[t.tileName]);
+    }
+    logger.info('Sent map tiles.');
+    send('mapName', <String>[m.name]);
+    logger.info('Sent map name.');
   }
 }
