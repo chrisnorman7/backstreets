@@ -4,13 +4,12 @@ version: 0.0.1
 author: Chris Norman <chris.norman2@googlemail.com>
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: ">=2.7.2 <3.0.0"
 
 dependencies:
   aqueduct: ^3.3.0+1
   path:
   password:
-  emote_utils:
 
 dev_dependencies:
   test: ^1.0.0
