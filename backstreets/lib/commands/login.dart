@@ -27,7 +27,7 @@ final Command createAccount = Command('createAccount', (CommandContext ctx) asyn
     a = await ctx.db.insertObject(a);
     ctx.logger.info('Created account $username.');
     ctx.account = a;
-    await ctx.sendAccount(a);
+    await ctx.sendAccount();
     ctx.sendInterfaceSound(Sound(loginSound));
   }
   catch(e) {
@@ -44,7 +44,7 @@ final Command login = Command('login', (CommandContext ctx) async {
     ..where((Account a) => a.username).equalTo(username);
   final Account a = await q.fetchOne();
   if (a != null && a.verify(password)) {
-    await ctx.sendAccount(a);
+    await ctx.sendAccount();
     ctx.logger.info('Authenticated as $username.');
     ctx.account = a;
     return ctx.sendInterfaceSound(Sound(loginSound));
