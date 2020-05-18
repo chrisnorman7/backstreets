@@ -27,7 +27,7 @@ class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
   /// The number of times this object has died.
   ///
   /// It is unlikely this property will be used for NPC's, but players love to know their stats.
-  @Column(defaultValue: '0')
+  @Column(defaultValue: '0', nullable: false)
   int deaths;
 }
 
