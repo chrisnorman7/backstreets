@@ -44,9 +44,9 @@ final Command login = Command('login', (CommandContext ctx) async {
     ..where((Account a) => a.username).equalTo(username);
   final Account a = await q.fetchOne();
   if (a != null && a.verify(password)) {
-    await ctx.sendAccount();
     ctx.logger.info('Authenticated as $username.');
     ctx.account = a;
+    await ctx.sendAccount();
     return ctx.sendInterfaceSound(Sound(loginSound));
   }
   ctx.logger.info('Failed to authenticate as $username.');
