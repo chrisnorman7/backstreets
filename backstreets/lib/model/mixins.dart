@@ -21,9 +21,9 @@ mixin CoordinatesMixin {
   /// The x coordinate.
   double x;
 
-  /// The y coordinates.
-
+  /// The y coordinate.
   double y;
+
   Point<double> get coordinates {
     return Point<double>(x, y);
   }
