@@ -160,7 +160,7 @@ class FormBuilder {
         if (cancellable && document.activeElement== cancelButton) {
           destroy();
         } else if (document.activeElement == submitButton) {
-          form.submit();
+          submitButton.click();
         } else {
           return;
         }
