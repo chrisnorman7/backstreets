@@ -1,8 +1,14 @@
+/// Provides utility methods.
+library util;
+
 import 'dart:math';
+
+import 'main.dart';
 
 final Random random = Random();
 
-String headingToString(num angle) {
+/// Convert a theta to a human readable string.
+String headingToString(double angle) {
   const List<String> directions = <String>[
     'east',
     'south-east',
@@ -18,6 +24,7 @@ String headingToString(num angle) {
   return '${angle.toStringAsFixed(0)} degrees ${directions[index]}';
 }
 
+/// Convert a list of items to a properly formatted english list.
 String englishList(
   {
     List<String> items,
@@ -47,15 +54,46 @@ String englishList(
   return string;
 }
 
-int randint(
-  int end,
-  {
-    int start = 0,
-  }
-) {
+/// Generate a random number between start and end inclusive.
+int randInt(int end, {int start = 0}) {
   return random.nextInt(end) + start;
 }
 
+T randomElement<T>(List<T> items) {
+  return items[randInt(items.length)];
+}
+
+/// A shortcut for getting a milliseconds timestamp.
 int timestamp() {
   return DateTime.now().millisecondsSinceEpoch;
+}
+
+/// Turn the player by [amount]..
+void turn(double amount) {
+  commandContext.theta += amount;
+  if (commandContext.theta < 0) {
+    commandContext.theta += 360;
+  } else if (commandContext.theta > 360) {
+    commandContext.theta -= 360;
+  }
+}
+
+/// Directions to snap in.
+enum SnapDirections {
+  /// Snap left.
+  left,
+
+  // Snap right.
+  right,
+}
+
+/// Turn to face the nearest cardinal direction in the given direction.
+void snap(SnapDirections direction) {
+  final double mod = commandContext.theta % 45;
+  if (direction == SnapDirections.left) {
+    commandContext.theta -= mod;
+  } else {
+    commandContext.theta += 45 - mod;
+  }
+  commandContext.message(headingToString(commandContext.theta));
 }

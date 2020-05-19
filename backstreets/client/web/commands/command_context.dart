@@ -42,6 +42,23 @@ class CommandContext {
   /// Send by [characterCoordinates].
   Point<double> coordinates;
 
+  /// The speed of this character.
+  ///
+  /// Set by the [commandSpeed] command.
+  ///
+  /// Used by the w key.
+  int speed;
+
+  /// The time (ini milliseconds) the character last moved.
+  ///
+  /// Set by the w hotkey.
+  int lastMoved;
+
+  /// The heading of the connected character.
+  ///
+  /// Set by [characterTheta].
+  double theta;
+
   /// The name of the map the connected character is on.
   ///
   /// Sent by [mapName].
@@ -50,7 +67,7 @@ class CommandContext {
   /// Every tile on the current map.
   ///
   /// Tiles updated by [tile].
-  Map<Point<double>, String> tiles = <Point<double>, String>{};
+  Map<Point<int>, String> tiles = <Point<int>, String>{};
 
   /// All the tile names. Used so that [tile] doesn't send as much initial data.
   ///

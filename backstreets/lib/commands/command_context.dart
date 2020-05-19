@@ -143,6 +143,8 @@ class CommandContext{
   Future<void> sendCharacter() async {
     final GameObject c = await getCharacter();
     send('characterName', <String>[c.name]);
+    send('characterSpeed', <int>[c.speed]);
+    send('characterTheta', <double>[c.theta]);
     send('characterCoordinates', <double>[c.x, c.y]);
     logger.info('Sent character name and coordinates.');
     await sendMap();

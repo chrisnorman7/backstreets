@@ -19,7 +19,7 @@ Future<void> tile(CommandContext ctx) async {
   final int index = data['index'] as int;
   final double x = data['x'] as double;
   final double y = data['y'] as double;
-  ctx.tiles[Point<double>(x, y)] = ctx.tileNames[index];
+  ctx.tiles[Point<int>(x.toInt(), y.toInt())] = ctx.tileNames[index];
 }
 
 Future<void> tileNames(CommandContext ctx) async {
@@ -45,4 +45,12 @@ Future<void> mapData(CommandContext ctx) async {
   }
   ctx.args[0] = data['name'];
   await mapName(ctx);
+}
+
+Future<void> characterSpeed(CommandContext ctx) async {
+  ctx.speed = ctx.args[0] as int;
+}
+
+Future<void> characterTheta(CommandContext ctx) async {
+  ctx.theta = ctx.args[0] as double;
 }

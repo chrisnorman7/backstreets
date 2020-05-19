@@ -29,6 +29,14 @@ class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
   /// It is unlikely this property will be used for NPC's, but players love to know their stats.
   @Column(defaultValue: '0', nullable: false)
   int deaths;
+
+  /// The direction this object is facing.
+  @Column(defaultValue: '0.0')
+  double theta;
+
+  /// The minimum number of milliseconds between moves.
+  @Column(defaultValue: '400')
+  int speed;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.

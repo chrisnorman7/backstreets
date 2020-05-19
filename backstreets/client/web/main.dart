@@ -84,6 +84,12 @@ void main() {
       /// Movement hotkeys.
       coordinates,
       mapName,
+      facing,
+      forward,
+      left,
+      leftSnap,
+      right,
+      rightSnap,
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
