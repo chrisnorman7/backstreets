@@ -89,8 +89,11 @@ enum SnapDirections {
 
 /// Turn to face the nearest cardinal direction in the given direction.
 void snap(SnapDirections direction) {
-  final double mod = commandContext.theta % 45;
+  double mod = commandContext.theta % 45;
   if (direction == SnapDirections.left) {
+    if (mod == 0) {
+      mod = 45;
+    }
     commandContext.theta -= mod;
   } else {
     commandContext.theta += 45 - mod;
