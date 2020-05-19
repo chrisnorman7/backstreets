@@ -78,6 +78,7 @@ final Command createCharacter = Command('createCharacter', (CommandContext ctx) 
 final Command connectCharacter = Command('connectCharacter', (CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..join(object: (GameObject c) => c.location)
     ..where((GameObject c) => c.id).equalTo(id)
     ..where((GameObject c) => c.account.id).equalTo(ctx.accountId);
   final GameObject c = await q.fetchOne();
@@ -85,6 +86,7 @@ final Command connectCharacter = Command('connectCharacter', (CommandContext ctx
     return ctx.sendError('That character is not registered to your account.');
   }
   ctx.character = c;
+  ctx.map = c.location;
   await ctx.sendCharacter();
   ctx.logger.info('Connected to object $c.');
 }, authenticationType: AuthenticationTypes.account);

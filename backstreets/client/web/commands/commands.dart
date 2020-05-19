@@ -25,4 +25,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'characterCoordinates': characterCoordinates,
   'mapName': mapName,
   'tile': tile,
+  'tileNames': tileNames,
+  'footstepSound': footstepSound,
+  'mapData': mapData,
 };

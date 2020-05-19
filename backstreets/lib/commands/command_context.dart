@@ -6,6 +6,8 @@ import 'dart:io';
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../game/tile.dart';
+
 import '../model/account.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
@@ -33,6 +35,9 @@ class CommandContext{
   /// The id of the [GameObject] that is logged in on [socket], or null.
   int characterId;
 
+  /// The id of the map that this context's player is on.
+  int mapId;
+
   /// The arguments provided to the command.
   List<dynamic> args;
 
@@ -48,7 +53,7 @@ class CommandContext{
 
   /// Set [accountId] to the id of the provided [Account] instance.
   set account(Account a) {
-    accountId = a.id;
+    accountId = a?.id;
   }
 
   /// Get a [GameObject] instance, with an id of [characterId].
@@ -57,27 +62,30 @@ class CommandContext{
       return null;
     }
     final Query<GameObject> q = Query<GameObject>(db)
+      ..join(object: (GameObject c) => c.location)
       ..where((GameObject c) => c.id).equalTo(characterId);
     return await q.fetchOne();
   }
 
   /// Set [characterId] to the id of the provided [GameObject] instance.
   set character(GameObject c) {
-    characterId = c.id;
+    characterId = c?.id;
   }
 
   /// Get the map this context's character is on.
   Future<GameMap> getMap() async {
-    return await db.transaction((ManagedContext t) async {
-      final Query<GameObject> characterQuery = Query<GameObject>(t)
-        ..where((GameObject o) => o.id).equalTo(characterId)
-        ..join(object: (GameObject o) => o.location);
-      final GameObject c = await characterQuery.fetchOne();
-      final Query<GameMap> mapQuery = Query<GameMap>(t)
-        ..where((GameMap m) => m.id).equalTo(c.location.id)
-        ..join(set: (GameMap m) => m.tiles);
-      return await mapQuery.fetchOne();
-    });
+    if (mapId == null) {
+      return null;
+    }
+    final Query<GameMap> mapQuery = Query<GameMap>(db)
+      ..where((GameMap m) => m.id).equalTo(mapId)
+      ..join(set: (GameMap m) => m.tiles);
+    return await mapQuery.fetchOne();
+  }
+
+  /// Set [mapId] to the id of the provided [GameMap].
+  set map(GameMap m) {
+    mapId = m?.id;
   }
 
   /// Send an arbitrary command to [socket].
@@ -141,13 +149,29 @@ class CommandContext{
   }
 
   Future<void> sendMap() async {
+    final int started = DateTime.now().millisecondsSinceEpoch;
     logger.info('Sending map data.');
-    final GameMap m = await getMap();
-    for (final MapTile t in m.tiles) {
-      send('tile', <String>[t.tileName]);
+    final Query<GameMap> mapQuery = Query<GameMap>(db)
+      ..where((GameMap m) => m.id).equalTo(mapId);
+    final GameMap m = await mapQuery.fetchOne();
+    final Map<String, dynamic> mapData = <String, dynamic>{
+      'name': m.name,
+      'convolverUrl': m.convolverUrl,
+      'convolverVolume': m.convolverVolume,
+      'tiles': <Map<String, dynamic>>[]
+    };
+    final Query<MapTile> tilesQuery = Query<MapTile>(db)
+      ..where((MapTile t) => t.location.id).equalTo(mapId);
+    final List<String> tileNames = tiles.keys.toList();
+    for (final MapTile t in await tilesQuery.fetch()) {
+      mapData['tiles'].add(<String, dynamic>{
+        'index': tileNames.indexOf(t.tileName),
+        'x': t.x,
+        'y': t.y
+      });
     }
-    logger.info('Sent map tiles.');
-    send('mapName', <String>[m.name]);
-    logger.info('Sent map name.');
+    send('mapData', <Map<String, dynamic>>[mapData]);
+    final int total = DateTime.now().millisecondsSinceEpoch - started;
+    logger.info('Sent map data in ${(total / 1000).toStringAsFixed(2)} seconds.');
   }
 }

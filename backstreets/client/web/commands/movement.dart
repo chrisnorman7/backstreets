@@ -11,8 +11,38 @@ Future<void> characterCoordinates(CommandContext ctx) async {
 
 Future<void> mapName(CommandContext ctx) async {
   ctx.mapName = ctx.args[0] as String;
-  ctx.message('You are on ${ctx.mapName}.');
+  ctx.message('Loaded ${ctx.mapName} in ${((DateTime.now().millisecondsSinceEpoch - ctx.loadingStarted) / 1000).toStringAsFixed(2)} seconds.');
 }
 
 Future<void> tile(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int index = data['index'] as int;
+  final double x = data['x'] as double;
+  final double y = data['y'] as double;
+  ctx.tiles[Point<double>(x, y)] = ctx.tileNames[index];
+}
+
+Future<void> tileNames(CommandContext ctx) async {
+  for (final dynamic tileName in ctx.args) {
+    ctx.tileNames.add(tileName as String);
+  }
+}
+
+Future<void> footstepSound(CommandContext ctx) async {
+  final String tileName = ctx.args[0] as String;
+  final String url = ctx.args[1] as String;
+  if (!ctx.footstepSounds.containsKey(tileName)) {
+    ctx.footstepSounds[tileName] = <String>[];
+  }
+  ctx.footstepSounds[tileName].add(url);
+}
+
+Future<void> mapData(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  for (final dynamic tileData in data['tiles'] as List<dynamic>) {
+    ctx.args[0] = tileData;
+    await tile(ctx);
+  }
+  ctx.args[0] = data['name'];
+  await mapName(ctx);
 }

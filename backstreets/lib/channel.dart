@@ -11,11 +11,16 @@ import 'commands/builder.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
+
 import 'config.dart';
+
 import 'game/tile.dart';
+
 import 'model/account.dart';
 import 'model/game_map.dart';
 import 'model/game_object.dart';
+
+import 'sound.dart';
 
 /// This type initializes an application.
 ///
@@ -93,6 +98,12 @@ class BackstreetsChannel extends ApplicationChannel {
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext);
       final String motd = motdFile.readAsStringSync();
       ctx.sendMessage(motd);
+      ctx.send('tileNames', tiles.keys.toList());
+      tiles.forEach((String name, Tile t) {
+        for (final Sound sound in t.footstepSounds) {
+          ctx.send('footstepSound', <String>[t.name, sound.url]);
+        }
+      });
       socketLogger.info('Connection established.');
       socket.listen(
         (dynamic payload) async {

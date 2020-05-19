@@ -50,7 +50,20 @@ class CommandContext {
   /// Every tile on the current map.
   ///
   /// Tiles updated by [tile].
-  Map<Point<double>, String> tiles;
+  Map<Point<double>, String> tiles = <Point<double>, String>{};
+
+  /// All the tile names. Used so that [tile] doesn't send as much initial data.
+  ///
+  /// Added to by [movement.tileNames].
+  List<String> tileNames = <String>[];
+
+  /// All the footstep sounds.
+  ///
+  /// Added to by [footstepSound].
+  Map<String, List<String>> footstepSounds = <String, List<String>>{};
+
+  /// The time [mapName] started loading the map.
+  int loadingStarted;
 
   /// Send arbitrary commands to the server.
   void sendCommand(String name, List<dynamic> arguments) {
