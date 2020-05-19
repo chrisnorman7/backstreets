@@ -4,36 +4,20 @@ library hotkeys;
 import 'dart:math';
 
 import '../keyboard/hotkey.dart';
-import '../keyboard/key_state.dart';
 
 import '../main.dart';
 import '../util.dart';
 
-final Hotkey coordinates = Hotkey('c', (KeyState ks) {
-  if (commandContext.mapName != null) {
-    commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.');
-  }
-});
+/// Only fire hotkeys when the map has been loaded.
+bool validMap() => commandContext != null && commandContext.mapName != null;
 
-final Hotkey mapName = Hotkey('v', (KeyState ks) {
-  if (commandContext.mapName != null) {
-    commandContext.message(commandContext.mapName);
-  }
-});
+final Hotkey coordinates = Hotkey('c', () => commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'), runWhen: validMap);
 
-final Hotkey facing = Hotkey('f', (KeyState ks) {
-  if (commandContext.mapName == null) {
-    // Not connected yet.
-    return;
-  }
-  commandContext.message(headingToString(commandContext.theta));
-});
+final Hotkey mapName = Hotkey('v', () => commandContext.message(commandContext.mapName), runWhen: validMap);
 
-final Hotkey forward = Hotkey('w', (KeyState ks) {
-  if (commandContext.mapName == null) {
-    // Not loaded yet.
-    return;
-  }
+final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(commandContext.theta)), runWhen: validMap);
+
+final Hotkey forward = Hotkey('w', () {
   final int now = timestamp();
   if (commandContext.lastMoved == null || (now - commandContext.lastMoved) >= commandContext.speed) {
     commandContext.lastMoved = now;
@@ -46,36 +30,12 @@ final Hotkey forward = Hotkey('w', (KeyState ks) {
     final String url = randomElement(commandContext.footstepSounds[tileName]);
     commandContext.sounds.playSound(url);
   }
-}, oneTime: false);
+}, interval: 50, runWhen: validMap);
 
-final Hotkey left = Hotkey('a', (KeyState ks) {
-  if (commandContext.mapName == null) {
-    // Not connected yet.
-    return;
-  }
-  turn(-1);
-}, oneTime: false);
+final Hotkey left = Hotkey('a', () => turn(-1), interval: 100, runWhen: validMap);
 
-final Hotkey leftSnap = Hotkey('a', (KeyState ks) {
-  if (commandContext.mapName == null) {
-    // Not connected yet.
-    return;
-  }
-  snap(SnapDirections.left);
-}, shift: true);
+final Hotkey leftSnap = Hotkey('a', () => snap(SnapDirections.left), shift: true, runWhen: validMap);
 
-final Hotkey right = Hotkey('d', (KeyState ks) {
-  if (commandContext.mapName == null) {
-    // Not connected yet.
-    return;
-  }
-  turn(1);
-}, oneTime: false);
+final Hotkey right = Hotkey('d', () => turn(1), interval: 50, runWhen: validMap);
 
-final Hotkey rightSnap = Hotkey('d', (KeyState ks) {
-  if (commandContext.mapName == null) {
-    // Not connected yet.
-    return;
-  }
-  snap(SnapDirections.right);
-}, shift: true);
+final Hotkey rightSnap = Hotkey('d', () => snap(SnapDirections.right), shift: true, runWhen: validMap);

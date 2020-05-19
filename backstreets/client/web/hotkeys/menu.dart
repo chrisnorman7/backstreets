@@ -2,37 +2,28 @@
 library menu;
 
 import '../keyboard/hotkey.dart';
-import '../keyboard/key_state.dart';
 
 import '../main.dart';
 
-final Hotkey moveUp = Hotkey('ArrowUp', (KeyState ks) {
-  if (book != null) {
-    book.moveUp();
-  }
-});
+/// Only run a [Hotkey] if we have a valid book.
+bool validBook() => book != null;
 
-final Hotkey moveDown = Hotkey('ArrowDown', (KeyState ks) {
+final Hotkey moveUp = Hotkey('ArrowUp', () {
+  book.moveUp();
+}, runWhen: validBook);
+
+final Hotkey moveDown = Hotkey('ArrowDown', () {
   if (book != null) {
     book.moveDown();
   }
-});
+}, runWhen: validBook);
 
-void activate(KeyState ks) {
-  if (book != null) {
-    book.activate();
-  }
-}
+final Hotkey activateSpace = Hotkey(' ', () => book.activate(), runWhen: validBook);
 
-final Hotkey activateSpace = Hotkey(' ', activate);
-final Hotkey activateEnter = Hotkey('Enter', activate);
-final Hotkey activateRightArrow = Hotkey('ArrowRight', activate);
+final Hotkey activateEnter = Hotkey('Enter', () => book.activate(), runWhen: validBook);
 
-void cancel(KeyState ks) {
-  if (book != null) {
-    book.cancel();
-  }
-}
+final Hotkey activateRightArrow = Hotkey('ArrowRight', () => book.activate(), runWhen: validBook);
 
-final Hotkey cancelEscape = Hotkey('Escape', cancel);
-final Hotkey cancelLeftArrow = Hotkey('ArrowLeft', cancel);
+final Hotkey cancelEscape = Hotkey('Escape', () => book.cancel(), runWhen: validBook);
+
+final Hotkey cancelLeftArrow = Hotkey('ArrowLeft', () => book.cancel(), runWhen: validBook);

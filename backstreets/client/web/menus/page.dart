@@ -59,7 +59,7 @@ class Page {
           book,
           (Book b) {
             b.pop();
-            hk.func(hk.state);
+            hk.func();
           },
           titleFunc: () => '${hk.state}: ${hk.getTitle()}',
         )

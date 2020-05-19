@@ -62,7 +62,7 @@ void showMessage(String text) {
 final Element keyboardArea = querySelector('#keyboardArea');
 
 /// The interface to [Hotkey] processing.
-final Keyboard keyboard = Keyboard((dynamic e) {
+final Keyboard keyboard = Keyboard((dynamic e, StackTrace s) {
   showMessage(e.toString());
   throw e;
 });
