@@ -36,6 +36,7 @@ Future<void> account(CommandContext ctx) async {
         final FormBuilder createForm = FormBuilder(
           'New Character', (Map<String, String> data) {
             book = null;
+            ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
             ctx.message('Creating character...');
             ctx.sendCommand('createCharacter', <String>[data['name']]);
           },
