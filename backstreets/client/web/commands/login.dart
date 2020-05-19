@@ -23,7 +23,7 @@ Future<void> account(CommandContext ctx) async {
       Line(
         book, (Book b) {
           book = null;
-          ctx.message('Please wait.');
+          ctx.message('Loading...');
           ctx.sendCommand('connectCharacter', <int>[id]);
         }, titleString: name
       )
