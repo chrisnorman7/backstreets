@@ -10,7 +10,7 @@ import 'keyboard.dart';
 class Hotkey {
   /// Create a hotkey.
   ///
-  /// ```dart
+  /// ```
   /// final Hotkey hk = Hotkey(
   ///   't', (KeyState ks) => print('Test.'),
   ///   titleString: 'Test hotkeys'

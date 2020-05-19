@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 class KeyState {
   /// Create a instance.
   ///
-  /// ```dart
+  /// ```
   /// final KeyState printKey = KeyState('p', control: true);
   /// final KeyState escapeKey = KeyState('escape');
   /// ```

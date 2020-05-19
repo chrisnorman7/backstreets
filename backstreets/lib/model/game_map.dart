@@ -121,7 +121,7 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
 
   /// Add a tile to this map at the given coordinates.
   ///
-  /// ```dart
+  /// ```
   /// // Add 2 tiles to this map.
   /// await map.addTile(databaseContext, 5, 5, tiles[1]);
   /// await map.addTile(databaseContext, 6, 5, tiles[1]);
