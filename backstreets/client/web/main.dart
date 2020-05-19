@@ -135,7 +135,12 @@ void main() {
       if (commands.containsKey(commandName)) {
         commandContext.args = commandArgs;
         final CommandType command = commands[commandName];
-        await command(commandContext);
+        try {
+          await command(commandContext);
+        }
+        catch (e, s) {
+          commandContext.message('${e.toString()}\n${s.toString()}');
+        }
       } else {
         commandContext.message('Unrecognised command: $commandName.');
       }
