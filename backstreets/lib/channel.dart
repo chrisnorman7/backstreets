@@ -73,10 +73,10 @@ class BackstreetsChannel extends ApplicationChannel {
               m = await db.insertObject(m);
               final MapSection s = MapSection()
                 ..name = 'Untitled Section'
-                ..startX = 0.0
-                ..startY = 0.0
-                ..endX = 200.0
-                ..endY = 200.0
+                ..startX = 0
+                ..startY = 0
+                ..endX = 200
+                ..endY = 200
                 ..tileName = tiles.keys.toList()[0]
                 ..location = m;
               await db.insertObject(s);

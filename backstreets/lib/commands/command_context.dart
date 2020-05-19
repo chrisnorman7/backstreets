@@ -169,7 +169,14 @@ class CommandContext{
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location.id).equalTo(mapId);
     for (final MapSection s in await sectionsQuery.fetch()) {
-      mapData['sections'].add(s.asMap());
+      mapData['sections'].add(<String, dynamic>{
+        'startX': s.startX,
+        'startY': s.startY,
+        'endX': s.endX,
+        'endY': s.endY,
+        'tileName': s.tileName,
+        'name': s.name
+      });
     }
     final Query<MapTile> tilesQuery = Query<MapTile>(db)
       ..where((MapTile t) => t.location.id).equalTo(mapId);

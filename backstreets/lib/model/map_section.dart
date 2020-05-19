@@ -12,16 +12,16 @@ import 'mixins.dart';
 @Table(name: 'map_sections')
 class _MapSection with PrimaryKeyMixin, NameMixin {
   /// The start x coordinate.
-  double startX;
+  int startX;
 
   /// The start y coordinate.
-  double startY;
+  int startY;
 
   /// The end x coordinate.
-  double endX;
+  int endX;
 
   /// The end y coordinate.
-  double endY;
+  int endY;
 
   /// The tile type this section is filled with.
   String tileName;
