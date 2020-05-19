@@ -36,6 +36,6 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
 
   @override
   String toString() {
-    return '<Map $name (#$id)>';
+    return '<Object $name (#$id)>';
   }
 }
