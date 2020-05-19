@@ -61,10 +61,17 @@ class Keyboard {
     if (!keyHeld(state.key)) {
       heldKeys.add(state);
     }
+    bool handled = false;
     for (final Hotkey hk in hotkeys) {
-      if (hk.state == state && hk.isOneTime) {
-        hk.run();
+      if (hk.state == state) {
+        handled = true;
+        if (hk.isOneTime) {
+          hk.run();
+        }
       }
+    }
+    if (!handled) {
+      unhandledKey(state);
     }
     return state;
   }
