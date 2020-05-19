@@ -3,6 +3,8 @@ library movement;
 
 import 'dart:math';
 
+import '../hotkeys/movement.dart';
+
 import '../map_section.dart';
 
 import 'command_context.dart';
@@ -60,7 +62,7 @@ Future<void> mapData(CommandContext ctx) async {
 }
 
 Future<void> characterSpeed(CommandContext ctx) async {
-  ctx.speed = ctx.args[0] as int;
+  forward.interval = ctx.args[0] as int;
 }
 
 Future<void> characterTheta(CommandContext ctx) async {
