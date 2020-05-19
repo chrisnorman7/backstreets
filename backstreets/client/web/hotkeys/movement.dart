@@ -8,7 +8,7 @@ import '../main.dart';
 
 final Hotkey coordinates = Hotkey('c', (KeyState ks) {
   if (commandContext.mapName != null) {
-    commandContext.message('${commandContext.coordinates.x}, ${commandContext.coordinates.y}.');
+    commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.');
   }
 });
 
