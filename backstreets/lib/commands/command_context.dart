@@ -11,6 +11,8 @@ import '../game/tile.dart';
 import '../model/account.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
+import '../model/map_tile.dart';
+
 import '../sound.dart';
 
 import 'commands.dart';
