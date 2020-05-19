@@ -11,11 +11,14 @@ import '../util.dart';
 /// Only fire hotkeys when the map has been loaded.
 bool validMap() => commandContext != null && commandContext.mapName != null;
 
-final Hotkey coordinates = Hotkey('c', () => commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'), runWhen: validMap);
+final Hotkey coordinates = Hotkey(
+  'c', () => commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'),
+  runWhen: validMap, titleString: 'Show coordinates'
+);
 
-final Hotkey mapName = Hotkey('v', () => commandContext.message(commandContext.mapName), runWhen: validMap);
+final Hotkey mapName = Hotkey('v', () => commandContext.message(commandContext.mapName), runWhen: validMap, titleString: 'View your current location');
 
-final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(commandContext.theta)), runWhen: validMap);
+final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(commandContext.theta)), runWhen: validMap, titleString: 'Show which way you are facing');
 
 final Hotkey forward = Hotkey('w', () {
   final int now = timestamp();
@@ -30,12 +33,12 @@ final Hotkey forward = Hotkey('w', () {
     final String url = randomElement(commandContext.footstepSounds[tileName]);
     commandContext.sounds.playSound(url);
   }
-}, interval: 50, runWhen: validMap);
+}, interval: 50, runWhen: validMap, titleString: 'Move forward');
 
-final Hotkey left = Hotkey('a', () => turn(-1), interval: 500, runWhen: validMap);
+final Hotkey left = Hotkey('a', () => turn(-1), interval: 500, runWhen: validMap, titleString: 'Turn left a bit');
 
-final Hotkey leftSnap = Hotkey('a', () => snap(SnapDirections.left), shift: true, runWhen: validMap);
+final Hotkey leftSnap = Hotkey('a', () => snap(SnapDirections.left), shift: true, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction');
 
-final Hotkey right = Hotkey('d', () => turn(1), interval: 500, runWhen: validMap);
+final Hotkey right = Hotkey('d', () => turn(1), interval: 500, runWhen: validMap, titleString: 'Turn right a bit');
 
-final Hotkey rightSnap = Hotkey('d', () => snap(SnapDirections.right), shift: true, runWhen: validMap);
+final Hotkey rightSnap = Hotkey('d', () => snap(SnapDirections.right), shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction');

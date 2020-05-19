@@ -9,7 +9,7 @@ class KeyState {
   /// Create a instance.
   ///
   /// ```
-  /// final KeyState printKey = KeyState('p', control: true);
+  /// final KeyState printKey = KeyState(KeyCode.P, control: true);
   /// final KeyState escapeKey = KeyState('escape');
   /// ```
   const KeyState(

@@ -16,12 +16,14 @@ class Hotkey {
   ///
   /// ```
   /// final Hotkey hk = Hotkey(
-  ///   't', (KeyState ks) => print('Test.'),
+  ///   KeyCode.T', () => print('Test.'),
   ///   titleString: 'Test hotkeys'
   /// );
   /// ```
   ///
-  /// If [interval] is not null, then start a timer which will run every [interval] milliseconds to call [func].
+  /// The function [func] will fire when the hotkey is pressed. It will be called via [run], so that errors are handled appropriately.
+  ///
+  /// If [interval] is not null, then [func] will be called every [interval] milliseconds.
   ///
   /// If [runWhen] is not null, only run [func] when [runWhen] returns true.
   Hotkey(
@@ -33,12 +35,11 @@ class Hotkey {
       bool shift = false,
       bool control = false,
       bool alt = false,
-      int interval,
+      this.interval,
       this.runWhen
     }
   ) {
     state = KeyState(key, shift: shift, alt: alt, control: control);
-    setInterval(interval);
   }
 
   /// The key which must be pressed in order that this hotkey is fired.
@@ -56,35 +57,21 @@ class Hotkey {
   /// The interval between firing [func].
   ///
   /// If this value is null, then this key will only fire once when the key is pressed.
-  int _interval;
+  int interval;
 
   /// A function which determines whether [func] should be called.
   bool Function() runWhen;
 
-  /// The timer that will call [func].
+  /// The timer that will call [func] via [run].
   Timer timer;
 
-  /// Set [_interval].
-  ///
-  /// If [value] is null, call [stopTimer].
-  ///
-  /// If [value] is not null, call [startTimer].
-  void setInterval(int value) {
-    _interval = value;
-    if (value == null) {
-      if (timer != null) {
-        stopTimer();
-      }
-    } else {
-      startTimer();
-    }
-  }
-
+  /// Start the timer to call [run] every [interval] milliseconds.
   void startTimer() {
     if (timer != null) {
       stopTimer();
     }
-    timer = Timer.periodic(Duration(milliseconds: _interval), (Timer t) => run());
+    run();
+    timer = Timer.periodic(Duration(milliseconds: interval), (Timer t) => run());
   }
 
   void stopTimer() {
@@ -107,13 +94,12 @@ class Hotkey {
     }
   }
 
-  /// Returns [true] if [_interval] is true.
-  bool get isOneTime => _interval == null;
-
   /// Returns a [String] representing the title of this hotkey. If [titleString] was not provided, then [titleFunc]() will be returned instead.
   String getTitle() {
     if (titleString == null) {
-      return titleFunc();
+      if (titleFunc != null) {
+        return titleFunc();
+      }
     }
     return titleString;
   }

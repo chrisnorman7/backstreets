@@ -1,6 +1,8 @@
 /// Provides the Keyboard class.
 library keyboard;
 
+import 'dart:html';
+
 import 'hotkey.dart';
 import 'key_state.dart';
 
@@ -60,18 +62,20 @@ class Keyboard {
     final KeyState state = KeyState(key, shift: shift, control: control, alt: alt);
     if (!keyHeld(state.key)) {
       heldKeys.add(state);
-    }
-    bool handled = false;
-    for (final Hotkey hk in hotkeys) {
-      if (hk.state == state) {
-        handled = true;
-        if (hk.isOneTime) {
-          hk.run();
+      bool handled = false;
+      for (final Hotkey hk in hotkeys) {
+        if (hk.state == state) {
+          handled = true;
+          if (hk.interval == null) {
+            hk.run();
+          } else {
+            hk.startTimer();
+          }
         }
       }
-    }
-    if (!handled) {
-      unhandledKey(state);
+      if (!handled && unhandledKey != null) {
+        unhandledKey(state);
+      }
     }
     return state;
   }
@@ -83,6 +87,11 @@ class Keyboard {
   /// ```
   void release(String key) {
     heldKeys.removeWhere((KeyState state) => state.key == key);
+    for (final Hotkey hk in hotkeys) {
+      if (hk.state.key == key && hk.timer != null) {
+        hk.stopTimer();
+      }
+    }
   }
 
   /// Release all held keys.
@@ -103,6 +112,8 @@ class Keyboard {
   /// ```
   void addHotkey(Hotkey hk) {
     hotkeys.add(hk);
+    querySelector('#hotkeys').append(ParagraphElement()
+        ..innerText = '${hk.state}: ${hk.getTitle()}');
   }
 
   /// Remove a hotkey.
