@@ -33,9 +33,9 @@ Future<void> account(CommandContext ctx) async {
   lines.add(
     Line(
       book, (Book b) {
-        book = null;
         final FormBuilder createForm = FormBuilder(
           'New Character', (Map<String, String> data) {
+            book = null;
             ctx.message('Creating character...');
             ctx.sendCommand('createCharacter', <String>[data['name']]);
           },
