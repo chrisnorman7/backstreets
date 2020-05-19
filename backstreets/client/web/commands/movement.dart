@@ -3,6 +3,8 @@ library movement;
 
 import 'dart:math';
 
+import '../map_section.dart';
+
 import 'command_context.dart';
 
 Future<void> characterCoordinates(CommandContext ctx) async {
@@ -39,6 +41,16 @@ Future<void> footstepSound(CommandContext ctx) async {
 
 Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  for (final dynamic sectionData in data['sections'] as List<dynamic>) {
+    ctx.sections.add(MapSection(
+      sectionData['startX'] as int,
+      sectionData['startY'] as int,
+      sectionData['endX'] as int,
+      sectionData['endY'] as int,
+      sectionData['name'] as String,
+      sectionData['tileName'] as String,
+    ));
+  }
   for (final dynamic tileData in data['tiles'] as List<dynamic>) {
     ctx.args[0] = tileData;
     await tile(ctx);

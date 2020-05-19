@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:math';
 
+import '../map_section.dart';
+
 import '../sound/sound.dart';
 
 /// A command context. Will be passed to all commands, instead of using individiaul arguments, which will quickly become unmanageable.
@@ -63,6 +65,9 @@ class CommandContext {
   ///
   /// Sent by [mapName].
   String mapName;
+
+  /// Every section on the current map.
+  List<MapSection> sections = <MapSection>[];
 
   /// Every tile on the current map.
   ///
