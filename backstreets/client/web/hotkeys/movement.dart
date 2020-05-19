@@ -32,10 +32,10 @@ final Hotkey forward = Hotkey('w', () {
   }
 }, interval: 50, runWhen: validMap);
 
-final Hotkey left = Hotkey('a', () => turn(-1), interval: 100, runWhen: validMap);
+final Hotkey left = Hotkey('a', () => turn(-1), interval: 500, runWhen: validMap);
 
 final Hotkey leftSnap = Hotkey('a', () => snap(SnapDirections.left), shift: true, runWhen: validMap);
 
-final Hotkey right = Hotkey('d', () => turn(1), interval: 50, runWhen: validMap);
+final Hotkey right = Hotkey('d', () => turn(1), interval: 500, runWhen: validMap);
 
 final Hotkey rightSnap = Hotkey('d', () => snap(SnapDirections.right), shift: true, runWhen: validMap);
