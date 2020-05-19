@@ -23,6 +23,9 @@ class _MapSection with PrimaryKeyMixin, NameMixin {
   /// The end y coordinate.
   double endY;
 
+  /// The tile type this section is filled with.
+  String tileName;
+
   /// The map this section is part of.
   @Relate(#sections, isRequired: true, onDelete: DeleteRule.cascade)
   GameMap location;

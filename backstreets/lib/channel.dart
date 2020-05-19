@@ -76,7 +76,9 @@ class BackstreetsChannel extends ApplicationChannel {
                 ..startX = 0.0
                 ..startY = 0.0
                 ..endX = 200.0
-                ..endY = 200.0;
+                ..endY = 200.0
+                ..tileName = tiles.keys.toList()[0]
+                ..location = m;
               await db.insertObject(s);
             });
             logger.info('Map created.');

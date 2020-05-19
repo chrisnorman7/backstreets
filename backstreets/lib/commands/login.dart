@@ -71,6 +71,7 @@ final Command createCharacter = Command('createCharacter', (CommandContext ctx) 
     ..y = m.popY;
   character = await ctx.db.insertObject(character);
   ctx.character = character;
+  ctx.map = m;
   await ctx.sendCharacter();
   ctx.logger.info('Created character $character.');
 }, authenticationType: AuthenticationTypes.account);

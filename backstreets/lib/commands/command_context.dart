@@ -11,6 +11,7 @@ import '../game/tile.dart';
 import '../model/account.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
+import '../model/map_section.dart';
 import '../model/map_tile.dart';
 
 import '../sound.dart';
@@ -162,8 +163,14 @@ class CommandContext{
       'name': m.name,
       'convolverUrl': m.convolverUrl,
       'convolverVolume': m.convolverVolume,
+      'sections': <Map<String, dynamic>>[],
       'tiles': <Map<String, dynamic>>[]
     };
+    final Query<MapSection> sectionsQuery = Query<MapSection>(db)
+      ..where((MapSection s) => s.location.id).equalTo(mapId);
+    for (final MapSection s in await sectionsQuery.fetch()) {
+      mapData['sections'].add(s.asMap());
+    }
     final Query<MapTile> tilesQuery = Query<MapTile>(db)
       ..where((MapTile t) => t.location.id).equalTo(mapId);
     final List<String> tileNames = tiles.keys.toList();
