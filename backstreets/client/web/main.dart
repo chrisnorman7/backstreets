@@ -94,13 +94,13 @@ void main() {
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
     if (currentFormBuilder == null) {
-      final KeyState ks = keyboard.press(e.key, shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey);
+      final KeyState ks = keyboard.press(e.key.toLowerCase(), shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey);
       if (keyboard.hotkeys.where((Hotkey hk) => hk.state == ks).isNotEmpty) {
         e.preventDefault();
       }
     }
   });
-  keyboardArea.onKeyUp.listen((KeyboardEvent e) => keyboard.release(e.key));
+  keyboardArea.onKeyUp.listen((KeyboardEvent e) => keyboard.release(e.key.toLowerCase()));
   final Element startDiv = querySelector('#startDiv');
   final Element startButton = querySelector('#startButton');
   final Element mainDiv = querySelector('#main');
