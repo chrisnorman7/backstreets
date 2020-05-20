@@ -1,4 +1,7 @@
-Make shift+s turn you around.
-Look into the possibility of using Directory.watch for file discovery in realtime.
-Sort out sound for "You can't go that way".
-Implement permissions in preparation for the building system.
+Todo:
+  Look into the possibility of using Directory.watch for file discovery in realtime.
+  Implement permissions in preparation for the building system.
+
+Done:
+  Make shift+s turn you around.
+  Sort out sound for "You can't go that way".
