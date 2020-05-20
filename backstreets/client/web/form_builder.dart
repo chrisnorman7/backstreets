@@ -184,8 +184,8 @@ class FormBuilder {
     keyListener.cancel();
     keyboardArea.hidden = false;
     currentFormBuilder = null;
-    if (book != null) {
-      book.showFocus();
+    if (commandContext.book != null) {
+      commandContext.book.showFocus();
     }
     keyboardArea.focus();
     form.remove();

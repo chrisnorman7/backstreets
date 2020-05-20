@@ -13,6 +13,7 @@ import 'commands/login.dart';
 
 import 'form_builder.dart';
 
+import 'hotkeys/general.dart';
 import 'hotkeys/menu.dart';
 import 'hotkeys/movement.dart';
 
@@ -32,9 +33,6 @@ FormBuilder currentFormBuilder;
 
 /// Where to put new [FormBuilder]s, when calling [FormBuilder.render].
 final Element formBuilderDiv = querySelector('#formBuilderDiv');
-
-/// A book for menus.
-Book book;
 
 /// The context to call commands with.
 CommandContext commandContext;
@@ -72,6 +70,11 @@ void main() {
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
+      // General hotkeys.
+      previousMessage,
+      nextMessage,
+      messages,
+
       // Menu hotkeys.
       moveUp,
       moveDown,
@@ -118,12 +121,12 @@ void main() {
     socket.onOpen.listen((Event e) {
       authenticationStage = AuthenticationStages.anonymous;
       keyboardArea.focus();
-      book = Book(sounds, showMessage);
-      book.push(mainMenu());
       commandContext = CommandContext(socket, (String message) {
         commandContext.messages.add(message);
         showMessage(message);
       }, sounds);
+      commandContext.book = Book(sounds, showMessage)
+        ..push(mainMenu());
       setTitle(state: 'Connected');
     });
     socket.onClose.listen((CloseEvent e) {

@@ -7,6 +7,8 @@ import 'dart:math';
 
 import '../map_section.dart';
 
+import '../menus/book.dart';
+
 import '../sound/sound.dart';
 
 /// A command context. Will be passed to all commands, instead of using individiaul arguments, which will quickly become unmanageable.
@@ -28,6 +30,12 @@ class CommandContext {
 
   /// Every message that is sent from the server.
   List<String> messages = <String>[];
+
+  /// A book for menus.
+  Book book;
+
+  /// The current position in the messages list.
+  int messageIndex;
 
   /// The username of the account we are connected to.
   ///

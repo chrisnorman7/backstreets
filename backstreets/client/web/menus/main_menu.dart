@@ -15,9 +15,9 @@ Page mainMenu() {
     titleString: 'Main Menu',
     lines: <Line>[
       Line(
-        book, (Book b) {
+        commandContext.book, (Book b) {
           final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) {
-            book = null;
+            commandContext.book = null;
             commandContext.message('Logging in...');
             commandContext.sendCommand('login', <String>[data['username'], data['password']]);
           },
@@ -29,10 +29,10 @@ Page mainMenu() {
         titleString: 'Login'
       ),
       Line(
-        book, (Book b) {
+        commandContext.book, (Book b) {
           final FormBuilder createForm = FormBuilder(
             'Create Account', (Map<String, String> data) {
-              book = null;
+              commandContext.book = null;
               commandContext.message('Creating account...');
               commandContext.sendCommand('createAccount', <dynamic>[data['username'], data['password']]);
             }, submitLabel: 'Create Account'
@@ -47,7 +47,7 @@ Page mainMenu() {
         }, titleString: 'Create Account',
       ),
       Line(
-        book, (Book b) => commandContext.sendCommand('serverTime', <dynamic>[]),
+        commandContext.book, (Book b) => commandContext.sendCommand('serverTime', <dynamic>[]),
         titleString: 'Show Server Time'
       )
     ], dismissible: false

@@ -18,8 +18,8 @@ Future<void> error(CommandContext ctx) async {
   final String msg = ctx.args[0] as String;
   if (authenticationStage == AuthenticationStages.anonymous) {
     // Probably a login failure.
-    book = Book(ctx.sounds, ctx.message);
-    book.push(mainMenu());
+    commandContext.book = Book(ctx.sounds, showMessage)
+      ..push(mainMenu());
   } else if (authenticationStage == AuthenticationStages.account) {
     // A problem creating or connecting to a player.
     ctx.args = <dynamic>[ctx.username, characterList];

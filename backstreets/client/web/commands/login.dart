@@ -12,7 +12,7 @@ import 'command_context.dart';
 
 Future<void> account(CommandContext ctx) async {
   authenticationStage = AuthenticationStages.account;
-  book = Book(ctx.sounds, ctx.message);
+  commandContext.book = Book(ctx.sounds, showMessage);
   final List<Line> lines = <Line>[];
   characterList = ctx.args[1] as List<dynamic>;
   for (final dynamic characterData in characterList) {
@@ -21,8 +21,8 @@ Future<void> account(CommandContext ctx) async {
     final String name = data['name'] as String;
     lines.add(
       Line(
-        book, (Book b) {
-          book = null;
+        commandContext.book, (Book b) {
+          commandContext.book = null;
           ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
           ctx.message('Loading...');
           ctx.sendCommand('connectCharacter', <int>[id]);
@@ -32,10 +32,10 @@ Future<void> account(CommandContext ctx) async {
   }
   lines.add(
     Line(
-      book, (Book b) {
+      commandContext.book, (Book b) {
         final FormBuilder createForm = FormBuilder(
           'New Character', (Map<String, String> data) {
-            book = null;
+            commandContext.book = null;
             ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
             ctx.message('Creating character...');
             ctx.sendCommand('createCharacter', <String>[data['name']]);
@@ -50,7 +50,7 @@ Future<void> account(CommandContext ctx) async {
     )
   );
   ctx.username = ctx.args[0] as String;
-  book.push(
+  commandContext.book.push(
     Page(
       titleString: 'Character Selection',
       lines: lines,
