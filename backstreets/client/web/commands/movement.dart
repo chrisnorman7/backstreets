@@ -5,6 +5,8 @@ import 'dart:math';
 
 import '../hotkeys/movement.dart';
 
+import '../keyboard/hotkey.dart';
+
 import '../map_section.dart';
 
 import 'command_context.dart';
@@ -62,7 +64,9 @@ Future<void> mapData(CommandContext ctx) async {
 }
 
 Future<void> characterSpeed(CommandContext ctx) async {
-  forward.interval = ctx.args[0] as int;
+  for (final Hotkey hk in <Hotkey>[walkForwards, walkBackwards]) {
+    hk.interval = ctx.args[0] as int;
+  }
 }
 
 Future<void> characterTheta(CommandContext ctx) async {

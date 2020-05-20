@@ -4,6 +4,7 @@ library util;
 import 'dart:math';
 
 import 'main.dart';
+import 'map_section.dart';
 
 final Random random = Random();
 
@@ -99,4 +100,27 @@ void snap(SnapDirections direction) {
     commandContext.theta += 45 - mod;
   }
   commandContext.message(headingToString(commandContext.theta));
+}
+
+void move(double amount) {
+  double x = commandContext.coordinates.x;
+  double y = commandContext.coordinates.y;
+  x += amount * cos((commandContext.theta * pi) / 180);
+  y += amount * sin((commandContext.theta * pi) / 180);
+  final Point<int> tileCoordinates = Point<int>(x.toInt(), y.toInt());
+  String tileName = commandContext.tiles[tileCoordinates];
+  if (tileName == null) {
+    for (final MapSection s in commandContext.sections) {
+      if (s.rect.containsPoint(tileCoordinates)) {
+        tileName = s.tileName;
+        break;
+      }
+    }
+  }
+  if (tileName == null) {
+    return commandContext.message('You cannot go that way.');
+  }
+  final String url = randomElement(commandContext.footstepSounds[tileName]);
+  commandContext.sounds.playSound(url);
+  commandContext.coordinates = Point<double>(x, y);
 }

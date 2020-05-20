@@ -85,11 +85,13 @@ void main() {
       coordinates,
       mapName,
       facing,
-      forward,
+      walkForwards,
+      walkBackwards,
       left,
       leftSnap,
       right,
       rightSnap,
+      aboutFace,
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
