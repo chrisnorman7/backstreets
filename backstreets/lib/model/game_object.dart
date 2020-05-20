@@ -3,6 +3,10 @@ library game_object;
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../commands/command_context.dart';
+
+import '../socials.dart';
+
 import 'account.dart';
 import 'connection_record.dart';
 import 'game_map.dart';
@@ -41,9 +45,36 @@ class _GameObject with PrimaryKeyMixin, CoordinatesMixin, NameMixin {
 
 /// An object in a game. Contained by a [GameMap] instance.
 class GameObject extends ManagedObject<_GameObject> implements _GameObject {
-
   @override
   String toString() {
     return '<Object $name (#$id)>';
+  }
+
+  /// Send a message to the socket which this object is connected to.
+  void message(String text) {
+    for (final CommandContext ctx in CommandContext.instances) {
+      if (ctx.characterId == id) {
+        return ctx.sendMessage(text);
+      }
+    }
+  }
+
+  /// Have this object perform a social.
+  Future<void> doSocial(
+    ManagedContext db, String social, {
+      List<GameObject> perspectives,
+      List<GameObject> observers
+    }
+  ) async {
+    perspectives ??= <GameObject>[this];
+    if (observers == null) {
+      final Query<GameObject> q = Query<GameObject>(db)
+        ..where((GameObject o) => o.location.id).equalTo(location.id);
+      observers = await q.fetch();
+    }
+    socials.getStrings(social, perspectives).dispatch(
+      observers,
+      (GameObject obj, String message) => obj.message(message)
+    );
   }
 }

@@ -23,6 +23,9 @@ class CommandContext{
   /// Pass this object to a command in the [commands] dictionary.
   CommandContext(this.socket, this.logger, this.db);
 
+  /// All instances.
+  static List<CommandContext> instances = <CommandContext>[];
+
   /// The [WebSocket] that called this command.
   final WebSocket socket;
 
@@ -143,6 +146,7 @@ class CommandContext{
     send('account', <dynamic>[account.username, objects, maps]);
   }
 
+  /// Tell the connected player about the connected character.
   Future<void> sendCharacter() async {
     final GameObject c = await getCharacter();
     send('characterName', <String>[c.name]);
@@ -151,8 +155,10 @@ class CommandContext{
     send('characterCoordinates', <double>[c.x, c.y]);
     logger.info('Sent character name and coordinates.');
     await sendMap();
+    await c.doSocial(db, '%1N has connected.');
   }
 
+  /// Tell the connected player about the map they are on.
   Future<void> sendMap() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
     logger.info('Sending map data.');

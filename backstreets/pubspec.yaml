@@ -10,6 +10,7 @@ dependencies:
   aqueduct: ^3.3.0+1
   path:
   password:
+  emote_utils:
 
 dev_dependencies:
   test: ^1.0.0

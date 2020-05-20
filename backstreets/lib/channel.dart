@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:aqueduct/aqueduct.dart';
+import 'package:emote_utils/emote_utils.dart';
 import 'package:path/path.dart' as path;
 
 import 'commands/builder.dart';
@@ -21,6 +22,7 @@ import 'model/game_map.dart';
 import 'model/game_object.dart';
 import 'model/map_section.dart';
 
+import 'socials.dart';
 import 'sound.dart';
 
 /// This type initializes an application.
@@ -31,9 +33,6 @@ class BackstreetsChannel extends ApplicationChannel {
   /// Enables communication to and from the database.
   ManagedContext databaseContext;
 
-  /// All websockets connected to this isolate.
-  List<WebSocket> webSockets;
-
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -43,7 +42,6 @@ class BackstreetsChannel extends ApplicationChannel {
   @override
   Future<void> prepare() async {
     bool mapBuilt = false;
-    webSockets = <WebSocket>[];
     final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
     final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final PostgreSQLPersistentStore psc = PostgreSQLPersistentStore.fromConnectionInfo(
@@ -92,6 +90,11 @@ class BackstreetsChannel extends ApplicationChannel {
         }
       }
     });
+    messageHub.listen((dynamic e) => print(e));
+    socials.addSuffix(
+      <String>['name', 'n'],
+      (GameObject o) => SuffixResult('you', o.name)
+    );
   }
 
   /// Construct the request channel.
@@ -107,10 +110,10 @@ class BackstreetsChannel extends ApplicationChannel {
     // Setup the websocket first.
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
-      webSockets.add(socket);
       final File motdFile = File('motd.txt');
       final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext);
+      CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
       ctx.sendMessage(motd);
       ctx.send('tileNames', tiles.keys.toList());
@@ -173,7 +176,7 @@ class BackstreetsChannel extends ApplicationChannel {
         },
         onError: (dynamic error) => logger.warning(error),
         onDone: () {
-          webSockets.remove(socket);
+          CommandContext.instances.remove(ctx);
           socketLogger.info('Websocket closed.');
         }
       );
