@@ -92,7 +92,7 @@ class CommandContext{
   }
 
   /// Send an arbitrary command to [socket].
-  void send(String name, dynamic arguments) {
+  void send(String name, List<dynamic> arguments) {
     final String data = jsonEncode(<dynamic>[name, arguments]);
     socket.add(data);
   }
