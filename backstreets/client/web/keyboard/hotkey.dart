@@ -64,16 +64,24 @@ class Hotkey {
 
   /// The timer that will call [func] via [run].
   Timer timer;
+  
+  /// The time this hotkey was last run.
+  int lastRun;
 
   /// Start the timer to call [run] every [interval] milliseconds.
   void startTimer() {
     if (timer != null) {
       stopTimer();
     }
-    run();
+    final int now = DateTime.now().millisecondsSinceEpoch;
+    if (lastRun == null || (now - lastRun) > interval) {
+      lastRun = now;
+      run();
+    }
     timer = Timer.periodic(Duration(milliseconds: interval), (Timer t) => run());
   }
 
+  /// Stop [timer].
   void stopTimer() {
     timer.cancel();
     timer = null;
