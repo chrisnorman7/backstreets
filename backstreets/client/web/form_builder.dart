@@ -94,6 +94,9 @@ class FormBuilder {
   ) {
     element ??= TextInputElement();
     element.value = value;
+    if (element is TextInputElement) {
+      element.select();
+    }
     validator ??= (String name, Map<String, String> values, String value) => null;
     elements.add(FormBuilderElement(name, label, element, validator));
     return elements.last;
