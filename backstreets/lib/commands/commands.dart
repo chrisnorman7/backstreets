@@ -27,6 +27,7 @@ List<Command> commandsList = <Command>[
 
   // Movement commands.
   characterCoordinates,
+  characterTheta,
 ];
 
 Map<String, Command> commands = <String, Command>{};

@@ -100,4 +100,9 @@ class CommandContext {
     final List<dynamic> data = <dynamic>[name, arguments];
     socket.send(jsonEncode(data));
   }
+
+  /// Send the character's heading back to the server.
+  void sendTheta() {
+    send('characterTheta', <double>[theta]);
+  }
 }

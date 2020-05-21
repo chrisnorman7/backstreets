@@ -28,8 +28,21 @@ final Command characterCoordinates = Command('characterCoordinates', (CommandCon
       ..values.x = x
       ..values.y = x
       ..where((GameObject o) => o.id).equalTo(c.id);
-    await q.update();
+    await q.updateOne();
   } else {
     ctx.send('characterCoordinates', <double>[c.x, c.y]);
   }
+});
+
+final Command characterTheta = Command('characterTheta', (CommandContext ctx) async {
+  double theta;
+  if (ctx.args[0] is int) {
+    theta = (ctx.args[0] as int).toDouble();
+  } else {
+    theta = ctx.args[0] as double;
+  }
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.theta = theta
+    ..where((GameObject o) => o.id).equalTo(ctx.characterId);
+  await q.updateOne();
 });

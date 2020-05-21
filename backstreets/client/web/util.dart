@@ -77,6 +77,7 @@ void turn(double amount) {
   } else if (commandContext.theta > 360) {
     commandContext.theta -= 360;
   }
+  commandContext.sendTheta();
 }
 
 /// Directions to snap in.
@@ -99,6 +100,7 @@ void snap(SnapDirections direction) {
   } else {
     commandContext.theta += 45 - mod;
   }
+  commandContext.sendTheta();
   commandContext.message(headingToString(commandContext.theta));
 }
 
