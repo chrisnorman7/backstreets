@@ -117,15 +117,17 @@ void move(int multiplier) {
     return commandContext.message('You cannot go that way.');
   }
   final Point<double> coordinates = Point<double>(x, y);
-  String action, name;
-  if (oldSection.rect.containsPoint(coordinates)) {
-    action = 'Leaving';
-    name = oldSection.name;
-  } else {
-    action = 'Entering';
-    name = newSection.name;
+  if (newSection != newSection) {
+    String action, name;
+    if (oldSection.rect.containsPoint(coordinates)) {
+      action = 'Leaving';
+      name = oldSection.name;
+    } else {
+      action = 'Entering';
+      name = newSection.name;
+    }
+    commandContext.message('$action $name.');
   }
-  commandContext.message('$action $name.');
   String tileName = commandContext.tiles[tileCoordinates];
   tileName ??= newSection.tileName;
   commandContext.send('characterCoordinates', <double>[x, y]);
