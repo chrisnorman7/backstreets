@@ -18,9 +18,9 @@ final Hotkey mapName = Hotkey('v', () => commandContext.message(commandContext.m
 
 final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(commandContext.theta)), runWhen: validMap, titleString: 'Show which way you are facing');
 
-final Hotkey walkForwards = Hotkey('w', () => move(0.1), interval: 50, runWhen: validMap, titleString: 'Move forward');
+final Hotkey walkForwards = Hotkey('w', () => move(1), interval: 50, runWhen: validMap, titleString: 'Move forward');
 
-final Hotkey walkBackwards = Hotkey('s', () => move(-0.1), shift: true, interval: 50);
+final Hotkey walkBackwards = Hotkey('s', () => move(-1), shift: true, interval: 50);
 
 final Hotkey left = Hotkey('a', () => turn(-1), interval: 500, runWhen: validMap, titleString: 'Turn left a bit');
 

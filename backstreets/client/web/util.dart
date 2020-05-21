@@ -102,7 +102,8 @@ void snap(SnapDirections direction) {
   commandContext.message(headingToString(commandContext.theta));
 }
 
-void move(double amount) {
+void move(int multiplier) {
+  final double amount = 0.1 * multiplier;
   double x = commandContext.coordinates.x;
   double y = commandContext.coordinates.y;
   x += amount * cos((commandContext.theta * pi) / 180);
