@@ -66,3 +66,7 @@ Future<void> characterName(CommandContext ctx) async {
   ctx.characterName = ctx.args[0] as String;
   setTitle(state: ctx.characterName);
 }
+
+Future<void> admin(CommandContext ctx) async {
+  ctx.admin = ctx.args[0] as bool;
+}

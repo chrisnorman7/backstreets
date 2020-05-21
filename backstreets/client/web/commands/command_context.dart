@@ -95,6 +95,9 @@ class CommandContext {
   /// The time [mapName] started loading the map.
   int loadingStarted;
 
+  /// The admin flag of the connected character.
+  bool admin;
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].

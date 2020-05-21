@@ -152,6 +152,7 @@ class CommandContext{
     send('characterTheta', <double>[c.theta]);
     send('characterCoordinates', <double>[c.x, c.y]);
     logger.info('Sent character details.');
+    send('admin', <bool>[c.admin]);
     await sendMap();
     await c.doSocial(db, '%1N has connected.');
   }

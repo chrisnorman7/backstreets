@@ -30,4 +30,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'tileNames': tileNames,
   'footstepSound': footstepSound,
   'mapData': mapData,
+  'admin': admin,
 };

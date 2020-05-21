@@ -63,7 +63,10 @@ final Command createCharacter = Command('createCharacter', (CommandContext ctx) 
   }
   final Query<GameMap> mapQuery = Query<GameMap>(ctx.db);
   final GameMap m = await mapQuery.fetchOne();
+  final Query<GameObject> adminQuery = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.admin).equalTo(false);
   GameObject character = GameObject()
+    ..admin = await adminQuery.reduce.count() == 0
     ..name = name
     .. account = await ctx.getAccount()
     ..location = m
