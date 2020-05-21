@@ -89,10 +89,11 @@ class FormBuilder {
   /// Add an element to this builder.
   FormBuilderElement addElement(
     String name, {
-      InputElementBase element, String label, ValidatorType validator
+      InputElementBase element, String label, ValidatorType validator, String value = ''
     }
   ) {
     element ??= TextInputElement();
+    element.value = value;
     validator ??= (String name, Map<String, String> values, String value) => null;
     elements.add(FormBuilderElement(name, label, element, validator));
     return elements.last;
