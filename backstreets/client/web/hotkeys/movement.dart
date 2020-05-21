@@ -4,6 +4,7 @@ library hotkeys;
 import '../keyboard/hotkey.dart';
 
 import '../main.dart';
+import '../map_section.dart';
 import '../util.dart';
 
 /// Only fire hotkeys when the map has been loaded.
@@ -14,7 +15,14 @@ final Hotkey coordinates = Hotkey(
   runWhen: validMap, titleString: 'Show coordinates'
 );
 
-final Hotkey mapName = Hotkey('v', () => commandContext.message(commandContext.mapName), runWhen: validMap, titleString: 'View your current location');
+final Hotkey mapName = Hotkey('v', () {
+  String result = commandContext.mapName;
+  final MapSection s = commandContext.getCurrentSection();
+  if (s != null) {
+    result += ': ${s.name}';
+  }
+  commandContext.message('$result.');
+}, runWhen: validMap, titleString: 'View your current location');
 
 final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(commandContext.theta)), runWhen: validMap, titleString: 'Show which way you are facing');
 

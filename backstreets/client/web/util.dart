@@ -111,18 +111,25 @@ void move(int multiplier) {
   x += amount * cos((commandContext.theta * pi) / 180);
   y += amount * sin((commandContext.theta * pi) / 180);
   final Point<int> tileCoordinates = Point<int>(x.floor(), y.floor());
-  String tileName = commandContext.tiles[tileCoordinates];
-  if (tileName == null) {
-    final MapSection s = commandContext.getCurrentSection(tileCoordinates);
-    if (s != null) {
-      tileName = s.tileName;
-    }
-  }
-  if (tileName == null) {
+  final MapSection oldSection = commandContext.getCurrentSection();
+  final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
+  if (newSection == null) {
     return commandContext.message('You cannot go that way.');
   }
+  final Point<double> coordinates = Point<double>(x, y);
+  String action, name;
+  if (oldSection.rect.containsPoint(coordinates)) {
+    action = 'Leaving';
+    name = oldSection.name;
+  } else {
+    action = 'Entering';
+    name = newSection.name;
+  }
+  commandContext.message('$action $name.');
+  String tileName = commandContext.tiles[tileCoordinates];
+  tileName ??= newSection.tileName;
   commandContext.send('characterCoordinates', <double>[x, y]);
   final String url = randomElement(commandContext.footstepSounds[tileName]);
   commandContext.sounds.playSound(url);
-  commandContext.coordinates = Point<double>(x, y);
+  commandContext.coordinates = coordinates;
 }
