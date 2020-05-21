@@ -123,11 +123,11 @@ class CommandContext{
   /// Tell the player about their account.
   Future<void> sendAccount() async {
     final List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
-    final Query<Account> accountQuery = Query<Account>(db)
-      ..join(set: (Account a) => a.objects)
-      ..where((Account a) => a.id).equalTo(accountId);
-    final Account account = await accountQuery.fetchOne();
-    for (final GameObject obj in account.objects) {
+    final Account account = await getAccount();
+    final Query<GameObject> charactersQuery = Query<GameObject>(db)
+      ..where((GameObject o) => o.account).identifiedBy(accountId)
+      ..sortBy((GameObject o) => o.createdAt, QuerySortOrder.ascending);
+    for (final GameObject obj in await charactersQuery.fetch()) {
       objects.add(<String, dynamic>{
         'id': obj.id,
         'name': obj.name,

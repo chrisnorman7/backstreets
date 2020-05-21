@@ -46,6 +46,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin {
   @Column(defaultValue: 'false')
   bool admin;
 
+  /// When this object was first created.
+  @Column(defaultValue: "'2020-01-01'")
+  DateTime createdAt;
+
   /// The social which is used when this object connects to the game.
   @Column(defaultValue: "'%1N %1has connected.'")
   String connectSocial;
@@ -84,5 +88,10 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       observers,
       (GameObject obj, String message) => obj.message(message)
     );
+  }
+
+  @override
+  void willInsert() {
+    createdAt = DateTime.now().toUtc();
   }
 }
