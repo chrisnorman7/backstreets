@@ -26,3 +26,12 @@ final Command renameSection = Command('renameSection', (CommandContext ctx) asyn
   ctx.send('renameSection', <dynamic>[s.id, s.name]);
   ctx.sendMessage('Section renamed.');
 }, authenticationType: AuthenticationTypes.admin);
+
+final Command sectionTileName = Command('sectionTileName', (CommandContext ctx) async {
+  final Query<MapSection> q = Query<MapSection>(ctx.db)
+    ..values.tileName = ctx.args[1] as String
+    ..where((MapSection s) => s.id).equalTo(ctx.args[0] as int);
+  final MapSection s = await q.updateOne();
+  ctx.send('sectionTileName', <dynamic>[s.id, s.tileName]);
+  ctx.sendMessage('Default tile updated.');
+}, authenticationType: AuthenticationTypes.admin);

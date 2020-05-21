@@ -77,3 +77,9 @@ Future<void> renameSection(CommandContext ctx) async {
   final String name = ctx.args[1] as String;
   ctx.sections[id].name = name;
 }
+
+Future<void> sectionTileName(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final String tileName = ctx.args[1] as String;
+  ctx.sections[id].tileName = tileName;
+}
