@@ -10,20 +10,24 @@
 library commands;
 
 import 'builder.dart';
+import 'building.dart';
 import 'command.dart';
 import 'general.dart';
 import 'login.dart';
 import 'movement.dart';
 
 List<Command> commandsList = <Command>[
+  // Building commands.
+  renameMap,
+
+  // General commands.
+  serverTime,
+
   // Login commands.
   login,
   createAccount,
   createCharacter,
   connectCharacter,
-
-  // General command.
-  serverTime,
 
   // Movement commands.
   characterCoordinates,

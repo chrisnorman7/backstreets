@@ -159,6 +159,9 @@ class BackstreetsChannel extends ApplicationChannel {
               // When checking AuthenticationTypes.authenticated, check to see if they have no player.
               } else if (command.authenticationType == AuthenticationTypes.authenticated && character == null) {
                 throw 'Attempting to call an authenticated command without being connected to a player.';
+              // When checking AuthenticationTypes.admin, check to see if they have no player, or their player's admin field isn't true.
+              } else if (command.authenticationType == AuthenticationTypes.admin && character?.admin != true) {
+                throw 'Attempting to call an admin command without being an administrator.';
               }
               ctx.args = arguments;
               await command.func(ctx);

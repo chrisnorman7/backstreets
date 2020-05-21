@@ -13,6 +13,7 @@ import 'commands/login.dart';
 
 import 'form_builder.dart';
 
+import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
 import 'hotkeys/menu.dart';
 import 'hotkeys/movement.dart';
@@ -70,6 +71,9 @@ void main() {
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
+      // Building hotkeys.
+      builderMenu,
+
       // General hotkeys.
       previousMessage,
       nextMessage,
