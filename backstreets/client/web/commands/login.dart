@@ -25,7 +25,7 @@ Future<void> account(CommandContext ctx) async {
           commandContext.book = null;
           ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
           ctx.message('Loading...');
-          ctx.sendCommand('connectCharacter', <int>[id]);
+          ctx.send('connectCharacter', <int>[id]);
         }, titleString: name
       )
     );
@@ -38,7 +38,7 @@ Future<void> account(CommandContext ctx) async {
             commandContext.book = null;
             ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
             ctx.message('Creating character...');
-            ctx.sendCommand('createCharacter', <String>[data['name']]);
+            ctx.send('createCharacter', <String>[data['name']]);
           },
           subTitle: 'Enter the name for your new character',
           submitLabel: 'Create Character',

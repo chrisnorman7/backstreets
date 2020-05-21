@@ -96,7 +96,7 @@ class CommandContext {
   int loadingStarted;
 
   /// Send arbitrary commands to the server.
-  void sendCommand(String name, List<dynamic> arguments) {
+  void send(String name, List<dynamic> arguments) {
     final List<dynamic> data = <dynamic>[name, arguments];
     socket.send(jsonEncode(data));
   }

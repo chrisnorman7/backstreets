@@ -54,6 +54,32 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
 ///
 /// Maps contain sections, tiles, walls, and objects.
 class GameMap extends ManagedObject<_GameMap> implements _GameMap {
+  /// Returns [true] if the passed coordinates are valid for this Map.
+  ///
+  /// Valid coordinates means either there is a [MapSection] encompassing the coordinates, or there is a [MapTile] there.
+  Future<bool> validCoordinates(ManagedContext db, double x, double y) async {
+    final int a = x.toInt();
+    final int b = y.toInt();
+    final bool result = await db.transaction((ManagedContext t) async {
+      final Query<MapSection> sectionQuery = Query<MapSection>(t)
+        ..where((MapSection s) => s.startX).lessThanEqualTo(a)
+        ..where((MapSection s) => s.startY).lessThanEqualTo(b)
+        ..where((MapSection s) => s.endX).greaterThanEqualTo(a)
+        ..where((MapSection s) => s.endY).greaterThanEqualTo(b);
+      if (await sectionQuery.reduce.count() > 0) {
+        return true;
+      }
+      final Query<MapTile> tileQuery = Query<MapTile>(t)
+        ..where((MapTile t) => t.x).equalTo(x)
+        ..where((MapTile t) => t.y).equalTo(y);
+      if (await tileQuery.reduce.count() > 0) {
+        return true;
+      }
+      return false;
+    });
+    return result;
+  }
+
   @override
   String toString() {
     return '<Map $name (#$id)>';

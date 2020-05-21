@@ -120,6 +120,7 @@ void move(double amount) {
   if (tileName == null) {
     return commandContext.message('You cannot go that way.');
   }
+  commandContext.send('characterCoordinates', <double>[x, y]);
   final String url = randomElement(commandContext.footstepSounds[tileName]);
   commandContext.sounds.playSound(url);
   commandContext.coordinates = Point<double>(x, y);

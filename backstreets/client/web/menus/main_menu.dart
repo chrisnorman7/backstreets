@@ -19,7 +19,7 @@ Page mainMenu() {
           final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) {
             commandContext.book = null;
             commandContext.message('Logging in...');
-            commandContext.sendCommand('login', <String>[data['username'], data['password']]);
+            commandContext.send('login', <String>[data['username'], data['password']]);
           },
           subTitle: 'Log into your account', submitLabel: 'Login');
           loginForm.addElement('username', validator: notEmptyValidator);
@@ -34,7 +34,7 @@ Page mainMenu() {
             'Create Account', (Map<String, String> data) {
               commandContext.book = null;
               commandContext.message('Creating account...');
-              commandContext.sendCommand('createAccount', <dynamic>[data['username'], data['password']]);
+              commandContext.send('createAccount', <dynamic>[data['username'], data['password']]);
             }, submitLabel: 'Create Account'
           );
           createForm.addElement('username', validator: notEmptyValidator);
@@ -47,7 +47,7 @@ Page mainMenu() {
         }, titleString: 'Create Account',
       ),
       Line(
-        commandContext.book, (Book b) => commandContext.sendCommand('serverTime', <dynamic>[]),
+        commandContext.book, (Book b) => commandContext.send('serverTime', <dynamic>[]),
         titleString: 'Show Server Time'
       )
     ], dismissible: false

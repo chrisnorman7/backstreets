@@ -13,13 +13,20 @@ import 'builder.dart';
 import 'command.dart';
 import 'general.dart';
 import 'login.dart';
+import 'movement.dart';
 
 List<Command> commandsList = <Command>[
+  // Login commands.
   login,
   createAccount,
   createCharacter,
   connectCharacter,
-  serverTime
+
+  // General command.
+  serverTime,
+
+  // Movement commands.
+  characterCoordinates,
 ];
 
 Map<String, Command> commands = <String, Command>{};

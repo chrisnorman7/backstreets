@@ -68,7 +68,6 @@ class CommandContext{
       return null;
     }
     final Query<GameObject> q = Query<GameObject>(db)
-      ..join(object: (GameObject c) => c.location)
       ..where((GameObject c) => c.id).equalTo(characterId);
     return await q.fetchOne();
   }
@@ -84,8 +83,7 @@ class CommandContext{
       return null;
     }
     final Query<GameMap> mapQuery = Query<GameMap>(db)
-      ..where((GameMap m) => m.id).equalTo(mapId)
-      ..join(set: (GameMap m) => m.tiles);
+      ..where((GameMap m) => m.id).equalTo(mapId);
     return await mapQuery.fetchOne();
   }
 
