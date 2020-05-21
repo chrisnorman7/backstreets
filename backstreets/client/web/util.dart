@@ -113,11 +113,9 @@ void move(int multiplier) {
   final Point<int> tileCoordinates = Point<int>(x.toInt(), y.toInt());
   String tileName = commandContext.tiles[tileCoordinates];
   if (tileName == null) {
-    for (final MapSection s in commandContext.sections) {
-      if (s.rect.containsPoint(tileCoordinates)) {
-        tileName = s.tileName;
-        break;
-      }
+    final MapSection s = commandContext.getCurrentSection(tileCoordinates);
+    if (s != null) {
+      tileName = s.tileName;
     }
   }
   if (tileName == null) {

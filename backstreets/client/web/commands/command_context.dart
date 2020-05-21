@@ -95,6 +95,19 @@ class CommandContext {
   /// The time [mapName] started loading the map.
   int loadingStarted;
 
+  /// Get the section spanned by the provided coordinates.
+  ///
+  /// If no coordinates are provided, use [coordinates].
+  MapSection getCurrentSection([Point<int> c]) {
+    c ??= Point<int>(coordinates.x.toInt(), coordinates.y.toInt());
+    for (final MapSection s in sections) {
+      if (s.rect.containsPoint(c)) {
+        return s;
+      }
+    }
+    return null;
+  }
+
   /// Send arbitrary commands to the server.
   void send(String name, List<dynamic> arguments) {
     final List<dynamic> data = <dynamic>[name, arguments];
