@@ -15,10 +15,7 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   ctx.coordinates = Point<double>(ctx.args[0] as double, ctx.args[1] as double);
 }
 
-Future<void> mapName(CommandContext ctx) async {
-  ctx.mapName = ctx.args[0] as String;
-  ctx.message('Loaded ${ctx.mapName} in ${((DateTime.now().millisecondsSinceEpoch - ctx.loadingStarted) / 1000).toStringAsFixed(2)} seconds.');
-}
+Future<void> mapName(CommandContext ctx) async => ctx.mapName = ctx.args[0] as String;
 
 Future<void> tile(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;

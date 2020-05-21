@@ -23,7 +23,6 @@ Future<void> account(CommandContext ctx) async {
       Line(
         commandContext.book, (Book b) {
           commandContext.book = null;
-          ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
           ctx.message('Loading...');
           ctx.send('connectCharacter', <int>[id]);
         }, titleString: name
@@ -36,7 +35,6 @@ Future<void> account(CommandContext ctx) async {
         final FormBuilder createForm = FormBuilder(
           'New Character', (Map<String, String> data) {
             commandContext.book = null;
-            ctx.loadingStarted = DateTime.now().millisecondsSinceEpoch;
             ctx.message('Creating character...');
             ctx.send('createCharacter', <String>[data['name']]);
           },
