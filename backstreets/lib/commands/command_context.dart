@@ -153,7 +153,7 @@ class CommandContext{
     send('characterSpeed', <int>[c.speed]);
     send('characterTheta', <double>[c.theta]);
     send('characterCoordinates', <double>[c.x, c.y]);
-    logger.info('Sent character name and coordinates.');
+    logger.info('Sent character details.');
     await sendMap();
     await c.doSocial(db, '%1N has connected.');
   }
