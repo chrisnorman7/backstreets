@@ -35,3 +35,17 @@ final Command sectionTileName = Command('sectionTileName', (CommandContext ctx) 
   ctx.send('sectionTileName', <dynamic>[s.id, s.tileName]);
   ctx.sendMessage('Default tile updated.');
 }, authenticationType: AuthenticationTypes.admin);
+
+final Command addMapSection = Command('addMapSection', (CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final Query<MapSection> q = Query<MapSection>(ctx.db)
+    ..values.tileName = data['tileName'] as String
+    ..values.name = data['name'] as String
+    ..values.startX = data['startX'] as int
+    ..values.startY = data['startY'] as int
+    ..values.endX = data['endX'] as int
+    ..values.endY = data['endY'] as int
+    ..values.location.id = ctx.mapId;
+  final MapSection s = await q.insert();
+  ctx.sendMapSection(s);
+}, authenticationType: AuthenticationTypes.admin);

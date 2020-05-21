@@ -43,16 +43,8 @@ Future<void> footstepSound(CommandContext ctx) async {
 Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
-    final int id = sectionData['id'] as int;
-    ctx.sections[id] = MapSection(
-      id,
-      sectionData['startX'] as int,
-      sectionData['startY'] as int,
-      sectionData['endX'] as int,
-      sectionData['endY'] as int,
-      sectionData['name'] as String,
-      sectionData['tileName'] as String,
-    );
+    ctx.args[0] = sectionData as Map<String, dynamic>;
+    await mapSection(ctx);
   }
   for (final dynamic tileData in data['tiles'] as List<dynamic>) {
     ctx.args[0] = tileData;
@@ -82,4 +74,18 @@ Future<void> sectionTileName(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final String tileName = ctx.args[1] as String;
   ctx.sections[id].tileName = tileName;
+}
+
+Future<void> mapSection(CommandContext ctx) async {
+  final Map<String, dynamic> sectionData = ctx.args[0] as Map<String, dynamic>;
+  final int id = sectionData['id'] as int;
+  ctx.sections[id] = MapSection(
+    id,
+    sectionData['startX'] as int,
+    sectionData['startY'] as int,
+    sectionData['endX'] as int,
+    sectionData['endY'] as int,
+    sectionData['name'] as String,
+    sectionData['tileName'] as String,
+  );
 }

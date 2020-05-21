@@ -95,6 +95,9 @@ class CommandContext {
   /// The admin flag of the connected character.
   bool admin;
 
+  /// The section which is in the process of being created.
+  CreatedMapSection section;
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].

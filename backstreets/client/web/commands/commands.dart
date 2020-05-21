@@ -35,4 +35,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'admin': admin,
   'renameSection': renameSection,
   'sectionTileName': sectionTileName,
+  'mapSection': mapSection,
 };

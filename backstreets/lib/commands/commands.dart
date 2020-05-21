@@ -21,6 +21,7 @@ List<Command> commandsList = <Command>[
   renameMap,
   renameSection,
   sectionTileName,
+  addMapSection,
 
   // General commands.
   serverTime,

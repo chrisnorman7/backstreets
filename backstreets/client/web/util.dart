@@ -104,6 +104,10 @@ void snap(SnapDirections direction) {
   commandContext.message(headingToString(commandContext.theta));
 }
 
+String getFootstepSound(String tileName) {
+  return randomElement(commandContext.footstepSounds[tileName]);
+}
+
 void move(int multiplier) {
   final double amount = 0.1 * multiplier;
   double x = commandContext.coordinates.x;
@@ -131,7 +135,7 @@ void move(int multiplier) {
   String tileName = commandContext.tiles[tileCoordinates];
   tileName ??= newSection.tileName;
   commandContext.send('characterCoordinates', <double>[x, y]);
-  final String url = randomElement(commandContext.footstepSounds[tileName]);
+  final String url = getFootstepSound(tileName);
   commandContext.sounds.playSound(url);
   commandContext.coordinates = coordinates;
 }

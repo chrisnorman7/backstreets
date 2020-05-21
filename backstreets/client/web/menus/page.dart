@@ -3,6 +3,11 @@ library page;
 
 import '../keyboard/hotkey.dart';
 import '../keyboard/keyboard.dart';
+
+import '../main.dart';
+
+import '../util.dart';
+
 import 'book.dart';
 import 'line.dart';
 
@@ -22,10 +27,8 @@ class Page {
   );
 
   /// Create a page that can be used for confirmations.
-  Page confirmPage(
-    Book book,
-    BookFunctionType okFunc,
-    {
+  static Page confirmPage(
+    Book book, BookFunctionType okFunc, {
       String title = 'Are you sure?',
       String okTitle = 'OK',
       String cancelTitle = 'Cancel',
@@ -51,7 +54,7 @@ class Page {
   }
 
   /// Creates a page which lists all [Hotkey] instances, bound to a [Keyboard] instance.
-  Page hotkeysPage(Keyboard keyboard, Book book) {
+  static Page hotkeysPage(Keyboard keyboard, Book book) {
     final List<Line> lines = <Line>[];
     for (final Hotkey hk in keyboard.hotkeys) {
       lines.add(
@@ -71,24 +74,41 @@ class Page {
     );
   }
 
+  /// Create a page for selecting a tile name.
+  static Page selectTilePage(
+    Book book, String Function() getTileName, void Function(String) setTileName, {String title = 'Tiles'}
+  ) {
+    final List<Line> lines = <Line>[];
+    for (final String name in commandContext.tileNames) {
+      lines.add(
+        Line(
+          book, (Book b) => setTileName(name),
+          titleString: '${name == getTileName() ? "* " : ""}$name',
+          soundUrl: () => getFootstepSound(name)
+        )
+      );
+    }
+    return Page(playDefaultSounds: false, titleString: title, lines: lines);
+  }
+
   /// If true, then any [Line] instances contained by this page will not be silent, even if their [Line.soundUrl] attributes are null.
   bool playDefaultSounds;
-  
+
   /// If true, then [Book.cancel] will dismiss this page.
   final bool dismissible;
-  
+
   /// The current position in this page's list of [Line] instances.
   int focus = -1;
-  
+
   /// The lines contained by this page.
   final List<Line> lines;
-  
+
   /// The title of this page as a string.
   String titleString;
-  
+
   /// A function which when called, will return the title of this page.
   TitleFunctionType titleFunc;
-  
+
   /// Get the title of this page as a string. If [titleString] is null, then [titleFunc] will be called. Otherwise, [titleString] will be returned.
   String getTitle() {
     if (titleString == null) {

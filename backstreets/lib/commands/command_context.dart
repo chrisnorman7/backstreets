@@ -174,15 +174,7 @@ class CommandContext{
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location).identifiedBy(mapId);
     for (final MapSection s in await sectionsQuery.fetch()) {
-      mapData['sections'].add(<String, dynamic>{
-        'id': s.id,
-        'startX': s.startX,
-        'startY': s.startY,
-        'endX': s.endX,
-        'endY': s.endY,
-        'tileName': s.tileName,
-        'name': s.name
-      });
+      mapData['sections'].add(s.asMap());
     }
     final Query<MapTile> tilesQuery = Query<MapTile>(db)
       ..where((MapTile t) => t.location.id).equalTo(mapId);
@@ -197,5 +189,9 @@ class CommandContext{
     send('mapData', <Map<String, dynamic>>[mapData]);
     final int total = DateTime.now().millisecondsSinceEpoch - started;
     logger.info('Sent map data in ${(total / 1000).toStringAsFixed(2)} seconds.');
+  }
+  
+  void sendMapSection(MapSection s) {
+    send('mapSection', <Map<String, dynamic>>[s.asMap()]);
   }
 }

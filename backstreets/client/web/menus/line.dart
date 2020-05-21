@@ -31,7 +31,10 @@ class Line {
   String titleString;
 
   /// A function which when called should return the title of this line. Useful in circumstances where the title might change. On a configuration page for example.
-  TitleFunctionType titleFunc, soundUrl;
+  TitleFunctionType titleFunc;
+  
+  /// A function which should return the URL of the sound to play when this line is selected.
+  TitleFunctionType soundUrl;
 
   /// Returns the title of this item as a string.
   ///
