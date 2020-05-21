@@ -43,15 +43,16 @@ Future<void> footstepSound(CommandContext ctx) async {
 Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
-    ctx.sections.add(MapSection(
-      sectionData['id'] as int,
+    final int id = sectionData['id'] as int;
+    ctx.sections[id] = MapSection(
+      id,
       sectionData['startX'] as int,
       sectionData['startY'] as int,
       sectionData['endX'] as int,
       sectionData['endY'] as int,
       sectionData['name'] as String,
       sectionData['tileName'] as String,
-    ));
+    );
   }
   for (final dynamic tileData in data['tiles'] as List<dynamic>) {
     ctx.args[0] = tileData;
@@ -69,4 +70,10 @@ Future<void> characterSpeed(CommandContext ctx) async {
 
 Future<void> characterTheta(CommandContext ctx) async {
   ctx.theta = ctx.args[0] as double;
+}
+
+Future<void> renameSection(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  ctx.sections[id].name = name;
 }

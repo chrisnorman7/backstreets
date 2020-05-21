@@ -75,7 +75,7 @@ class CommandContext {
   String mapName;
 
   /// Every section on the current map.
-  List<MapSection> sections = <MapSection>[];
+  Map<int, MapSection> sections = <int, MapSection>{};
 
   /// Every tile on the current map.
   ///
@@ -100,7 +100,7 @@ class CommandContext {
   /// If no coordinates are provided, use [coordinates].
   MapSection getCurrentSection([Point<int> c]) {
     c ??= Point<int>(coordinates.x.toInt(), coordinates.y.toInt());
-    for (final MapSection s in sections) {
+    for (final MapSection s in sections.values) {
       if (s.rect.containsPoint(c)) {
         return s;
       }

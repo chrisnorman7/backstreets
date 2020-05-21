@@ -19,6 +19,7 @@ import 'movement.dart';
 List<Command> commandsList = <Command>[
   // Building commands.
   renameMap,
+  renameSection,
 
   // General commands.
   serverTime,

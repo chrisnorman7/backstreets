@@ -24,6 +24,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   // Login commands:
   'account': account,
   'characterName': characterName,
+
+  // Movement commands:
   'characterCoordinates': characterCoordinates,
   'mapName': mapName,
   'tile': tile,
@@ -31,4 +33,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'footstepSound': footstepSound,
   'mapData': mapData,
   'admin': admin,
+  'renameSection': renameSection,
 };

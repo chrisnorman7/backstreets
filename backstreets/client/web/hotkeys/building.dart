@@ -6,6 +6,7 @@ import '../form_builder.dart';
 import '../keyboard/hotkey.dart';
 
 import '../main.dart';
+import '../map_section.dart';
 
 import '../menus/book.dart';
 import '../menus/line.dart';
@@ -30,6 +31,28 @@ final Hotkey builderMenu = Hotkey('b', () {
         }, value: commandContext.mapName);
         fb.render();
       }, titleString: 'Rename Map'),
+      Line(commandContext.book, (Book b) {
+        b.push(Page(
+          titleString: 'Edit Section', lines: <Line>[
+            Line(b, (Book b) {
+              final FormBuilder fb = FormBuilder('Rename Section', (Map<String, String> data) {
+                b.pop();
+                final MapSection s = commandContext.getCurrentSection();
+                if (s == null) {
+                  return commandContext.message('There is no section at your current coordinates.');
+                  }
+                  commandContext.send('renameSection', <dynamic>[s.id, data['name']]);
+              });
+              fb.addElement(
+                'name', label: 'Section Name',
+                validator: notSameAsValidator(() => commandContext.getCurrentSection().name, onSuccess: notEmptyValidator),
+                value: commandContext.getCurrentSection().name
+              );
+              fb.render();
+            }, titleString: 'Rename'),
+          ],
+        ));
+      }, titleString: 'Current Section'),
     ], titleString: 'Building'
   );
   commandContext.book.push(page);
