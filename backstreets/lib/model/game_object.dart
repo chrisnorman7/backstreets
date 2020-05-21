@@ -47,7 +47,7 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin {
   bool admin;
 
   /// The social which is used when this object connects to the game.
-  @Column(defaultValue: '%1N %1has connected.')
+  @Column(defaultValue: "'%1N %1has connected.'")
   String connectSocial;
 }
 
