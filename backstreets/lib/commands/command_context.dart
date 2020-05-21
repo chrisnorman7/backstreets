@@ -154,7 +154,7 @@ class CommandContext{
     logger.info('Sent character details.');
     send('admin', <bool>[c.admin]);
     await sendMap();
-    await c.doSocial(db, '%1N has connected.');
+    await c.doSocial(db, '%1N %1has connected.');
   }
 
   /// Tell the connected player about the map they are on.
