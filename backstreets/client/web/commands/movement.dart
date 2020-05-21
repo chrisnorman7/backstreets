@@ -44,6 +44,7 @@ Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
     ctx.sections.add(MapSection(
+      sectionData['id'] as int,
       sectionData['startX'] as int,
       sectionData['startY'] as int,
       sectionData['endX'] as int,

@@ -172,9 +172,10 @@ class CommandContext{
       'tiles': <Map<String, dynamic>>[]
     };
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
-      ..where((MapSection s) => s.location.id).equalTo(mapId);
+      ..where((MapSection s) => s.location).identifiedBy(mapId);
     for (final MapSection s in await sectionsQuery.fetch()) {
       mapData['sections'].add(<String, dynamic>{
+        'id': s.id,
         'startX': s.startX,
         'startY': s.startY,
         'endX': s.endX,

@@ -7,9 +7,12 @@ import 'dart:math';
 ///
 /// Basically rectangles, with a name, and a tile type.
 class MapSection {
-  MapSection(int startX, int startY, int endX, int endY, this.name, this.tileName) {
+  MapSection(this.id, int startX, int startY, int endX, int endY, this.name, this.tileName) {
     rect = Rectangle<int>.fromPoints(Point<int>(startX, startY), Point<int>(endX, endY));
   }
+
+  /// The id of this section.
+  int id;
 
   /// The bounding coordinates.
   Rectangle<int> rect;
