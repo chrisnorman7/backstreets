@@ -17,6 +17,24 @@ String notEmptyValidator(String name, Map<String, String> values, String value) 
   return null;
 }
 
+/// A validator which will return [message] if value is the same as [getValue]().
+ValidatorType notSameAsValidator(
+  String Function() getValue, {
+    String message = 'Values must not match.',
+    ValidatorType onSuccess
+  }
+) {
+  return (String name, Map<String, String> values, String value) {
+    if (value == getValue()) {
+      return message;
+    } else if (onSuccess == null) {
+      return null;
+    } else {
+      return onSuccess(name, values, value);
+    }
+  };
+}
+
 /// An element within a [FormBuilder] instance.
 class FormBuilderElement {
   FormBuilderElement(this.name, this.label, this.element, this.validator);
