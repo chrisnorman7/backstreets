@@ -41,6 +41,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin {
   /// The minimum number of milliseconds between moves.
   @Column(defaultValue: '400')
   int speed;
+
+  /// Whether or not this object is an admin.
+  @Column(defaultValue: 'false')
+  bool admin;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
