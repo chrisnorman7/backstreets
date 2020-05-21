@@ -45,6 +45,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin {
   /// Whether or not this object is an admin.
   @Column(defaultValue: 'false')
   bool admin;
+
+  /// The social which is used when this object connects to the game.
+  @Column(defaultValue: '%1N %1has connected.')
+  String connectSocial;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
