@@ -18,7 +18,7 @@ enum WallTypes {
 ///
 /// To work with walls directly, use the [MapWall] class.
 @Table(name: 'map_walls')
-class _MapWall with PrimaryKeyMixin, CoordinatesMixin {
+class _MapWall with PrimaryKeyMixin, IntCoordinatesMixin {
   WallTypes wallType;
 
   /// The map this wall is part of.

@@ -12,7 +12,7 @@ import 'mixins.dart';
 ///
 /// If you want to work with tiles directly, use [MapTile] instead.
 @Table(name: 'map_tiles')
-class _MapTile with PrimaryKeyMixin, CoordinatesMixin {
+class _MapTile with PrimaryKeyMixin, IntCoordinatesMixin {
   /// The name of the [Tile] instance.
   String tileName;
 

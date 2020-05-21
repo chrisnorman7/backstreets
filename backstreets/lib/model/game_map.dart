@@ -42,12 +42,12 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
   double convolverVolume;
 
   /// The x coordinate where players should pop.
-  @Column(defaultValue: '0.0')
-  double popX = 0;
+  @Column(defaultValue: '0')
+  int popX = 0;
 
   /// The y coordinate where players should pop.
-  @Column(defaultValue: '0.0')
-  double popY = 0;
+  @Column(defaultValue: '0')
+  int popY = 0;
 }
 
 /// A map.
@@ -57,15 +57,13 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   /// Returns [true] if the passed coordinates are valid for this Map.
   ///
   /// Valid coordinates means either there is a [MapSection] encompassing the coordinates, or there is a [MapTile] there.
-  Future<bool> validCoordinates(ManagedContext db, double x, double y) async {
-    final int a = x.toInt();
-    final int b = y.toInt();
+  Future<bool> validCoordinates(ManagedContext db, int x, int y) async {
     final bool result = await db.transaction((ManagedContext t) async {
       final Query<MapSection> sectionQuery = Query<MapSection>(t)
-        ..where((MapSection s) => s.startX).lessThanEqualTo(a)
-        ..where((MapSection s) => s.startY).lessThanEqualTo(b)
-        ..where((MapSection s) => s.endX).greaterThanEqualTo(a)
-        ..where((MapSection s) => s.endY).greaterThanEqualTo(b);
+        ..where((MapSection s) => s.startX).lessThanEqualTo(x)
+        ..where((MapSection s) => s.startY).lessThanEqualTo(y)
+        ..where((MapSection s) => s.endX).greaterThanEqualTo(x)
+        ..where((MapSection s) => s.endY).greaterThanEqualTo(y);
       if (await sectionQuery.reduce.count() > 0) {
         return true;
       }

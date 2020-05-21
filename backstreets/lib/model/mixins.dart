@@ -5,8 +5,6 @@
 /// * [NameMixin]
 library mixins;
 
-import 'dart:math';
-
 import 'package:aqueduct/aqueduct.dart';
 
 /// Adds a primary key to any object.
@@ -16,21 +14,24 @@ mixin PrimaryKeyMixin {
   int id;
 }
 
-/// Ad coordinates to any object.
-mixin CoordinatesMixin {
+/// Add a name to any object.
+mixin NameMixin {
+  /// The name of this object.
+  String name;
+}
+
+mixin IntCoordinatesMixin {
+  /// The x coordinate.
+  int x;
+
+  /// The y coordinate.
+  int y;
+}
+
+mixin DoubleCoordinatesMixin {
   /// The x coordinate.
   double x;
 
   /// The y coordinate.
   double y;
-
-  Point<double> get coordinates {
-    return Point<double>(x, y);
-  }
-}
-
-/// Add a name to any object.
-mixin NameMixin {
-  /// The name of this object.
-  String name;
 }

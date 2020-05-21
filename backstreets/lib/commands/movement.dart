@@ -23,7 +23,7 @@ final Command characterCoordinates = Command('characterCoordinates', (CommandCon
   }
   final GameMap m = await ctx.getMap();
   final GameObject c = await ctx.getCharacter();
-  if (await m.validCoordinates(ctx.db, x, y)) {
+  if (await m.validCoordinates(ctx.db, x.floor(), y.floor())) {
     final Query<GameObject> q = Query<GameObject>(ctx.db)
       ..values.x = x
       ..values.y = x

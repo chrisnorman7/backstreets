@@ -8,7 +8,7 @@ import 'mixins.dart';
 
 /// The exits table. To deal with exits directly, use the [Exit] class instead.
 @Table(name: 'exits')
-class _Exit with PrimaryKeyMixin, NameMixin, CoordinatesMixin {
+class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin {
   @Relate(#exits)
   GameMap location;
 

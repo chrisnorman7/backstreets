@@ -110,7 +110,7 @@ void move(int multiplier) {
   double y = commandContext.coordinates.y;
   x += amount * cos((commandContext.theta * pi) / 180);
   y += amount * sin((commandContext.theta * pi) / 180);
-  final Point<int> tileCoordinates = Point<int>(x.toInt(), y.toInt());
+  final Point<int> tileCoordinates = Point<int>(x.floor(), y.floor());
   String tileName = commandContext.tiles[tileCoordinates];
   if (tileName == null) {
     final MapSection s = commandContext.getCurrentSection(tileCoordinates);
