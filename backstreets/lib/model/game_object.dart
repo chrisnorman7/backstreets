@@ -70,11 +70,11 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       List<GameObject> observers
     }
   ) async {
-    perspectives ??= <GameObject>[this];
     if (observers == null) {
       final Query<GameObject> q = Query<GameObject>(db)
         ..where((GameObject o) => o.location.id).equalTo(location.id);
       observers = await q.fetch();
+      perspectives ??= observers.where((GameObject o) => o.id == id).toList();
     }
     socials.getStrings(social, perspectives).dispatch(
       observers,
