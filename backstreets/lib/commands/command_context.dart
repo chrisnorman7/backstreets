@@ -168,7 +168,7 @@ class CommandContext{
       'name': m.name,
       'convolverUrl': m.convolverUrl,
       'convolverVolume': m.convolverVolume,
-      'ambience': ambiences[m.ambience],
+      'ambience': ambiences[m.ambience].url,
       'sections': <Map<String, dynamic>>[],
       'tiles': <Map<String, dynamic>>[]
     };
@@ -191,8 +191,14 @@ class CommandContext{
     final int total = DateTime.now().millisecondsSinceEpoch - started;
     logger.info('Sent map data in ${(total / 1000).toStringAsFixed(2)} seconds.');
   }
-  
+
   void sendMapSection(MapSection s) {
     send('mapSection', <Map<String, dynamic>>[s.asMap()]);
+  }
+
+  void sendAmbiences() {
+    final Map<String, String> a = <String, String>{};
+    ambiences.forEach((String name, Sound sound) => a[name] = sound.url);
+    send('ambiences', <Map<String, String>>[a]);
   }
 }

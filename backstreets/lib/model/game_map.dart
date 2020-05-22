@@ -86,4 +86,13 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   String toString() {
     return '<Map $name (#$id)>';
   }
+
+  /// Broadcast a command to any objects who are connected to players.
+  Future<void> broadcastCommand(ManagedContext db, String name, List<dynamic> args) async {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..where((GameObject o) => o.location).identifiedBy(id);
+    for (final GameObject obj in await q.fetch()) {
+      obj.commandContext?.send(name, args);
+    }
+  }
 }

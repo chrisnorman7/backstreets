@@ -27,3 +27,9 @@ Future<void> sound(CommandContext ctx) async {
     ..connectNode(panner);
   ctx.sounds.playSound(url, output: gain);
 }
+
+
+Future<void> ambiences(CommandContext ctx) async {
+  final Map<dynamic, dynamic> data = ctx.args[0] as Map<dynamic, dynamic>;
+  data.forEach((dynamic name, dynamic url) => ctx.ambiences[name as String] = url as String);
+}

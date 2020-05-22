@@ -6,6 +6,8 @@ import 'package:aqueduct/aqueduct.dart';
 import '../model/game_map.dart';
 import '../model/map_section.dart';
 
+import '../sound.dart';
+
 import 'command.dart';
 import 'command_context.dart';
 
@@ -48,4 +50,17 @@ final Command addMapSection = Command('addMapSection', (CommandContext ctx) asyn
     ..values.location.id = ctx.mapId;
   final MapSection s = await q.insert();
   ctx.sendMapSection(s);
+}, authenticationType: AuthenticationTypes.admin);
+
+final Command ambience = Command('ambience', (CommandContext ctx) async {
+  final String ambience = ctx.args[0] as String;
+  if (ambiences.containsKey(ambience)) {
+    final Query<GameMap> q = Query<GameMap>(ctx.db)
+      ..values.ambience = ambience
+      ..where((GameMap m) => m.id).equalTo(ctx.mapId);
+    final GameMap m = await q.updateOne();
+    await m.broadcastCommand(ctx.db, 'mapAmbience', <String>[ambiences[ambience].url]);
+  } else {
+    ctx.sendError('Invalid ambience "$ambience".');
+  }
 }, authenticationType: AuthenticationTypes.admin);

@@ -80,6 +80,9 @@ class CommandContext {
   /// The ambience to play.
   Sound ambience;
 
+  /// All possible ambiences.
+  Map<String, String> ambiences = <String, String>{};
+
   /// Every section on the current map.
   Map<int, MapSection> sections = <int, MapSection>{};
 

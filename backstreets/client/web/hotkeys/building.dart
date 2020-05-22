@@ -137,18 +137,39 @@ final Hotkey builderMenu = Hotkey('b', () {
           ],
         ));
       }, titleString: 'Current Section Menu'),
-      Line(commandContext.book, (Book b) {
-        commandContext.book = null;
-        FormBuilder(
-          'Rename Map', (Map<String, String> data) => commandContext.send('renameMap', <String>[data['name']]),
-          subTitle: 'Enter the new name for this map.'
-        )
-          ..addElement(
-            'name', label: 'Map Name',
-            validator: notSameAsValidator(() => commandContext.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
-            value: commandContext.mapName)
-          ..render();
-      }, titleString: 'Rename Map'),
+      Line (commandContext.book, (Book b) {
+        b.push(
+          Page(
+            titleString: 'Map', lines: <Line>[
+              Line(b, (Book b) {
+                final List<Line> lines = <Line>[];
+                commandContext.ambiences.forEach((String name, String url) {
+                  lines.add(
+                    Line(b, (Book b) {
+                      commandContext.send('ambience', <String>[name]);
+                      b.pop();
+                    }, titleString: name,
+                    soundUrl: () => url)
+                  );
+                });
+                b.push(Page(titleString: 'Ambiences', lines: lines));
+              }, titleFunc: () => 'Ambience (${commandContext.ambienceUrl})'),
+              Line(b, (Book b) {
+                commandContext.book = null;
+                FormBuilder(
+                  'Rename Map', (Map<String, String> data) => commandContext.send('renameMap', <String>[data['name']]),
+                  subTitle: 'Enter the new name for this map.'
+                )
+                  ..addElement(
+                    'name', label: 'Map Name',
+                    validator: notSameAsValidator(() => commandContext.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
+                    value: commandContext.mapName)
+                  ..render();
+              }, titleString: 'Rename Map'),
+            ]
+          )
+        );
+      }, titleString: 'Map Menu'),
     ], titleString: 'Building'
   );
   commandContext.book.push(page);

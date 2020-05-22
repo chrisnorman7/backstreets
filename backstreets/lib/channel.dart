@@ -135,6 +135,7 @@ class BackstreetsChannel extends ApplicationChannel {
           ctx.send('footstepSound', <String>[t.name, sound.url]);
         }
       });
+      ctx.sendAmbiences();
       socketLogger.info('Connection established.');
       socket.listen(
         (dynamic payload) async {

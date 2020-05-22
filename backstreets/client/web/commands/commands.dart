@@ -15,14 +15,14 @@ Map<String, CommandType> commands = <String, CommandType>{
   // General commands:
   'message': message,
   'error': error,
-  'characterSpeed': characterSpeed,
-  'characterTheta': characterTheta,
 
   // Sound commands:
   'interfaceSound': interfaceSound,
   'sound': sound,
+  'ambiences': ambiences,
 
   // Login commands:
+  'admin': admin,
   'account': account,
   'characterName': characterName,
 
@@ -33,7 +33,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   'tileNames': tileNames,
   'footstepSound': footstepSound,
   'mapData': mapData,
-  'admin': admin,
+  'characterSpeed': characterSpeed,
+  'characterTheta': characterTheta,
   'renameSection': renameSection,
   'sectionTileName': sectionTileName,
   'mapSection': mapSection,
