@@ -1,6 +1,8 @@
 /// Provides all sound-related commands.
 library sound;
 
+import 'dart:web_audio';
+
 import 'command_context.dart';
 
 Future<void> interfaceSound(CommandContext ctx) async {
@@ -10,5 +12,18 @@ Future<void> interfaceSound(CommandContext ctx) async {
 
 Future<void> sound(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
-  ctx.message(data.toString());
+  final String url = data['url'] as String;
+  num volume, x, y;
+  volume = data['volume'] as num;
+  x = data['x'] as num;
+  y = data['y'] as num;
+  final PannerNode panner = ctx.sounds.audioContext.createPanner()
+    ..positionX.value = x
+    ..positionY.value = y
+    ..panningModel = 'HRTF'
+    ..connectNode(ctx.sounds.soundOutput);
+  final GainNode gain = ctx.sounds.audioContext.createGain()
+    ..gain.value = volume
+    ..connectNode(panner);
+  ctx.sounds.playSound(url, output: gain);
 }

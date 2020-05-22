@@ -27,6 +27,9 @@ class SoundPool {
   final AudioContext audioContext;
 
 
+  /// Get the listener from [audioContext].
+  AudioListener get listener => audioContext.listener;
+
   /// The master channel.
   AudioNode output;
 
@@ -216,7 +219,7 @@ class Sound {
   ///
   /// Uses [SoundPool.getBuffer] to initialise [buffer] if needed.
   ///
-  /// Uses [playBuffer] to actually play the buffer.
+  /// Uses [loadBuffer] to actually play the buffer.
   void play() {
     if (buffer == null) {
       pool.loadBuffer(url, (AudioBuffer buffer) => playBuffer(buffer));
