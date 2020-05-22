@@ -60,10 +60,8 @@ class SoundPool {
   /// Currently, music tracks cannot be layered.
   Music music;
 
-  void loadBuffer(
-    String url,
-    void Function(AudioBuffer) done
-  ) {
+  /// Load a buffer into the [buffers] map.
+  void loadBuffer(String url, void Function(AudioBuffer) done) {
     if (buffers.containsKey(url)){
       return done(buffers[url]);
     }
@@ -85,32 +83,24 @@ class SoundPool {
     xhr.send();
   }
 
-  Sound getSound(
-    String url,
-    {
-      AudioNode output,
-      OnEndedType onEnded,
-      bool loop = false
-    }
-  ) {
-    output ??= output;
+  /// Get a sound instance.
+  ///
+  /// If you are only planning to play the resulting sound, use [playSound] instead.
+  Sound getSound(String url, {AudioNode output, OnEndedType onEnded, bool loop = false}) {
+      output ??= soundOutput;
     return Sound(this, url, output: output, onEnded: onEnded, loop: loop);
   }
 
-  Sound playSound(
-    String url,
-    {
-      AudioNode output,
-      OnEndedType onEnded,
-      bool loop = false
-    }
-  ) {
-    output ??= audioContext.destination;
+  /// Get a sound with [getSound], and play it.
+  Sound playSound(String url, {AudioNode output, OnEndedType onEnded, bool loop = false}) {
     final Sound sound = getSound(url, output: output, onEnded: onEnded, loop:loop);
     sound.play();
     return sound;
   }
 
+  /// Change the volume a bit.
+  ///
+  /// Used by [volumeUp], and [volumeDown].
   void adjustVolume(OutputTypes outputType, num adjust) {
     num start;
     if (outputType == OutputTypes.sound) {
@@ -125,16 +115,17 @@ class SoundPool {
       start = 1.0;
     }
     if (volumeSoundUrl != null) {
-      final GainNode output = audioContext.createGain();
-      output.connectNode(audioContext.destination);
-      output.gain.value = start;
-      if (volumeSoundUrl != null) {
-        playSound(volumeSoundUrl, output: output);
-      }
+      final GainNode output = audioContext.createGain()
+        ..connectNode(audioContext.destination)
+        ..gain.value = start;
+      playSound(volumeSoundUrl, output: output);
     }
     setVolume(outputType, start);
   }
 
+  /// Set the volume to an absolute value.
+  ///
+  /// Used by [adjustVolume].
   void setVolume(OutputTypes outputType, num value) {
     AudioNode output;
     if (outputType == OutputTypes.sound) {
@@ -151,50 +142,66 @@ class SoundPool {
     }
   }
 
+  /// Turn the volume up by [volumeChangeAmount].
   void volumeUp(OutputTypes outputType) {
     adjustVolume(outputType, volumeChangeAmount);
   }
 
+  /// Turn the volume down by [volumeChangeAmount].
   void volumeDown(OutputTypes outputType) {
     adjustVolume(outputType, -volumeChangeAmount);
   }
 }
 
+/// A sound object.
+///
+/// For ease of use, use [SoundPool.getSound], or [SoundPool.playSound] to create sounds.
 class Sound {
-  Sound (
-    this.pool,
-    this.url,
-    {
-      this.output,
-      this.onEnded,
-      this.loop = false,
-    }
-  ) {
-    output ??= pool.audioContext.destination;
-    source = pool.audioContext.createBufferSource();
+  Sound (this.pool, this.url, {this.output, this.onEnded, this.loop = false}) {
+    source = pool.audioContext.createBufferSource()
+      ..loop = loop
+      ..connectNode(output);
     if (onEnded != null) {
       source.onEnded.listen(onEnded);
     }
-    source.loop = loop;
-    source.connectNode(output);
   }
 
+  /// The interface for getting buffers and creating nodes.
+  ///
+  /// See [SoundPool] for more details.
   final SoundPool pool;
+
+  /// The URL of the sound.
   String url;
+
+  /// Whether or not [source] should loop.
   bool loop;
+
+  /// The output to connect [source] to.
   AudioNode output;
+
+  /// [source].buffer.
   AudioBuffer buffer;
+
+  /// The node that actually plays audio.
   AudioBufferSourceNode source;
+
+  /// The function to be called when [source] has finished playing.
   OnEndedType onEnded;
 
+  /// Play an audio buffer.///
+  /// Used by [play], by way of [SoundPool.getBuffer].
   void playBuffer(AudioBuffer buf) {
     buffer = buf;
     if (source != null) {
       source.buffer = buffer;
       source.start(0);
+    } else {
+      // Consider this sound stopped.
     }
   }
 
+  /// Stop [source].
   void stop() {
     if (source != null) {
       source.disconnect();
@@ -203,11 +210,14 @@ class Sound {
     buffer = null;
   }
 
+  /// Play [source].
+  ///
+  /// Uses [SoundPool.getBuffer] to initialise [buffer] if needed.
+  ///
+  /// Uses [playBuffer] to actually play the buffer.
   void play() {
     if (buffer == null) {
-      pool.loadBuffer(
-        url, (AudioBuffer buffer) => playBuffer(buffer)
-      );
+      pool.loadBuffer(url, (AudioBuffer buffer) => playBuffer(buffer));
     } else {
       playBuffer(buffer);
     }
