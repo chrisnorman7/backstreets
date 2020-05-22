@@ -17,8 +17,10 @@ enum OutputTypes {
 class SoundPool {
   SoundPool(this.audioContext) {
     output = audioContext.destination;
-    soundOutput = audioContext.createGain();
-    musicOutput = audioContext.createGain();
+    soundOutput = audioContext.createGain()
+      ..connectNode(output);
+    musicOutput = audioContext.createGain()
+      ..connectNode(output);
   }
 
   /// The underlying web audio context.
