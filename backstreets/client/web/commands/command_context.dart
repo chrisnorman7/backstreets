@@ -103,12 +103,25 @@ class CommandContext {
   /// If no coordinates are provided, use [coordinates].
   MapSection getCurrentSection([Point<int> c]) {
     c ??= Point<int>(coordinates.x.toInt(), coordinates.y.toInt());
-    for (final MapSection s in sections.values) {
+    final List<MapSection> matchingSections = <MapSection>[];
+    sections.forEach((int id, MapSection s) {
       if (s.rect.containsPoint(c)) {
-        return s;
+        matchingSections.add(s);
       }
+    });
+    if (matchingSections.isEmpty) {
+      return null;
     }
-    return null;
+    matchingSections.sort((MapSection a, MapSection b) {
+      if (a.rect.containsRectangle(b.rect)) {
+        return -1;
+      } else if (a.rect.intersects(b.rect)) {
+        return 0;
+      } else {
+        return -1;
+      }
+    });
+    return matchingSections.last;
   }
 
   /// Send arbitrary commands to the server.
