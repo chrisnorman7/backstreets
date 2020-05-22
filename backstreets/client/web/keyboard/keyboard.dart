@@ -64,7 +64,7 @@ class Keyboard {
       heldKeys.add(state);
       bool handled = false;
       for (final Hotkey hk in hotkeys) {
-        if (hk.state == state) {
+        if (hk.state == state && (hk.runWhen == null || hk.runWhen())) {
           handled = true;
           if (hk.interval == null) {
             hk.run();

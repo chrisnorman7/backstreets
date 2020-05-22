@@ -64,6 +64,10 @@ final Element keyboardArea = querySelector('#keyboardArea');
 final Keyboard keyboard = Keyboard((dynamic e, StackTrace s) {
   showMessage(e.toString());
   throw e;
+}, unhandledKey: (KeyState ks) {
+  if (commandContext.book != null && !ks.shift && !ks.control && !ks.alt) {
+    commandContext.book.handleSearch(ks.key);
+  }
 });
 
 /// Main entry point.

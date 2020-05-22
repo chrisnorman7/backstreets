@@ -64,7 +64,7 @@ class Book{
 
   /// The url of the sound to play when using [cancel].
   String noCancelSoundUrl = path.join(menuSoundsDirectory, 'nocancel.wav');
-  
+
   /// The sound associated with [noCancelSoundUrl];
   Sound noCancelSound;
 
@@ -76,8 +76,9 @@ class Book{
 
   /// The last time a search was performed.
   int lastSearchTime;
+
   /// The timeout (in milliseconds) for searches.
-  int searchTimeout;
+  int searchTimeout = 500;
 
   /// The pages contained by this book.
   ///
