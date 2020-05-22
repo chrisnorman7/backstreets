@@ -88,7 +88,7 @@ class SoundPool {
   /// If you are only planning to play the resulting sound, use [playSound] instead.
   Sound getSound(String url, {AudioNode output, OnEndedType onEnded, bool loop = false}) {
       output ??= soundOutput;
-    return Sound(this, url, output: output, onEnded: onEnded, loop: loop);
+    return Sound(this, url, output, onEnded, loop);
   }
 
   /// Get a sound with [getSound], and play it.
@@ -157,7 +157,7 @@ class SoundPool {
 ///
 /// For ease of use, use [SoundPool.getSound], or [SoundPool.playSound] to create sounds.
 class Sound {
-  Sound (this.pool, this.url, {this.output, this.onEnded, this.loop = false}) {
+  Sound (this.pool, this.url, this.output, this.onEnded, this.loop) {
     source = pool.audioContext.createBufferSource()
       ..loop = loop
       ..connectNode(output);
