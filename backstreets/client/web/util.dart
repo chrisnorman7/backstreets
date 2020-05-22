@@ -139,4 +139,6 @@ void move(int multiplier) {
   final String url = getFootstepSound(tileName);
   commandContext.sounds.playSound(url);
   commandContext.coordinates = coordinates;
+  commandContext.sounds.audioContext.listener.positionX.value = coordinates.x;
+  commandContext.sounds.audioContext.listener.positionY.value = coordinates.y;
 }
