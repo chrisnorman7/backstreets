@@ -15,6 +15,7 @@ import 'command.dart';
 import 'general.dart';
 import 'login.dart';
 import 'movement.dart';
+import 'socials.dart';
 
 List<Command> commandsList = <Command>[
   // Building commands.
@@ -35,6 +36,9 @@ List<Command> commandsList = <Command>[
   // Movement commands.
   characterCoordinates,
   characterTheta,
+
+  // Social commands:
+  say,
 ];
 
 Map<String, Command> commands = <String, Command>{};

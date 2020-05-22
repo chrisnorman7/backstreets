@@ -9,7 +9,7 @@ import '../map_section.dart';
 
 import '../menus/book.dart';
 
-import '../sound/sound.dart';
+import '../sound/sound_pool.dart';
 
 /// A command context. Will be passed to all commands, instead of using individiaul arguments, which will quickly become unmanageable.
 class CommandContext {

@@ -5,7 +5,7 @@ import 'package:path/path.dart' as path;
 
 import '../main.dart';
 
-import '../sound/sound.dart';
+import '../sound/sound_pool.dart';
 import '../util.dart';
 import 'line.dart';
 import 'page.dart';

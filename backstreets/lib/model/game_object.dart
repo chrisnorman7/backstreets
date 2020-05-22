@@ -1,11 +1,15 @@
 /// Provides the [GameObject] class.
 library game_object;
 
+import 'dart:math';
+
 import 'package:aqueduct/aqueduct.dart';
 
 import '../commands/command_context.dart';
 
 import '../socials.dart';
+
+import '../sound.dart';
 
 import 'account.dart';
 import 'connection_record.dart';
@@ -62,31 +66,58 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
     return '<Object $name (#$id)>';
   }
 
+  /// Get the command context which is connected to this object.
+  ///
+  /// If no player is connected to this object, null is returned.
+  CommandContext get commandContext {
+    final List<CommandContext> c = CommandContext.instances.where((CommandContext c) => c.characterId == id).toList();
+    if (c.isNotEmpty) {
+      return c.first;
+    }
+    return null;
+  }
+
   /// Send a message to the socket which this object is connected to.
   void message(String text) {
-    for (final CommandContext ctx in CommandContext.instances) {
-      if (ctx.characterId == id) {
-        return ctx.sendMessage(text);
-      }
-    }
+    return commandContext?.sendMessage(text);
+  }
+
+  /// Tell the connected player to play a sound.
+  ///
+  /// If coordinates are given, the sound will be heard there. If not, then coordinates will be made from [x] and [y].
+  void sound(Sound s, {Point<double> coordinates, double volume}) {
+    coordinates ??= Point<double>(x, y);
+    volume ??= 1.0;
+    commandContext?.send('sound', <Map<String, dynamic>>[<String, dynamic>{
+      'url': s.url,
+      'x': coordinates.x,
+      'y': coordinates.y,
+      'volume': volume
+    }]);
   }
 
   /// Have this object perform a social.
   Future<void> doSocial(
     ManagedContext db, String social, {
       List<GameObject> perspectives,
-      List<GameObject> observers
+      List<GameObject> observers,
+      Sound sound
     }
   ) async {
     if (observers == null) {
       final Query<GameObject> q = Query<GameObject>(db)
-        ..where((GameObject o) => o.location.id).equalTo(location.id);
+        ..where((GameObject o) => o.location).identifiedBy(location.id);
       observers = await q.fetch();
       perspectives ??= observers.where((GameObject o) => o.id == id).toList();
     }
     socials.getStrings(social, perspectives).dispatch(
       observers,
-      (GameObject obj, String message) => obj.message(message)
+      (GameObject obj, String message) {
+        if (sound != null) {
+          obj.sound(sound, coordinates: Point<double>(x, y));
+        }
+        obj.message(message);
+      }
     );
   }
 

@@ -26,7 +26,7 @@ import 'keyboard/keyboard.dart';
 import 'menus/book.dart';
 import 'menus/main_menu.dart';
 
-import 'sound/sound.dart';
+import 'sound/sound_pool.dart';
 
 /// Character data, as sent to the [account] command.
 List<dynamic> characterList;

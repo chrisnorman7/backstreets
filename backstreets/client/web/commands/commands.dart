@@ -20,6 +20,7 @@ Map<String, CommandType> commands = <String, CommandType>{
 
   // Sound commands:
   'interfaceSound': interfaceSound,
+  'sound': sound,
 
   // Login commands:
   'account': account,

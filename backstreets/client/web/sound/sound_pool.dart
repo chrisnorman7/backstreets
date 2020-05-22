@@ -1,3 +1,6 @@
+/// Provides the [SoundPool] class, which is responsible for playing all sounds.
+library sound;
+
 import 'dart:html';
 import 'dart:typed_data';
 import 'dart:web_audio';
@@ -18,13 +21,43 @@ class SoundPool {
     musicOutput = audioContext.createGain();
   }
 
+  /// The underlying web audio context.
   final AudioContext audioContext;
-  AudioNode output, soundOutput, musicOutput;
+
+
+  /// The master channel.
+  AudioNode output;
+
+  /// The output for game sounds.
+  ///
+  /// If a convolver is required, this is the channel it should be applied to.
+  AudioNode soundOutput;
+
+  /// The output for music.
+  ///
+  /// This should be separated from [output], so it can have it's own independant volume control.
+  AudioNode musicOutput;
+
+  /// All the buffers that have been downloaded.
   Map<String, AudioBuffer> buffers = <String, AudioBuffer>{};
+
+  /// The amount volume should change by when volume change hotkeys are used.
   num volumeChangeAmount = 0.1;
+
+  /// The volume of [soundOutput].
   num soundVolume = 0.75;
+
+  /// The volume of [musicOutput].
+  ///
+  /// It is important to use this value when changing the volume of the music, since nodes may fade out, and [musicOutput]'s gain may not be reliable.
   num musicVolume = 0.5;
+
+  /// The URL to the sound which should play when the volume is changed.
   String volumeSoundUrl;
+
+  /// The loaded music track.
+  ///
+  /// Currently, music tracks cannot be layered.
   Music music;
 
   void loadBuffer(

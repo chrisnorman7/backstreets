@@ -90,7 +90,13 @@ class BackstreetsChannel extends ApplicationChannel {
         }
       }
     });
-    messageHub.listen((dynamic e) => print(e));
+    socialSoundsDirectory.list().listen((FileSystemEntity entity) {
+      if (entity is File) {
+        final String socialName = path.basenameWithoutExtension(entity.path);
+        socialSounds[socialName] = Sound(entity.path.substring(soundsDirectory.length + 1));
+        logger.info('Added sound for social $socialName.');
+      }
+    });
     socials.addSuffix(
       <String>['name', 'n'],
       (GameObject o) => SuffixResult('you', o.name)

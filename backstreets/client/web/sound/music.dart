@@ -1,8 +1,12 @@
+/// Provides the [Music] class.
+library music;
+
 import 'dart:html';
 import 'dart:web_audio';
 
-import 'sound.dart';
+import 'sound_pool.dart';
 
+/// Plays music on a loop.
 class Music {
   Music(
     SoundPool pool, String url,
@@ -17,9 +21,15 @@ class Music {
     source = pool.getSound(url, loop: true, output: gain).source;
   }
 
+  /// Used to set the volume of music.
   AudioNode gain;
+  
+  /// The source to play.
   AudioBufferSourceNode source;
 
+  /// Stop the music.
+  ///
+  /// If [when] is provided, pass it onto [source].stop.
   void stop(num when) {
     try {
       source.stop(when);
