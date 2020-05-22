@@ -8,7 +8,7 @@ import '../map_section.dart';
 import '../util.dart';
 
 /// Only fire hotkeys when the map has been loaded.
-bool validMap() => commandContext != null && commandContext.mapName != null;
+bool validMap() => commandContext != null && commandContext.mapName != null && commandContext.book == null;
 
 final Hotkey coordinates = Hotkey(
   'c', () => commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'),
@@ -28,7 +28,7 @@ final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(c
 
 final Hotkey walkForwards = Hotkey('w', () => move(1), interval: 50, runWhen: validMap, titleString: 'Move forward');
 
-final Hotkey walkBackwards = Hotkey('s', () => move(-1), shift: true, interval: 50);
+final Hotkey walkBackwards = Hotkey('s', () => move(-1), shift: true, interval: 50, runWhen: validMap);
 
 final Hotkey left = Hotkey('a', () => turn(-1), interval: 500, runWhen: validMap, titleString: 'Turn left a bit');
 
@@ -44,4 +44,4 @@ final Hotkey aboutFace = Hotkey('s', () {
     commandContext.theta -= 360;
   }
   snap(SnapDirections.left);
-});
+}, runWhen: validMap);
