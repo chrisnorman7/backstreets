@@ -101,7 +101,7 @@ void snap(SnapDirections direction) {
     commandContext.theta += 45 - mod;
   }
   commandContext.sendTheta();
-  commandContext.message(headingToString(commandContext.theta));
+  showMessage(headingToString(commandContext.theta));
 }
 
 String getFootstepSound(String tileName) {

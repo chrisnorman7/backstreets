@@ -10,7 +10,7 @@ import '../util.dart';
 import 'run_conditions.dart';
 
 final Hotkey coordinates = Hotkey(
-  'c', () => commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'),
+  'c', () => showMessage('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'),
   runWhen: validMap, titleString: 'Show coordinates'
 );
 
@@ -23,7 +23,7 @@ final Hotkey mapName = Hotkey('v', () {
   commandContext.message('$result.');
 }, runWhen: validMap, titleString: 'View your current location');
 
-final Hotkey facing = Hotkey('f', () => commandContext.message(headingToString(commandContext.theta)), runWhen: validMap, titleString: 'Show which way you are facing');
+final Hotkey facing = Hotkey('f', () => showMessage(headingToString(commandContext.theta)), runWhen: validMap, titleString: 'Show which way you are facing');
 
 final Hotkey walkForwards = Hotkey('w', () => move(1), interval: 50, runWhen: validMap, titleString: 'Move forward');
 
@@ -38,6 +38,7 @@ final Hotkey right = Hotkey('d', () => turn(1), interval: 500, runWhen: validMap
 final Hotkey rightSnap = Hotkey('d', () => snap(SnapDirections.right), shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction');
 
 final Hotkey aboutFace = Hotkey('s', () {
+  /// Turn a full 180, then 45 more, s that snap can announce the new heading.
   commandContext.theta += 180 + 45;
   if (commandContext.theta > 360) {
     commandContext.theta -= 360;

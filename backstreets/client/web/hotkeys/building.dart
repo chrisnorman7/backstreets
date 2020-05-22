@@ -17,7 +17,7 @@ import '../menus/page.dart';
 import 'run_conditions.dart';
 
 final Hotkey builderMenu = Hotkey('b', () {
-  commandContext.book = Book(commandContext.sounds, showMessage);
+  commandContext.book = Book(commandContext.sounds, showMessage, onCancel: clearBook);
   final Page page = Page(
     lines: <Line>[
       Line(commandContext.book, (Book b) {
@@ -31,16 +31,16 @@ final Hotkey builderMenu = Hotkey('b', () {
         } else {
           lines.addAll(<Line>[
             Line(b, (Book b) {
-              final FormBuilder fb = FormBuilder('Rename', (Map<String, String> data) {
+              FormBuilder('Rename', (Map<String, String> data) {
                 if (commandContext.section == null) {
                   b.message('You must create a new section.');
                 } else {
                   commandContext.section.name = data['name'];
                   commandContext.book = null;
                 }
-              });
-              fb.addElement('name', validator: notEmptyValidator, value: commandContext.section.name);
-              fb.render();
+              })
+                ..addElement('name', validator: notEmptyValidator, value: commandContext.section.name)
+                ..render();
             }, titleFunc: () => 'Rename (${commandContext.section.name})'),
             Line(b, (Book b) {
               b.push(
@@ -116,38 +116,38 @@ final Hotkey builderMenu = Hotkey('b', () {
               );
             }, titleString: 'Set Default Tile'),
             Line(b, (Book b) {
-              final FormBuilder fb = FormBuilder('Rename Section', (Map<String, String> data) {
+              FormBuilder('Rename Section', (Map<String, String> data) {
                 b.pop();
                 final MapSection s = commandContext.getCurrentSection();
                 if (s == null) {
                   return commandContext.message('There is no section at your current coordinates.');
                   }
                   commandContext.send('renameSection', <dynamic>[s.id, data['name']]);
-              });
-              fb.addElement(
-                'name', label: 'Section Name',
-                validator: notSameAsValidator(() => commandContext.getCurrentSection().name, onSuccess: notEmptyValidator),
-                value: commandContext.getCurrentSection().name
-              );
-              fb.render();
+              })
+                ..addElement(
+                  'name', label: 'Section Name',
+                  validator: notSameAsValidator(
+                    () => commandContext.getCurrentSection().name,
+                    onSuccess: notEmptyValidator
+                  ),
+                  value: commandContext.getCurrentSection().name
+                )
+                ..render();
             }, titleString: 'Rename'),
           ],
         ));
       }, titleString: 'Current Section Menu'),
       Line(commandContext.book, (Book b) {
         commandContext.book = null;
-        final FormBuilder fb = FormBuilder(
+        FormBuilder(
           'Rename Map', (Map<String, String> data) => commandContext.send('renameMap', <String>[data['name']]),
           subTitle: 'Enter the new name for this map.'
-        );
-        fb.addElement('name', label: 'Map Name', validator: (String name, Map<String, String> values, String value) {
-          if (value == commandContext.mapName) {
-            return 'The new map name cannot be the same as the old one.';
-          } else {
-            return notEmptyValidator(name, values, value);
-          }
-        }, value: commandContext.mapName);
-        fb.render();
+        )
+          ..addElement(
+            'name', label: 'Map Name',
+            validator: notSameAsValidator(() => commandContext.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
+            value: commandContext.mapName)
+          ..render();
       }, titleString: 'Rename Map'),
     ], titleString: 'Building'
   );
