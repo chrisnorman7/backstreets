@@ -17,6 +17,7 @@ import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
 import 'hotkeys/menu.dart';
 import 'hotkeys/movement.dart';
+import 'hotkeys/socials.dart';
 
 import 'keyboard/hotkey.dart';
 import 'keyboard/key_state.dart';
@@ -80,15 +81,15 @@ void main() {
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
-      // Building hotkeys.
+      // Building hotkeys:
       builderMenu,
 
-      // General hotkeys.
+      // General hotkeys:
       previousMessage,
       nextMessage,
       messages,
 
-      // Menu hotkeys.
+      // Menu hotkeys:
       moveUp,
       moveDown,
       activateSpace,
@@ -97,7 +98,7 @@ void main() {
       cancelEscape,
       cancelLeftArrow,
 
-      /// Movement hotkeys.
+      /// Movement hotkeys:
       coordinates,
       mapName,
       facing,
@@ -108,6 +109,9 @@ void main() {
       right,
       rightSnap,
       aboutFace,
+
+      // Social hotkeys:
+      say,
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {

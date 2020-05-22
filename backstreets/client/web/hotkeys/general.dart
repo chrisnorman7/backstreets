@@ -41,14 +41,23 @@ final Hotkey nextMessage = Hotkey(',', () {
 });
 
 final Hotkey messages = Hotkey('/', () {
-  commandContext.book = Book(commandContext.sounds, showMessage);
+  bool removeBook;
+  if (commandContext.book == null) {
+    removeBook = true;
+    commandContext.book = Book(commandContext.sounds, showMessage, onCancel: clearBook);
+  } else {
+    removeBook = false;
+  }
   final List<Line> lines = <Line>[];
   for (final String message in commandContext.messages.reversed) {
     lines.add(
       Line(
         commandContext.book, (Book b) {
-          b.pop();
-          commandContext.book = null;
+          if (removeBook) {
+            commandContext.book = null;
+          } else {
+            b.pop();
+          }
         }, titleString: message
       )
     );

@@ -7,8 +7,7 @@ import '../main.dart';
 import '../map_section.dart';
 import '../util.dart';
 
-/// Only fire hotkeys when the map has been loaded.
-bool validMap() => commandContext != null && commandContext.mapName != null && commandContext.book == null;
+import 'run_conditions.dart';
 
 final Hotkey coordinates = Hotkey(
   'c', () => commandContext.message('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'),

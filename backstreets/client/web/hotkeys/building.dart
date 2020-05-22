@@ -14,6 +14,8 @@ import '../menus/book.dart';
 import '../menus/line.dart';
 import '../menus/page.dart';
 
+import 'run_conditions.dart';
+
 final Hotkey builderMenu = Hotkey('b', () {
   commandContext.book = Book(commandContext.sounds, showMessage);
   final Page page = Page(
@@ -150,4 +152,4 @@ final Hotkey builderMenu = Hotkey('b', () {
     ], titleString: 'Building'
   );
   commandContext.book.push(page);
-}, runWhen: () => commandContext.admin == true);
+}, runWhen: admin);
