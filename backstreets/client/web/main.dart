@@ -70,6 +70,11 @@ final Keyboard keyboard = Keyboard((dynamic e, StackTrace s) {
   }
 });
 
+/// What each of the mouse keys do.
+final Map<int, Hotkey> mouseButtons = <int, Hotkey>{
+  2: walkForwards,
+};
+
 /// Main entry point.
 void main() {
   setTitle();
@@ -165,4 +170,31 @@ void main() {
       }
     });
   });
+  document.onMouseDown.listen((MouseEvent e) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (mouseButtons.containsKey(e.button)) {
+      final Hotkey hk = mouseButtons[e.button];
+      if (!keyboard.heldKeys.contains(hk.state)) {
+        keyboard.heldKeys.add(hk.state);
+      }
+      hk.startTimer();
+    } else {
+      showMessage('Mouse ${e.button}.');
+    }
+  });
+  document.onMouseUp.listen((MouseEvent e) {
+    e.stopPropagation();
+    e.preventDefault();
+    if (mouseButtons.containsKey(e.button)) {
+      final Hotkey hk = mouseButtons[e.button];
+      if (keyboard.heldKeys.contains(hk.state)) {
+        keyboard.heldKeys.remove(hk.state);
+      }
+      if (hk.timer != null) {
+        hk.stopTimer();
+      }
+    }
+  });
+  document.onContextMenu.listen((MouseEvent e) => e.preventDefault());
 }
