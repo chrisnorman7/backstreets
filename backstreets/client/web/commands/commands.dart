@@ -37,4 +37,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'renameSection': renameSection,
   'sectionTileName': sectionTileName,
   'mapSection': mapSection,
+  'mapAmbience': mapAmbience,
 };

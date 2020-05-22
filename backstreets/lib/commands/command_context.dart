@@ -168,6 +168,7 @@ class CommandContext{
       'name': m.name,
       'convolverUrl': m.convolverUrl,
       'convolverVolume': m.convolverVolume,
+      'ambience': ambiences[m.ambience],
       'sections': <Map<String, dynamic>>[],
       'tiles': <Map<String, dynamic>>[]
     };

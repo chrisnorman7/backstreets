@@ -48,6 +48,10 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
   /// The y coordinate where players should pop.
   @Column(defaultValue: '0')
   int popY = 0;
+
+  /// The ambience to play on this map.
+  @Column(nullable: true)
+  String ambience;
 }
 
 /// A map.

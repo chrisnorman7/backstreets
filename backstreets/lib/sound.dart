@@ -8,6 +8,12 @@ import 'package:path/path.dart' as _path;
 /// The directory where all sounds are stored.
 final String soundsDirectory = _path.join('client', 'web', 'sounds');
 
+/// The directory where all ambience sounds are stored.
+final Directory ambienceDirectory = Directory(_path.join(soundsDirectory, 'ambience'));
+
+/// All the possible ambiences.
+final Map<String, Sound> ambiences = <String, Sound>{};
+
 /// A sound object.
 ///
 /// Passed a path, it will give you a URL, with appropriate get params.

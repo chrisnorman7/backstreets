@@ -74,6 +74,12 @@ class CommandContext {
   /// Sent by [mapName].
   String mapName;
 
+  /// The ambience of the current map.
+  String ambienceUrl;
+
+  /// The ambience to play.
+  Sound ambience;
+
   /// Every section on the current map.
   Map<int, MapSection> sections = <int, MapSection>{};
 

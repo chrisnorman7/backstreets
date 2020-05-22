@@ -42,6 +42,8 @@ Future<void> footstepSound(CommandContext ctx) async {
 
 Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  ctx.args[0] = data['ambience'] as String;
+  mapAmbience(ctx);
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
     ctx.args[0] = sectionData as Map<String, dynamic>;
     await mapSection(ctx);
@@ -88,4 +90,16 @@ Future<void> mapSection(CommandContext ctx) async {
     sectionData['name'] as String,
     sectionData['tileName'] as String,
   );
+}
+
+Future<void> mapAmbience(CommandContext ctx) async {
+  ctx.ambienceUrl = ctx.args[0] as String;
+  if (ctx.ambience != null) {
+    ctx.ambience.stop();
+  }
+  if (ctx.ambienceUrl == null) {
+    ctx.ambience = null;
+  } else {
+    ctx.ambience = ctx.sounds.playSound(ctx.ambienceUrl, loop: true);
+  }
 }

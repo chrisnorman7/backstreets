@@ -101,6 +101,13 @@ class BackstreetsChannel extends ApplicationChannel {
       <String>['name', 'n'],
       (GameObject o) => SuffixResult('you', o.name)
     );
+    ambienceDirectory.list().listen((FileSystemEntity entity) {
+      if (entity is File) {
+        final String ambienceName = path.basenameWithoutExtension(entity.path);
+        ambiences[ambienceName] = Sound(entity.path.substring(soundsDirectory.length + 1));
+        logger.info('Added ambience $ambienceName.');
+      }
+    });
   }
 
   /// Construct the request channel.
