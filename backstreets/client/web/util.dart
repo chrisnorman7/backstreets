@@ -118,6 +118,7 @@ void move(int multiplier) {
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
   if (newSection == null) {
+    commandContext.sounds.playSound('sounds/wall/wall.wav');
     return commandContext.message('You cannot go that way.');
   }
   final Point<double> coordinates = Point<double>(x, y);
