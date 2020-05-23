@@ -48,10 +48,6 @@ class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// The y coordinate where players should pop.
   @Column(defaultValue: '0')
   int popY = 0;
-  
-  /// The size of each tile.
-  @Column(defaultValue: '0.5')
-  double tileSize;
 }
 
 /// A map.

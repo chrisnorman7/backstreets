@@ -1,7 +1,5 @@
-/// Provides building related commands.
+/// Provides building related hotkeys.
 library building;
-
-import 'dart:math';
 
 import '../form_builder.dart';
 
@@ -25,7 +23,13 @@ final Hotkey builderMenu = Hotkey('b', () {
         if (commandContext.section == null) {
           lines.add(Line(b, (Book b) {
             b.pop();
-            commandContext.section = CreatedMapSection('Untitled Section');
+            commandContext.section = MapSection(
+              null, commandContext.coordinates.x.floor(),
+              commandContext.coordinates.y.floor(),
+              commandContext.coordinates.x.floor(),
+              commandContext.coordinates.y.floor(),
+              'Untitled Section', commandContext.tileNames[0], 0.5
+            );
             commandContext.message('Empty section created. Go back to the building menu to see further options.');
           }, titleString: 'Create'));
         } else {
@@ -58,7 +62,9 @@ final Hotkey builderMenu = Hotkey('b', () {
               if (commandContext.section == null) {
                 b.message('You must create a new section.');
               } else {
-                commandContext.section.startCoordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+                commandContext.section
+                  ..startX = commandContext.coordinates.x.floor()
+                  ..startY = commandContext.coordinates.y.floor();
                 commandContext.message('Start coordinates set.');
               }
             }, titleFunc: () => 'Set Start Coordinates (${commandContext.section.startCoordinates})'),
@@ -66,7 +72,9 @@ final Hotkey builderMenu = Hotkey('b', () {
               if (commandContext.section == null) {
                 b.message('You must create a new section.');
               } else {
-                commandContext.section.endCoordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+                commandContext.section
+                  ..endX = commandContext.coordinates.x.floor()
+                  ..endY = commandContext.coordinates.y.floor();
                 commandContext.message('End coordinates set.');
               }
             }, titleFunc: () => 'Set End Coordinates ((${commandContext.section.endCoordinates})'),

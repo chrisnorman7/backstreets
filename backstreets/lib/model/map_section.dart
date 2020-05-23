@@ -25,6 +25,10 @@ class _MapSection with PrimaryKeyMixin, NameMixin {
 
   /// The tile type this section is filled with.
   String tileName;
+  
+  /// The size of each tile.
+  @Column(defaultValue: '0.5')
+  double tileSize;
 
   /// The map this section is part of.
   @Relate(#sections, isRequired: true, onDelete: DeleteRule.cascade)

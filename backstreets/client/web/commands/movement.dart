@@ -46,8 +46,6 @@ Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.args[0] = data['ambience'] as String;
   await mapAmbience(ctx);
-  ctx.args[0] = data['tileSize'] as double;
-  await tileSize(ctx);
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
     ctx.args[0] = sectionData as Map<String, dynamic>;
     await mapSection(ctx);
@@ -93,6 +91,7 @@ Future<void> mapSection(CommandContext ctx) async {
     sectionData['endY'] as int,
     sectionData['name'] as String,
     sectionData['tileName'] as String,
+    sectionData['tileSize'] as double,
   );
 }
 
@@ -106,8 +105,4 @@ Future<void> mapAmbience(CommandContext ctx) async {
   } else {
     ctx.ambience = ctx.sounds.playSound(ctx.ambienceUrl, loop: true);
   }
-}
-
-Future<void> tileSize(CommandContext ctx) async {
-  ctx.tileSize = ctx.args[0] as double;
 }
