@@ -53,6 +53,7 @@ final Command addMapSection = Command('addMapSection', (CommandContext ctx) asyn
     ..values.startY = min(startY, endY)
     ..values.endX = max(endX, startX)
     ..values.endY = max(endY, startY)
+    ..values.tileSize = data['tileSize'] as double
     ..values.location.id = ctx.mapId;
   final MapSection s = await q.insert();
   ctx.sendMapSection(s);
