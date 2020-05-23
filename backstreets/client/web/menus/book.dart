@@ -16,8 +16,8 @@ const String menuSoundsDirectory = 'sounds/menus';
 /// The type for all titleFunc arguments.
 typedef TitleFunctionType = String Function();
 
-/// The type for all functions which are called with [Book] as their first argument.
-typedef BookFunctionType = void Function(Book);
+/// The type for all [Line] functions..
+typedef BookFunctionType = void Function();
 
 /// A book, which acts like a menu.
 ///
@@ -202,7 +202,7 @@ class Book{
       return; // They are probably looking at the title.
     }
     activateSound = soundPool.playSound(activateSoundUrl);
-    line.func(this);
+    line.func();
   }
 
   /// Cancel and remove the currently active [Page] instance, and pop it from the stack.

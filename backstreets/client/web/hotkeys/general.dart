@@ -52,11 +52,11 @@ final Hotkey messages = Hotkey('/', () {
   for (final String message in commandContext.messages.reversed) {
     lines.add(
       Line(
-        commandContext.book, (Book b) {
+        commandContext.book, () {
           if (removeBook) {
             commandContext.book = null;
           } else {
-            b.pop();
+            commandContext.book.pop();
           }
         }, titleString: message
       )

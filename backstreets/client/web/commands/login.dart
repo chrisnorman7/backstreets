@@ -21,7 +21,7 @@ Future<void> account(CommandContext ctx) async {
     final String name = data['name'] as String;
     lines.add(
       Line(
-        commandContext.book, (Book b) {
+        commandContext.book, () {
           commandContext.book = null;
           ctx.message('Loading...');
           ctx.send('connectCharacter', <int>[id]);
@@ -31,7 +31,7 @@ Future<void> account(CommandContext ctx) async {
   }
   lines.add(
     Line(
-      commandContext.book, (Book b) {
+      commandContext.book, () {
         final FormBuilder createForm = FormBuilder(
           'New Character', (Map<String, String> data) {
             commandContext.book = null;

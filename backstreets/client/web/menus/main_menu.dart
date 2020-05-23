@@ -6,7 +6,6 @@ import 'dart:html';
 import '../form_builder.dart';
 import '../main.dart';
 
-import 'book.dart';
 import 'line.dart';
 import 'page.dart';
 
@@ -15,7 +14,7 @@ Page mainMenu() {
     titleString: 'Main Menu',
     lines: <Line>[
       Line(
-        commandContext.book, (Book b) {
+        commandContext.book, () {
           final FormBuilder loginForm = FormBuilder('Login', (Map<String, String> data) {
             commandContext.book = null;
             commandContext.message('Logging in...');
@@ -29,7 +28,7 @@ Page mainMenu() {
         titleString: 'Login'
       ),
       Line(
-        commandContext.book, (Book b) {
+        commandContext.book, () {
           final FormBuilder createForm = FormBuilder(
             'Create Account', (Map<String, String> data) {
               commandContext.book = null;
@@ -47,7 +46,7 @@ Page mainMenu() {
         }, titleString: 'Create Account',
       ),
       Line(
-        commandContext.book, (Book b) => commandContext.send('serverTime', <dynamic>[]),
+        commandContext.book, () => commandContext.send('serverTime', <dynamic>[]),
         titleString: 'Show Server Time'
       )
     ], dismissible: false

@@ -14,12 +14,12 @@ import 'page.dart';
 
 Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() onUpload}) {
   final List<Line> lines = <Line>[
-    Line(b, (Book b) {
+    Line(b, () {
       FormBuilder('Rename', (Map<String, String> data) => s.name = data['name'])
         ..addElement('name', validator: notEmptyValidator, value: s.name)
         ..render();
     }, titleFunc: () => 'Rename (${s.name})'),
-    Line(b, (Book b) {
+    Line(b, () {
       b.push(
         Page.selectTilePage(
           b, () => s.tileName,
@@ -31,19 +31,19 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
         )
       );
     }, titleFunc: () => 'DefaultTile (${s.tileName})'),
-    Line(b, (Book b) {
+    Line(b, () {
       s
         ..startX = ctx.coordinates.x.floor()
         ..startY = ctx.coordinates.y.floor();
       ctx.message('Start coordinates set.');
     }, titleFunc: () => 'Start Coordinates (${s.startCoordinates.x}, ${s.startCoordinates.y})'),
-    Line(b, (Book b) {
+    Line(b, () {
       s
         ..endX = ctx.coordinates.x.floor()
         ..endY = ctx.coordinates.y.floor();
       ctx.message('End coordinates set.');
     }, titleFunc: () => 'End Coordinates (${s.endCoordinates.x}, ${s.endCoordinates.y})'),
-    Line(b, (Book b) {
+    Line(b, () {
       final NumberInputElement e = NumberInputElement()
         ..min = '0.01'
         ..max = '1.0'
@@ -53,7 +53,7 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
         )
         ..render();
     }, titleFunc: () => 'Tile Size (${s.tileSize})'),
-    Line(b, (Book b) {
+    Line(b, () {
       if (s.name == null || s.name.isEmpty) {
         ctx.message('You must first set a name.');
       } else if (s.tileName == null) {
@@ -79,9 +79,9 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
   ];
   if (s.id != null) {
     lines.add(
-      Line(b, (Book b) {
+      Line(b, () {
         b.push(
-          Page.confirmPage(b, (Book b) {
+          Page.confirmPage(b, () {
             ctx.book = null;
             ctx.send('deleteMapSection', <int>[s.id]);
           })

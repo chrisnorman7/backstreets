@@ -43,7 +43,7 @@ class Page {
       ),
       Line(
         book,
-        cancelFunc ?? (Book b) => b.pop(),
+        cancelFunc ?? () => book.pop(),
         titleString: cancelTitle,
       )
     ];
@@ -60,8 +60,8 @@ class Page {
       lines.add(
         Line(
           book,
-          (Book b) {
-            b.pop();
+          () {
+            book.pop();
             hk.func();
           },
           titleFunc: () => '${hk.state}: ${hk.getTitle()}',
@@ -82,7 +82,7 @@ class Page {
     for (final String name in commandContext.tileNames) {
       lines.add(
         Line(
-          book, (Book b) => setTileName(name),
+          book, () => setTileName(name),
           titleString: '${name == getTileName() ? "* " : ""}$name',
           soundUrl: () => getFootstepSound(name)
         )

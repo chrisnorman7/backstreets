@@ -7,7 +7,7 @@ import 'page.dart';
 /// A menu item.
 ///
 /// ```
-/// final Line line = Line(book, (Book b) => b.message('Testing.'), stringTitle: 'Test');
+/// final Line line = Line(book, () => b.message('Testing.'), stringTitle: 'Test');
 /// ```
 class Line {
   /// Create a line.
@@ -55,7 +55,7 @@ class CheckboxLine extends Line {
   CheckboxLine(
     Book book,
     bool Function() getValue,
-    void Function(Book, bool) setValue,
+    void Function(bool) setValue,
     {
       String titleString,
       TitleFunctionType titleFunc,
@@ -63,13 +63,12 @@ class CheckboxLine extends Line {
       String disableUrl = 'res/menus/disable.wav',
     }
   ): super(
-    book,
-    (Book b) {
+    book, () {
       final bool oldValue = getValue();
       final bool newValue = !oldValue;
       final String soundUrl = newValue ? enableUrl : disableUrl;
-      b.soundPool.getSound(soundUrl, output: b.soundPool.soundOutput).play();
-      setValue(b, newValue);
+      book.soundPool.playSound(soundUrl);
+      setValue(newValue);
     },
     titleString: titleString,
     titleFunc: titleFunc,
