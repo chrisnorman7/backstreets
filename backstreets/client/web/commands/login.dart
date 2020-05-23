@@ -10,6 +10,9 @@ import '../menus/page.dart';
 
 import 'command_context.dart';
 
+/// Login was successful.
+///
+/// Show the menu with all the players for the given account, and let the player create a new character.
 Future<void> account(CommandContext ctx) async {
   authenticationStage = AuthenticationStages.account;
   commandContext.book = Book(ctx.sounds, showMessage);
@@ -57,6 +60,9 @@ Future<void> account(CommandContext ctx) async {
   );
 }
 
+/// Save the character name.
+///
+/// Also sets the title of the page.
 Future<void> characterName(CommandContext ctx) async {
   // Don't keep the character list lying around.
   characterList = null;
@@ -65,6 +71,7 @@ Future<void> characterName(CommandContext ctx) async {
   setTitle(state: ctx.characterName);
 }
 
+/// Says whether or not this character is an admin.
 Future<void> admin(CommandContext ctx) async {
   ctx.admin = ctx.args[0] as bool;
 }

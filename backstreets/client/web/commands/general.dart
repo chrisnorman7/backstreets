@@ -12,10 +12,14 @@ import '../sound/sound_pool.dart';
 import 'command_context.dart';
 import 'login.dart';
 
+/// Show a quick message.
 Future<void> message(CommandContext ctx) async {
   ctx.message(ctx.args[0] as String);
 }
 
+/// Alert the player to an error.
+///
+/// Handles some special cases, like errors during the login process, where a certain menu needs to be re-shown.
 Future<void> error(CommandContext ctx) async {
   final String msg = ctx.args[0] as String;
   if (authenticationStage == AuthenticationStages.anonymous) {
@@ -35,6 +39,7 @@ Future<void> error(CommandContext ctx) async {
   ctx.message('Error: $msg');
 }
 
+/// Parses player options.
 Future<void> playerOptions(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.sounds.setVolume(OutputTypes.sound, (data['soundVolume'] as num).toDouble());
