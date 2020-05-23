@@ -42,14 +42,12 @@ class MapSection {
   /// The end coordinates of this section.
   Point<int> get endCoordinates => Point<int>(endX, endY);
   
-  /// The number of steps it takes to cross a tile on this section.
-  int get stepSize => 1 ~/ tileSize;
-
   /// Convert this section to a map.
   ///
   /// Used when uploading new sections.
   Map<String, dynamic> asMap() {
     return <String, dynamic>{
+      'id': id,
       'startX': startCoordinates.x,
       'startY': startCoordinates.x,
       'endX': endCoordinates.x,
