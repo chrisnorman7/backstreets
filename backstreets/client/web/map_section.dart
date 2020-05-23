@@ -48,10 +48,10 @@ class MapSection {
   Map<String, dynamic> asMap() {
     return <String, dynamic>{
       'id': id,
-      'startX': startCoordinates.x,
-      'startY': startCoordinates.x,
-      'endX': endCoordinates.x,
-      'endY': endCoordinates.y,
+      'startX': startX,
+      'startY': startY,
+      'endX': endX,
+      'endY': endY,
       'name': name,
       'tileName': tileName,
       'tileSize': tileSize
