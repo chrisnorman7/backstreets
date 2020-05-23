@@ -88,6 +88,13 @@ class CommandContext{
     return await mapQuery.fetchOne();
   }
 
+  /// Get the options for the connected player.
+  Future<PlayerOptions> getPlayerOptions() async {
+    final Query<PlayerOptions> q = Query<PlayerOptions>(db)
+      ..where((PlayerOptions o) => o.object).identifiedBy(characterId);
+    return q.fetchOne();
+  }
+
   /// Set [mapId] to the id of the provided [GameMap].
   set map(GameMap m) {
     mapId = m?.id;
@@ -212,9 +219,7 @@ class CommandContext{
   }
 
   Future<void> sendPlayerOptions() async {
-    final Query<PlayerOptions> q = Query<PlayerOptions>(db)
-      ..where((PlayerOptions o) => o.object).identifiedBy(characterId);
-    final PlayerOptions o = await q.fetchOne();
+    final PlayerOptions o = await getPlayerOptions();
     send('playerOptions', <Map<String, dynamic>>[o.asMap()]);
   }
 }

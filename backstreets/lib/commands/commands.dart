@@ -27,6 +27,7 @@ List<Command> commandsList = <Command>[
 
   // General commands.
   serverTime,
+  playerOption,
 
   // Login commands.
   login,
