@@ -13,6 +13,8 @@ import '../menus/line.dart';
 import '../menus/map_section_menu.dart';
 import '../menus/page.dart';
 
+import '../util.dart';
+
 import 'run_conditions.dart';
 
 final Hotkey builderMenu = Hotkey('b', () {
@@ -34,11 +36,18 @@ final Hotkey builderMenu = Hotkey('b', () {
           })
         );
       }, titleString: 'New Section Menu'),
-      Line(
-        commandContext.book, (Book b) =>b.push(
-          mapSectionMenu(b, commandContext.getCurrentSection(), commandContext)
-        ), titleString: 'Current Section Menu'
-      ),
+      Line(commandContext.book, (Book b) =>b.push(
+        mapSectionMenu(b, commandContext.getCurrentSection(), commandContext)
+      ), titleString: 'Current Section Menu'),
+      Line(commandContext.book, (Book b) {
+        final List<Line> lines = <Line>[];
+        commandContext.sections.forEach((int id, MapSection s) => lines.add(
+          Line(
+            b, (Book b) => b.push(mapSectionMenu(b, s, commandContext)
+          ), titleFunc: () => '${s.name} (${s.startX}, ${s.startY} -> ${s.endX}, ${s.endY})', soundUrl: () => getFootstepSound(s.tileName))
+        ));
+        b.push(Page(titleString: 'Map Sections', lines: lines));
+      }, titleString: 'Other Sections Menu'),
       Line (commandContext.book, (Book b) {
         b.push(
           Page(
