@@ -20,10 +20,9 @@ import 'socials.dart';
 List<Command> commandsList = <Command>[
   // Building commands.
   renameMap,
-  renameSection,
-  sectionTileName,
   addMapSection,
   mapAmbience,
+  editMapSection,
 
   // General commands.
   serverTime,

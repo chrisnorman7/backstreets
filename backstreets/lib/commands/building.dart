@@ -18,26 +18,8 @@ final Command renameMap = Command('renameMap', (CommandContext ctx) async {
     ..values.name = ctx.args[0] as String
     ..where((GameMap m) => m.id).equalTo(ctx.mapId);
   final GameMap m = await q.updateOne();
+  await m.broadcastCommand(ctx.db, 'mapName', <String>[m.name]);
   ctx.sendMessage('Map renamed.');
-  ctx.send('mapName', <String>[m.name]);
-}, authenticationType: AuthenticationTypes.admin);
-
-final Command renameSection = Command('renameSection', (CommandContext ctx) async {
-  final Query<MapSection> q = Query<MapSection>(ctx.db)
-    ..values.name = ctx.args[1] as String
-    ..where((MapSection s) => s.id).equalTo(ctx.args[0] as int);
-  final MapSection s = await q.updateOne();
-  ctx.send('renameSection', <dynamic>[s.id, s.name]);
-  ctx.sendMessage('Section renamed.');
-}, authenticationType: AuthenticationTypes.admin);
-
-final Command sectionTileName = Command('sectionTileName', (CommandContext ctx) async {
-  final Query<MapSection> q = Query<MapSection>(ctx.db)
-    ..values.tileName = ctx.args[1] as String
-    ..where((MapSection s) => s.id).equalTo(ctx.args[0] as int);
-  final MapSection s = await q.updateOne();
-  ctx.send('sectionTileName', <dynamic>[s.id, s.tileName]);
-  ctx.sendMessage('Default tile updated.');
 }, authenticationType: AuthenticationTypes.admin);
 
 final Command addMapSection = Command('addMapSection', (CommandContext ctx) async {
@@ -56,7 +38,9 @@ final Command addMapSection = Command('addMapSection', (CommandContext ctx) asyn
     ..values.tileSize = data['tileSize'] as double
     ..values.location.id = ctx.mapId;
   final MapSection s = await q.insert();
-  ctx.sendMapSection(s);
+  final GameMap m = await ctx.getMap();
+  await m.broadcastCommand(ctx.db, 'mapSection', <Map<String, dynamic>>[s.asMap()]);
+  ctx.sendMessage('Section added.');
 }, authenticationType: AuthenticationTypes.admin);
 
 final Command mapAmbience = Command('mapAmbience', (CommandContext ctx) async {
@@ -69,5 +53,32 @@ final Command mapAmbience = Command('mapAmbience', (CommandContext ctx) async {
     await m.broadcastCommand(ctx.db, 'mapAmbience', <String>[ambiences[ambience].url]);
   } else {
     ctx.sendError('Invalid ambience "$ambience".');
+  }
+}, authenticationType: AuthenticationTypes.admin);
+
+final Command editMapSection = Command('editMapSection', (CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final int startX = data['startX'] as int;
+  final int startY = data['startY'] as int;
+  final int endX = data['endX'] as int;
+  final int endY = data['endY'] as int;
+  final Query<MapSection> q = Query<MapSection>(ctx.db)
+    ..values.tileName = data['tileName'] as String
+    ..values.name = data['name'] as String
+    ..values.startX = min(startX, endX)
+    ..values.startY = min(startY, endY)
+    ..values.endX = max(endX, startX)
+    ..values.endY = max(endY, startY)
+    ..values.tileSize = (data['tileSize'] as num).toDouble()
+    ..where((MapSection s) => s.location).identifiedBy(ctx.mapId)
+    ..where((MapSection s) => s.id).equalTo(id);
+  final MapSection s = await q.updateOne();
+  if (s == null) {
+    ctx.sendError('Invalid map section. Maybe someone else deleted it?');
+  } else {
+    final GameMap m = await ctx.getMap();
+    await m.broadcastCommand(ctx.db, 'mapSection', <Map<String, dynamic>>[s.asMap()]);
+    ctx.sendMessage('Section edited.');
   }
 }, authenticationType: AuthenticationTypes.admin);
