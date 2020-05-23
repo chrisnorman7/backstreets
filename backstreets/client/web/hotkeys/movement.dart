@@ -27,7 +27,7 @@ final Hotkey facing = Hotkey('f', () => showMessage(headingToString(commandConte
 
 final Hotkey walkForwards = Hotkey('w', () => move(1), interval: 50, runWhen: validMap, titleString: 'Move forward');
 
-final Hotkey walkBackwards = Hotkey('s', () => move(-1), shift: true, interval: 50, runWhen: validMap);
+final Hotkey walkBackwards = Hotkey('s', () => move(-0.5), shift: true, interval: 50, runWhen: validMap);
 
 final Hotkey left = Hotkey('a', () => turn(-1), interval: 500, runWhen: validMap, titleString: 'Turn left a bit');
 

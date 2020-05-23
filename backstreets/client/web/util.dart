@@ -108,7 +108,7 @@ String getFootstepSound(String tileName) {
   return randomElement(commandContext.footstepSounds[tileName]);
 }
 
-void move(int multiplier) {
+void move(double multiplier) {
   final double amount = commandContext.tileSize * multiplier;
   double x = commandContext.coordinates.x;
   double y = commandContext.coordinates.y;
