@@ -146,7 +146,7 @@ final Hotkey builderMenu = Hotkey('b', () {
                 commandContext.ambiences.forEach((String name, String url) {
                   lines.add(
                     Line(b, (Book b) {
-                      commandContext.send('ambience', <String>[name]);
+                      commandContext.send('mapAmbience', <String>[name]);
                       b.pop();
                     }, titleString: name,
                     soundUrl: () => url)

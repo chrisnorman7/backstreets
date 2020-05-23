@@ -14,7 +14,7 @@ import 'mixins.dart';
 ///
 /// If you want to work with maps directly, use the [GameMap] class.
 @Table(name: 'game_maps')
-class _GameMap with PrimaryKeyMixin, NameMixin {
+class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// All the [GameObject] instances on this map.
   ManagedSet<GameObject> objects;
 
@@ -48,10 +48,6 @@ class _GameMap with PrimaryKeyMixin, NameMixin {
   /// The y coordinate where players should pop.
   @Column(defaultValue: '0')
   int popY = 0;
-
-  /// The ambience to play on this map.
-  @Column(nullable: true)
-  String ambience;
 }
 
 /// A map.

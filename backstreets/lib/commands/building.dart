@@ -52,7 +52,7 @@ final Command addMapSection = Command('addMapSection', (CommandContext ctx) asyn
   ctx.sendMapSection(s);
 }, authenticationType: AuthenticationTypes.admin);
 
-final Command ambience = Command('ambience', (CommandContext ctx) async {
+final Command mapAmbience = Command('mapAmbience', (CommandContext ctx) async {
   final String ambience = ctx.args[0] as String;
   if (ambiences.containsKey(ambience)) {
     final Query<GameMap> q = Query<GameMap>(ctx.db)

@@ -20,7 +20,7 @@ import 'mixins.dart';
 ///
 /// To deal with game objects directly, use the [GameObject] class instead.
 @Table(name: 'game_objects')
-class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin {
+class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, AmbienceMixin {
   /// The location of this object.
   @Relate(#objects)
   GameMap location;

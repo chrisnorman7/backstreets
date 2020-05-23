@@ -35,3 +35,10 @@ mixin DoubleCoordinatesMixin {
   /// The y coordinate.
   double y;
 }
+
+/// Ad ambience to an object.
+mixin AmbienceMixin {
+  /// The ambience to play on this object.
+  @Column(nullable: true)
+  String ambience;
+}

@@ -23,7 +23,7 @@ List<Command> commandsList = <Command>[
   renameSection,
   sectionTileName,
   addMapSection,
-  ambience,
+  mapAmbience,
 
   // General commands.
   serverTime,
