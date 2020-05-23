@@ -12,7 +12,7 @@ import 'book.dart';
 import 'line.dart';
 import 'page.dart';
 
-Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, void Function() onUpload) {
+Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() onUpload}) {
   final List<Line> lines = <Line>[
     Line(b, (Book b) {
       FormBuilder('Rename', (Map<String, String> data) => s.name = data['name'])
@@ -70,14 +70,23 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, void Function() on
         }
         ctx.send(commandName, <Map<String, dynamic>>[s.asMap()]);
         ctx.message('Uploading.');
-        onUpload();
+        if (onUpload != null) {
+          onUpload();
+        }
       }
-    }, titleString: 'Upload'),
-    Line(b, (Book b) {
-      s = null;
-      ctx.book = null;
-      ctx.message('Reset.');
-    }, titleString: 'Reset')
+    }, titleString: 'Upload')
   ];
+  if (s.id != null) {
+    lines.add(
+      Line(b, (Book b) {
+        b.push(
+          Page.confirmPage(b, (Book b) {
+            ctx.book = null;
+            ctx.send('deleteMapSection', <int>[s.id]);
+          })
+        );
+      }, titleString: 'Delete')
+    );
+  }
   return Page(titleFunc: () => s.id == null? 'Add Section' : 'Edit Section', lines: lines);
 }
