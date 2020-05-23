@@ -169,7 +169,7 @@ void main() {
       showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
       authenticationStage = null;
       setTitle(state: 'Disconnected');
-      if (commandContext.ambience != null) {
+      if (commandContext != null && commandContext.ambience != null) {
         commandContext.ambience.stop();
       }
       commandContext = null;

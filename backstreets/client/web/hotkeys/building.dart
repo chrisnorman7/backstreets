@@ -49,21 +49,16 @@ void builderMenu() {
         commandContext.book.push(
           Page(
             titleString: 'Map', lines: <Line>[
+              Line(commandContext.book, () => commandContext.book.push(
+                Page.ambiencesPage(
+                  commandContext.book, (String ambience) {
+                    commandContext.send('mapAmbience', <String>[ambience]);
+                    commandContext.book.pop();
+                  }, titleString: 'Ambiences'
+                )
+              ), titleFunc: () => 'Ambience (${commandContext.ambienceUrl})'),
               Line(commandContext.book, () {
-                final List<Line> lines = <Line>[];
-                commandContext.ambiences.forEach((String name, String url) {
-                  lines.add(
-                    Line(commandContext.book, () {
-                      commandContext.send('mapAmbience', <String>[name]);
-                      commandContext.book.pop();
-                    }, titleString: name,
-                    soundUrl: () => url)
-                  );
-                });
-                commandContext.book.push(Page(titleString: 'Ambiences', lines: lines));
-              }, titleFunc: () => 'Ambience (${commandContext.ambienceUrl})'),
-              Line(commandContext.book, () {
-                commandContext.book = null;
+                  commandContext.book = null;
                 FormBuilder(
                   'Rename Map', (Map<String, String> data) => commandContext.send('renameMap', <String>[data['name']]),
                   subTitle: 'Enter the new name for this map.'

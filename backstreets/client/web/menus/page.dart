@@ -89,6 +89,24 @@ class Page {
     return Page(playDefaultSounds: false, titleString: title, lines: lines);
   }
 
+  /// Create a page for selecting an ambience.
+  static Page ambiencesPage(Book book, void Function(String) onOk, {String titleString, TitleFunctionType titleFunc}) {
+    final List<Line> lines = <Line>[
+      Line(book, () {
+        onOk(null);
+      }, titleString: 'Clear')
+    ];
+    commandContext.ambiences.forEach((String name, String url) {
+      lines.add(
+        Line(book, () {
+          onOk(name);
+        }, titleString: name,
+        soundUrl: () => url)
+      );
+    });
+    return Page(titleString: titleString, titleFunc: titleFunc, lines: lines);
+  }
+
   /// The function to call when [cancel] is called.
   void Function() onCancel;
 

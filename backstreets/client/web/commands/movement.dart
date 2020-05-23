@@ -97,6 +97,7 @@ Future<void> mapSection(CommandContext ctx) async {
 Future<void> mapAmbience(CommandContext ctx) async {
   ctx.ambienceUrl = ctx.args[0] as String;
   if (ctx.ambience != null) {
+    commandContext.message(ctx.ambienceUrl);
     ctx.ambience.stop();
   }
   if (ctx.ambienceUrl == null) {
