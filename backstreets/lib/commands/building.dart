@@ -82,3 +82,18 @@ final Command editMapSection = Command('editMapSection', (CommandContext ctx) as
     ctx.sendMessage('Section edited.');
   }
 }, authenticationType: AuthenticationTypes.admin);
+
+final Command deleteMapSection = Command('deleteMapSection', (CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Query<MapSection> q = Query<MapSection>(ctx.db)
+    ..where((MapSection s) => s.location).identifiedBy(ctx.mapId)
+    ..where((MapSection s) => s.id).equalTo(id);
+  final int deleted = await q.delete();
+  if (deleted < 1) {
+    ctx.sendError('Invalid map section. Maybe someone else deleted it?');
+  } else {
+    final GameMap m = await ctx.getMap();
+    await m.broadcastCommand(ctx.db, 'deleteMapSection', <int>[id]);
+    ctx.sendMessage('Section Deleted.');
+  }
+}, authenticationType: AuthenticationTypes.admin);

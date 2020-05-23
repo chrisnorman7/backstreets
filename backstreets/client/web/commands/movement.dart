@@ -106,3 +106,8 @@ Future<void> mapAmbience(CommandContext ctx) async {
     ctx.ambience = ctx.sounds.playSound(ctx.ambienceUrl, loop: true);
   }
 }
+
+Future<void> deleteMapSection(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  ctx.sections.remove(id);
+}

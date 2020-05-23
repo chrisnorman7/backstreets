@@ -39,4 +39,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'sectionTileName': sectionTileName,
   'mapSection': mapSection,
   'mapAmbience': mapAmbience,
+  'deleteMapSection': deleteMapSection,
 };
