@@ -19,28 +19,28 @@ import 'socials.dart';
 
 List<Command> commandsList = <Command>[
   // Building commands.
-  renameMap,
-  addMapSection,
-  mapAmbience,
-  editMapSection,
-  deleteMapSection,
+  Command('renameMap', renameMap, authenticationType: AuthenticationTypes.admin),
+  Command('addMapSection', addMapSection, authenticationType: AuthenticationTypes.admin),
+  Command('mapAmbience', mapAmbience, authenticationType: AuthenticationTypes.admin),
+  Command('editMapSection', editMapSection, authenticationType: AuthenticationTypes.admin),
+  Command('deleteMapSection', deleteMapSection, authenticationType: AuthenticationTypes.admin),
 
   // General commands.
-  serverTime,
-  playerOption,
+  Command('serverTime', serverTime, authenticationType: AuthenticationTypes.any),
+  Command('playerOption', playerOption),
 
   // Login commands.
-  login,
-  createAccount,
-  createCharacter,
-  connectCharacter,
+  Command('createAccount', createAccount, authenticationType: AuthenticationTypes.anonymous),
+  Command('login', login, authenticationType: AuthenticationTypes.anonymous),
+  Command('createCharacter', createCharacter, authenticationType: AuthenticationTypes.account),
+  Command('connectCharacter', connectCharacter, authenticationType: AuthenticationTypes.account),
 
   // Movement commands.
-  characterCoordinates,
-  characterTheta,
+  Command('characterCoordinates', characterCoordinates),
+  Command('characterTheta', characterTheta),
 
   // Social commands:
-  say,
+  Command('say', say),
 ];
 
 Map<String, Command> commands = <String, Command>{};

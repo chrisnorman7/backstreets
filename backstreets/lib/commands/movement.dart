@@ -6,10 +6,9 @@ import 'package:aqueduct/aqueduct.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 
-import 'command.dart';
 import 'command_context.dart';
 
-final Command characterCoordinates = Command('characterCoordinates', (CommandContext ctx) async {
+Future<void> characterCoordinates(CommandContext ctx) async {
   double x, y;
   if (ctx.args[0] is int) {
     x = (ctx.args[0] as int).toDouble();
@@ -32,9 +31,9 @@ final Command characterCoordinates = Command('characterCoordinates', (CommandCon
   } else {
     ctx.send('characterCoordinates', <double>[c.x, c.y]);
   }
-});
+}
 
-final Command characterTheta = Command('characterTheta', (CommandContext ctx) async {
+Future<void> characterTheta(CommandContext ctx) async {
   double theta;
   if (ctx.args[0] is int) {
     theta = (ctx.args[0] as int).toDouble();
@@ -45,4 +44,4 @@ final Command characterTheta = Command('characterTheta', (CommandContext ctx) as
     ..values.theta = theta
     ..where((GameObject o) => o.id).equalTo(ctx.characterId);
   await q.updateOne();
-});
+}
