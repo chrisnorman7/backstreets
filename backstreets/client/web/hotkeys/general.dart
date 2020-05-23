@@ -1,72 +1,74 @@
 /// Provides general hotkeys.
 library general;
 
+import '../commands/command_context.dart';
+
 import '../main.dart';
 
 import '../menus/book.dart';
 import '../menus/line.dart';
 import '../menus/page.dart';
 
-void previousMessage() {
+void previousMessage(CommandContext ctx) {
   String message;
-  commandContext.messageIndex ??= commandContext.messages.length - 1;
-  commandContext.messageIndex--;
-  if (commandContext.messageIndex < 0) {
-    commandContext.messageIndex = 0;
+  ctx.messageIndex ??= ctx.messages.length - 1;
+  ctx.messageIndex--;
+  if (ctx.messageIndex < 0) {
+    ctx.messageIndex = 0;
   }
-  if (commandContext.messageIndex == null) {
-    message = commandContext.messages.last;
+  if (ctx.messageIndex == null) {
+    message = ctx.messages.last;
   } else {
-    message = commandContext.messages[commandContext.messageIndex];
+    message = ctx.messages[ctx.messageIndex];
   }
   showMessage(message);
 }
 
-void nextMessage() {
+void nextMessage(CommandContext ctx) {
   String message;
-  if (commandContext.messageIndex != null) {
-    commandContext.messageIndex++;
-    if (commandContext.messageIndex == commandContext.messages.length) {
-      commandContext.messageIndex = null;
+  if (ctx.messageIndex != null) {
+    ctx.messageIndex++;
+    if (ctx.messageIndex == ctx.messages.length) {
+      ctx.messageIndex = null;
     }
   }
-  if (commandContext.messageIndex == null) {
-    message = commandContext.messages.last;
+  if (ctx.messageIndex == null) {
+    message = ctx.messages.last;
   } else {
-    message = commandContext.messages[commandContext.messageIndex];
+    message = ctx.messages[ctx.messageIndex];
   }
   showMessage(message);
 }
 
-void messages() {
+void messages(CommandContext ctx) {
   bool removeBook;
   void Function() onCancel;
-  if (commandContext.book == null) {
+  if (ctx.book == null) {
     removeBook = true;
     onCancel = clearBook;
-    commandContext.book = Book(commandContext.sounds, showMessage);
+    ctx.book = Book(ctx.sounds, showMessage);
   } else {
     removeBook = false;
-    onCancel = () => commandContext.book.showFocus();
+    onCancel = () => ctx.book.showFocus();
   }
   final List<Line> lines = <Line>[];
-  for (final String message in commandContext.messages.reversed) {
+  for (final String message in ctx.messages.reversed) {
     lines.add(
       Line(
-        commandContext.book, () {
+        ctx.book, () {
           if (removeBook) {
-            commandContext.book = null;
+            ctx.book = null;
           } else {
-            commandContext.book.pop();
+            ctx.book.pop();
           }
         }, titleString: message
       )
     );
   }
-  commandContext.book.push(Page(titleString: 'Messages', lines: lines, onCancel: onCancel));
+  ctx.book.push(Page(titleString: 'Messages', lines: lines, onCancel: onCancel));
 }
 
-void hotkeys() {
-  commandContext.book = Book(commandContext.sounds, showMessage);
-  commandContext.book.push(Page.hotkeysPage(keyboard, commandContext.book));
+void hotkeys(CommandContext ctx) {
+  ctx.book = Book(ctx.sounds, showMessage);
+  ctx.book.push(Page.hotkeysPage(keyboard, ctx.book));
 }

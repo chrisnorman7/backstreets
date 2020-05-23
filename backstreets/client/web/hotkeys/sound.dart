@@ -1,18 +1,18 @@
 /// Provides Sound related hotkeys.
 library sound;
 
-import '../main.dart';
+import '../commands/command_context.dart';
 
 import '../sound/sound_pool.dart';
 
-void soundVolumeDown() => commandContext.sounds.volumeDown(OutputTypes.sound);
+void soundVolumeDown(CommandContext ctx) => ctx.sounds.volumeDown(OutputTypes.sound);
 
-void soundVolumeUp() => commandContext.sounds.volumeUp(OutputTypes.sound);
+void soundVolumeUp(CommandContext ctx) => ctx.sounds.volumeUp(OutputTypes.sound);
 
-void ambienceVolumeDown() => commandContext.sounds.volumeDown(OutputTypes.ambience);
+void ambienceVolumeDown(CommandContext ctx) => ctx.sounds.volumeDown(OutputTypes.ambience);
 
-void ambienceVolumeUp() => commandContext.sounds.volumeUp(OutputTypes.ambience);
+void ambienceVolumeUp(CommandContext ctx) => ctx.sounds.volumeUp(OutputTypes.ambience);
 
-void musicVolumeDown() => commandContext.sounds.volumeDown(OutputTypes.music);
+void musicVolumeDown(CommandContext ctx) => ctx.sounds.volumeDown(OutputTypes.music);
 
-void musicVolumeUp() => commandContext.sounds.volumeUp(OutputTypes.music);
+void musicVolumeUp(CommandContext ctx) => ctx.sounds.volumeUp(OutputTypes.music);

@@ -3,6 +3,8 @@ library hotkey;
 
 import 'dart:async';
 
+import '../commands/command_context.dart';
+
 import '../main.dart';
 
 import 'key_state.dart';
@@ -52,7 +54,7 @@ class Hotkey {
   String Function() titleFunc;
 
   /// The hotkey callback, to be called with [state] as its only argument.
-  final void Function() func;
+  final void Function(CommandContext) func;
 
   /// The interval between firing [func].
   ///
@@ -94,7 +96,7 @@ class Hotkey {
     }
     try {
       if (runWhen == null || runWhen()) {
-        func();
+        func(commandContext);
       }
     }
     catch (e, s) {

@@ -1,12 +1,12 @@
 /// Provides social hotkeys.
 library socials;
 
+import '../commands/command_context.dart';
+
 import '../form_builder.dart';
 
-import '../main.dart';
-
-void say() {
-  FormBuilder('Say', (Map<String, String> data) => commandContext.send('say', <String>[data['say']]))
+void say(CommandContext ctx) {
+  FormBuilder('Say', (Map<String, String> data) => ctx.send('say', <String>[data['say']]))
     ..addElement('say', label: 'Say something')
     ..render();
 }

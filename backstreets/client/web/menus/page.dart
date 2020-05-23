@@ -60,7 +60,7 @@ class Page {
           book,
           () {
             clearBook();
-            hk.func();
+            hk.run();
           },
           titleFunc: () => '${hk.state}: ${hk.getTitle()}',
         )

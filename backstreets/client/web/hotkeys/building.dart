@@ -1,6 +1,8 @@
 /// Provides building related hotkeys.
 library building;
 
+import '../commands/command_context.dart';
+
 import '../form_builder.dart';
 
 import '../main.dart';
@@ -14,59 +16,59 @@ import '../menus/page.dart';
 import '../util.dart';
 
 
-void builderMenu() {
-  commandContext.book = Book(commandContext.sounds, showMessage);
+void builderMenu(CommandContext ctx) {
+  ctx.book = Book(ctx.sounds, showMessage);
   final Page page = Page(
     lines: <Line>[
-      Line(commandContext.book, () {
-        commandContext.section ??= MapSection(
-          null, commandContext.coordinates.x.floor(),
-          commandContext.coordinates.y.floor(),
-          commandContext.coordinates.x.floor(),
-          commandContext.coordinates.y.floor(),
-          'Untitled Section', commandContext.tileNames[0], 0.5
+      Line(ctx.book, () {
+        ctx.section ??= MapSection(
+          null, ctx.coordinates.x.floor(),
+          ctx.coordinates.y.floor(),
+          ctx.coordinates.x.floor(),
+          ctx.coordinates.y.floor(),
+          'Untitled Section', ctx.tileNames[0], 0.5
         );
-        commandContext.book.push(
-          mapSectionMenu(commandContext.book, commandContext.section, commandContext, onUpload: () {
-            commandContext.section = null;
-            commandContext.book = null;
+        ctx.book.push(
+          mapSectionMenu(ctx.book, ctx.section, commandContext, onUpload: () {
+            ctx.section = null;
+            ctx.book = null;
           })
         );
       }, titleString: 'New Section Menu'),
-      Line(commandContext.book, () =>commandContext.book.push(
-        mapSectionMenu(commandContext.book, commandContext.getCurrentSection(), commandContext)
+      Line(ctx.book, () =>ctx.book.push(
+        mapSectionMenu(ctx.book, ctx.getCurrentSection(), commandContext)
       ), titleString: 'Current Section Menu'),
-      Line(commandContext.book, () {
+      Line(ctx.book, () {
         final List<Line> lines = <Line>[];
-        commandContext.sections.forEach((int id, MapSection s) => lines.add(
+        ctx.sections.forEach((int id, MapSection s) => lines.add(
           Line(
-            commandContext.book, () => commandContext.book.push(mapSectionMenu(commandContext.book, s, commandContext)
+            ctx.book, () => ctx.book.push(mapSectionMenu(ctx.book, s, commandContext)
           ), titleFunc: () => '${s.name} (${s.startX}, ${s.startY} -> ${s.endX}, ${s.endY})', soundUrl: () => getFootstepSound(s.tileName))
         ));
-        commandContext.book.push(Page(titleString: 'Map Sections', lines: lines));
+        ctx.book.push(Page(titleString: 'Map Sections', lines: lines));
       }, titleString: 'Other Sections Menu'),
-      Line (commandContext.book, () {
-        commandContext.book.push(
+      Line (ctx.book, () {
+        ctx.book.push(
           Page(
             titleString: 'Map', lines: <Line>[
-              Line(commandContext.book, () => commandContext.book.push(
+              Line(ctx.book, () => ctx.book.push(
                 Page.ambiencesPage(
-                  commandContext.book, (String ambience) {
-                    commandContext.send('mapAmbience', <String>[ambience]);
-                    commandContext.book.pop();
+                  ctx.book, (String ambience) {
+                    ctx.send('mapAmbience', <String>[ambience]);
+                    ctx.book.pop();
                   }, titleString: 'Ambiences'
                 )
-              ), titleFunc: () => 'Ambience (${commandContext.ambienceUrl})'),
-              Line(commandContext.book, () {
-                  commandContext.book = null;
+              ), titleFunc: () => 'Ambience (${ctx.ambienceUrl})'),
+              Line(ctx.book, () {
+                  ctx.book = null;
                 FormBuilder(
-                  'Rename Map', (Map<String, String> data) => commandContext.send('renameMap', <String>[data['name']]),
+                  'Rename Map', (Map<String, String> data) => ctx.send('renameMap', <String>[data['name']]),
                   subTitle: 'Enter the new name for this map.'
                 )
                   ..addElement(
                     'name', label: 'Map Name',
-                    validator: notSameAsValidator(() => commandContext.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
-                    value: commandContext.mapName)
+                    validator: notSameAsValidator(() => ctx.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
+                    value: ctx.mapName)
                   ..render();
               }, titleString: 'Rename Map'),
             ]
@@ -78,5 +80,5 @@ void builderMenu() {
       clearBook();
     }
   );
-  commandContext.book.push(page);
+  ctx.book.push(page);
 }
