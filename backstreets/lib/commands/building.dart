@@ -1,6 +1,8 @@
 /// Provides building commands.
 library building;
 
+import 'dart:math';
+
 import 'package:aqueduct/aqueduct.dart';
 
 import '../model/game_map.dart';
@@ -40,13 +42,17 @@ final Command sectionTileName = Command('sectionTileName', (CommandContext ctx) 
 
 final Command addMapSection = Command('addMapSection', (CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int startX = data['startX'] as int;
+  final int startY = data['startY'] as int;
+  final int endX = data['endX'] as int;
+  final int endY = data['endY'] as int;
   final Query<MapSection> q = Query<MapSection>(ctx.db)
     ..values.tileName = data['tileName'] as String
     ..values.name = data['name'] as String
-    ..values.startX = data['startX'] as int
-    ..values.startY = data['startY'] as int
-    ..values.endX = data['endX'] as int
-    ..values.endY = data['endY'] as int
+    ..values.startX = min(startX, endX)
+    ..values.startY = min(startY, endY)
+    ..values.endX = max(endX, startX)
+    ..values.endY = max(endY, startY)
     ..values.location.id = ctx.mapId;
   final MapSection s = await q.insert();
   ctx.sendMapSection(s);
