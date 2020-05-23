@@ -10,7 +10,7 @@ import '../util.dart';
 import 'run_conditions.dart';
 
 final Hotkey coordinates = Hotkey(
-  'c', () => showMessage('${commandContext.coordinates.x.toStringAsFixed(0)}, ${commandContext.coordinates.y.toStringAsFixed(0)}.'),
+  'c', () => showMessage('${commandContext.coordinates.x.floor()}, ${commandContext.coordinates.y.floor()}.'),
   runWhen: validMap, titleString: 'Show coordinates'
 );
 
