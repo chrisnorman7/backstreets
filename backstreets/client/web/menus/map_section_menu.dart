@@ -44,14 +44,15 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
       ctx.message('End coordinates set.');
     }, titleFunc: () => 'End Coordinates (${s.endCoordinates.x}, ${s.endCoordinates.y})'),
     Line(b, (Book b) {
-      FormBuilder('Tile Size', (Map<String, String> data) => s.tileSize = 1 / int.tryParse(data['tileSize']))
-        ..addElement(
-          'tileSize', element: NumberInputElement(),
-          label: 'Number of steps it takes to cross tiles in this section',
-          value: s.stepSize.toString()
+      final NumberInputElement e = NumberInputElement()
+        ..min = '0.01'
+        ..max = '1.0'
+        ..step = '0.01';
+      FormBuilder('Tile Size', (Map<String, String> data) => s.tileSize = double.tryParse(data['tileSize']))
+        ..addElement('tileSize', element: e, label: 'Tile size', value: s.tileSize.toString()
         )
         ..render();
-    }, titleFunc: () => 'Tile Size (${s.stepSize})'),
+    }, titleFunc: () => 'Tile Size (${s.tileSize})'),
     Line(b, (Book b) {
       if (s.name == null || s.name.isEmpty) {
         ctx.message('You must first set a name.');
