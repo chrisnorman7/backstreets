@@ -96,6 +96,9 @@ class CommandContext {
   /// Added to by [movement.tileNames].
   List<String> tileNames = <String>[];
 
+  /// The tilesize. Set by the [tileSize] command.
+  double tileSize = 0.1;
+
   /// All the footstep sounds.
   ///
   /// Added to by [footstepSound].

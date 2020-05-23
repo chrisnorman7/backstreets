@@ -109,7 +109,7 @@ String getFootstepSound(String tileName) {
 }
 
 void move(int multiplier) {
-  final double amount = 0.1 * multiplier;
+  final double amount = commandContext.tileSize * multiplier;
   double x = commandContext.coordinates.x;
   double y = commandContext.coordinates.y;
   x += amount * cos((commandContext.theta * pi) / 180);
