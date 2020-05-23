@@ -43,13 +43,16 @@ Future<void> addMapSection(CommandContext ctx) async {
 }
 
 Future<void> mapAmbience(CommandContext ctx) async {
-  final String ambience = ctx.args[0] as String;
-  if (ambiences.containsKey(ambience)) {
+  String ambience = ctx.args[0] as String;
+  if (ambience == null || ambiences.containsKey(ambience)) {
     final Query<GameMap> q = Query<GameMap>(ctx.db)
       ..values.ambience = ambience
       ..where((GameMap m) => m.id).equalTo(ctx.mapId);
     final GameMap m = await q.updateOne();
-    await m.broadcastCommand(ctx.db, 'mapAmbience', <String>[ambiences[ambience].url]);
+    if (ambience != null) {
+      ambience = ambiences[ambience].url;
+    }
+    await m.broadcastCommand(ctx.db, 'mapAmbience', <String>[ambience]);
   } else {
     ctx.sendError('Invalid ambience "$ambience".');
   }
