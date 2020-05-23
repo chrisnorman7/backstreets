@@ -3,8 +3,6 @@ library building;
 
 import '../form_builder.dart';
 
-import '../keyboard/hotkey.dart';
-
 import '../main.dart';
 import '../map_section.dart';
 
@@ -15,10 +13,9 @@ import '../menus/page.dart';
 
 import '../util.dart';
 
-import 'run_conditions.dart';
 
-final Hotkey builderMenu = Hotkey('b', () {
-  commandContext.book = Book(commandContext.sounds, showMessage, onCancel: clearBook);
+void builderMenu() {
+  commandContext.book = Book(commandContext.sounds, showMessage);
   final Page page = Page(
     lines: <Line>[
       Line(commandContext.book, () {
@@ -81,7 +78,10 @@ final Hotkey builderMenu = Hotkey('b', () {
           )
         );
       }, titleString: 'Map Menu'),
-    ], titleString: 'Building'
+    ], titleString: 'Building', onCancel: () {
+      showMessage('Done.');
+      clearBook();
+    }
   );
   commandContext.book.push(page);
-}, runWhen: admin);
+}

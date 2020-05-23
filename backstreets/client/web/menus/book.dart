@@ -29,7 +29,7 @@ typedef BookFunctionType = void Function();
 /// You can activate items with [Book.activate].
 class Book{
   /// Give it the ability to make sounds, and the ability to send messages.
-  Book(this.soundPool, this.message, {this.onCancel}) {
+  Book(this.soundPool, this.message) {
     searchFailSound = soundPool.getSound(searchFailSoundUrl);
     searchSuccessSound = soundPool.getSound(searchSuccessSoundUrl);
     moveSound = soundPool.getSound(moveSoundUrl);
@@ -42,9 +42,6 @@ class Book{
 
   /// The function to use for showing text.
   final void Function(String) message;
-
-  /// The function to call when [cancel] is called.
-  void Function() onCancel;
 
   /// The most recent search string.
   String searchString;
@@ -217,8 +214,8 @@ class Book{
       noCancelSound = soundPool.playSound(noCancelSoundUrl);
     } else {
       pop();
-      if (onCancel != null) {
-        onCancel();
+      if (page.onCancel != null) {
+        page.onCancel();
       }
     }
   }

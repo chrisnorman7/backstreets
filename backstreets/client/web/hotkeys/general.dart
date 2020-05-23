@@ -1,15 +1,13 @@
 /// Provides general hotkeys.
 library general;
 
-import '../keyboard/hotkey.dart';
-
 import '../main.dart';
 
 import '../menus/book.dart';
 import '../menus/line.dart';
 import '../menus/page.dart';
 
-final Hotkey previousMessage = Hotkey('.', () {
+void previousMessage() {
   String message;
   commandContext.messageIndex ??= commandContext.messages.length - 1;
   commandContext.messageIndex--;
@@ -22,9 +20,9 @@ final Hotkey previousMessage = Hotkey('.', () {
     message = commandContext.messages[commandContext.messageIndex];
   }
   showMessage(message);
-});
+}
 
-final Hotkey nextMessage = Hotkey(',', () {
+void nextMessage() {
   String message;
   if (commandContext.messageIndex != null) {
     commandContext.messageIndex++;
@@ -38,15 +36,18 @@ final Hotkey nextMessage = Hotkey(',', () {
     message = commandContext.messages[commandContext.messageIndex];
   }
   showMessage(message);
-});
+}
 
-final Hotkey messages = Hotkey('/', () {
+void messages() {
   bool removeBook;
+  void Function() onCancel;
   if (commandContext.book == null) {
     removeBook = true;
-    commandContext.book = Book(commandContext.sounds, showMessage, onCancel: clearBook);
+    onCancel = clearBook;
+    commandContext.book = Book(commandContext.sounds, showMessage);
   } else {
     removeBook = false;
+    onCancel = () => commandContext.book.showFocus();
   }
   final List<Line> lines = <Line>[];
   for (final String message in commandContext.messages.reversed) {
@@ -62,5 +63,5 @@ final Hotkey messages = Hotkey('/', () {
       )
     );
   }
-  commandContext.book.push(Page(titleString: 'Messages', lines: lines));
-});
+  commandContext.book.push(Page(titleString: 'Messages', lines: lines, onCancel: onCancel));
+}

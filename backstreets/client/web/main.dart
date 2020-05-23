@@ -27,10 +27,13 @@ import 'keyboard/keyboard.dart';
 import 'menus/book.dart';
 import 'menus/main_menu.dart';
 
+import 'run_conditions.dart';
+
 import 'sound/sound_pool.dart';
 
 /// Character data, as sent to the [account] command.
 List<dynamic> characterList;
+
 /// The currently activated form builder.
 FormBuilder currentFormBuilder;
 
@@ -42,6 +45,12 @@ CommandContext commandContext;
 
 /// The current stage in the authentication process.
 AuthenticationStages authenticationStage;
+
+/// The hotkey for forward movement.
+final Hotkey walkForwardsHotkey = Hotkey('w', walkForwards, interval: 50, runWhen: validMap, titleString: 'Move forward');
+
+/// The hotkey for moving backwards;
+final Hotkey walkBackwardsHotkey = Hotkey('s', walkBackwards, shift: true, interval: 50, runWhen: validMap);
 
 /// Set the document title. [state] will be shown in square brackets.
 void setTitle({String state}) {
@@ -74,7 +83,7 @@ final Keyboard keyboard = Keyboard((dynamic e, StackTrace s) {
 
 /// What each of the mouse keys do.
 final Map<int, Hotkey> mouseButtons = <int, Hotkey>{
-  2: walkForwards,
+  2: walkForwardsHotkey,
 };
 
 /// Main entry point.
@@ -83,44 +92,44 @@ void main() {
   keyboard.addHotkeys(
     <Hotkey>[
       // Building hotkeys:
-      builderMenu,
+      Hotkey('b', builderMenu, runWhen: adminOnly),
 
       // General hotkeys:
-      previousMessage,
-      nextMessage,
-      messages,
+      Hotkey('.', previousMessage),
+      Hotkey(',', nextMessage),
+      Hotkey('/', messages),
 
       // Menu hotkeys:
-      moveUp,
-      moveDown,
-      activateSpace,
-      activateEnter,
-      activateRightArrow ,
-      cancelEscape,
-      cancelLeftArrow,
+      Hotkey('arrowup', moveUp, runWhen: validBook, titleString: 'Move up in a menu'),
+      Hotkey('arrowdown', moveDown, runWhen: validBook, titleString: 'Move down in a menu'),
+      Hotkey(' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),
+      Hotkey('enter', activateEnter, runWhen: validBook, titleString: 'Activate a menu item'),
+      Hotkey('arrowright', activateRightArrow , runWhen: validBook, titleString: 'Activate a menu item'),
+      Hotkey('escape', cancelEscape, runWhen: validBook, titleString: 'Go back to the previous menu'),
+      Hotkey('arrowleft', cancelLeftArrow, runWhen: validBook, titleString: 'Go back to the previous menu'),
 
       /// Movement hotkeys:
-      coordinates,
-      mapName,
-      facing,
-      walkForwards,
-      walkBackwards,
-      left,
-      leftSnap,
-      right,
-      rightSnap,
-      aboutFace,
+      Hotkey('c', coordinates,runWhen: validMap, titleString: 'Show coordinates'),
+      Hotkey('v', mapName, runWhen: validMap, titleString: 'View your current location'),
+      Hotkey('f', facing, runWhen: validMap, titleString: 'Show which way you are facing'),
+      walkForwardsHotkey,
+      walkBackwardsHotkey,
+      Hotkey('a', left, runWhen: validMap, titleString: 'Turn left a bit'),
+      Hotkey('a', leftSnap, shift: true, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction'),
+      Hotkey('d', right, runWhen: validMap, titleString: 'Turn right a bit'),
+      Hotkey('d', rightSnap, shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction'),
+      Hotkey('s', aboutFace, runWhen: validMap),
 
       // Social hotkeys:
-      say,
+      Hotkey("'", say, runWhen: validMap),
 
       // Sound hotkeys:
-      soundVolumeDown,
-      soundVolumeUp,
-      ambienceVolumeDown,
-      ambienceVolumeUp,
-      musicVolumeDown,
-      musicVolumeUp,
+      Hotkey('j', soundVolumeDown, shift: true, runWhen: validSounds),
+      Hotkey('j', soundVolumeUp, runWhen: validSounds),
+      Hotkey('k', ambienceVolumeDown, shift: true, runWhen: validSounds),
+      Hotkey('k', ambienceVolumeUp, runWhen: validSounds),
+      Hotkey('l', musicVolumeDown, shift: true, runWhen: validSounds),
+      Hotkey('l', musicVolumeUp, runWhen: validSounds),
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {

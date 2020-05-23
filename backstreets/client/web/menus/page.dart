@@ -18,11 +18,9 @@ class Page {
   /// if [dismissible] is true, then [Book.cancel] will dismiss it without any fuss.
   Page(
     {
-      this.titleString,
-      this.titleFunc,
+      this.titleString, this.titleFunc,
       this.lines = const <Line>[],
-      this.dismissible = true,
-      this.playDefaultSounds = true,
+      this.dismissible = true, this.playDefaultSounds = true, this.onCancel
     }
   );
 
@@ -90,6 +88,9 @@ class Page {
     }
     return Page(playDefaultSounds: false, titleString: title, lines: lines);
   }
+
+  /// The function to call when [cancel] is called.
+  void Function() onCancel;
 
   /// If true, then any [Line] instances contained by this page will not be silent, even if their [Line.soundUrl] attributes are null.
   bool playDefaultSounds;

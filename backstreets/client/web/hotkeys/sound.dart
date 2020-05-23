@@ -1,34 +1,18 @@
 /// Provides Sound related hotkeys.
 library sound;
 
-import '../keyboard/hotkey.dart';
-
 import '../main.dart';
 
 import '../sound/sound_pool.dart';
 
-import 'run_conditions.dart';
+void soundVolumeDown() => commandContext.sounds.volumeDown(OutputTypes.sound);
 
-final Hotkey soundVolumeDown = Hotkey('j', () {
-  commandContext.sounds.volumeDown(OutputTypes.sound);
-}, shift: true, runWhen: validSounds);
+void soundVolumeUp() => commandContext.sounds.volumeUp(OutputTypes.sound);
 
-final Hotkey soundVolumeUp = Hotkey('j', () {
-  commandContext.sounds.volumeUp(OutputTypes.sound);
-}, runWhen: validSounds);
+void ambienceVolumeDown() => commandContext.sounds.volumeDown(OutputTypes.ambience);
 
-final Hotkey ambienceVolumeDown = Hotkey('k', () {
-  commandContext.sounds.volumeDown(OutputTypes.ambience);
-}, shift: true, runWhen: validSounds);
+void ambienceVolumeUp() => commandContext.sounds.volumeUp(OutputTypes.ambience);
 
-final Hotkey ambienceVolumeUp = Hotkey('k', () {
-  commandContext.sounds.volumeUp(OutputTypes.ambience);
-}, runWhen: validSounds);
+void musicVolumeDown() => commandContext.sounds.volumeDown(OutputTypes.music);
 
-final Hotkey musicVolumeDown = Hotkey('l', () {
-  commandContext.sounds.volumeDown(OutputTypes.music);
-}, shift: true, runWhen: validSounds);
-
-final Hotkey musicVolumeUp = Hotkey('l', () {
-  commandContext.sounds.volumeUp(OutputTypes.music);
-}, runWhen: validSounds);
+void musicVolumeUp() => commandContext.sounds.volumeUp(OutputTypes.music);
