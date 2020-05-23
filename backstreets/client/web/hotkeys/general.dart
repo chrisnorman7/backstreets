@@ -65,3 +65,8 @@ void messages() {
   }
   commandContext.book.push(Page(titleString: 'Messages', lines: lines, onCancel: onCancel));
 }
+
+void hotkeys() {
+  commandContext.book = Book(commandContext.sounds, showMessage);
+  commandContext.book.push(Page.hotkeysPage(keyboard, commandContext.book));
+}

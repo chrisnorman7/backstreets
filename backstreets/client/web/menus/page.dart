@@ -59,7 +59,7 @@ class Page {
         Line(
           book,
           () {
-            book.pop();
+            clearBook();
             hk.func();
           },
           titleFunc: () => '${hk.state}: ${hk.getTitle()}',
@@ -67,8 +67,8 @@ class Page {
       );
     }
     return Page(
-      titleString: 'Hotkeys',
-      lines: lines,
+      titleString: 'Hotkeys (${keyboard.hotkeys.length})',
+      lines: lines, onCancel: clearBook
     );
   }
 

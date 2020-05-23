@@ -50,7 +50,7 @@ AuthenticationStages authenticationStage;
 final Hotkey walkForwardsHotkey = Hotkey('w', walkForwards, interval: 50, runWhen: validMap, titleString: 'Move forward');
 
 /// The hotkey for moving backwards;
-final Hotkey walkBackwardsHotkey = Hotkey('s', walkBackwards, shift: true, interval: 50, runWhen: validMap);
+final Hotkey walkBackwardsHotkey = Hotkey('s', walkBackwards, shift: true, interval: 50, runWhen: validMap, titleString: 'Move backwards');
 
 /// Set the document title. [state] will be shown in square brackets.
 void setTitle({String state}) {
@@ -88,28 +88,31 @@ final Map<int, Hotkey> mouseButtons = <int, Hotkey>{
 
 /// Main entry point.
 void main() {
+  const String activateString = 'Activate a menu item';
+  const String cancelString = 'Close the current menu, or go back to the previous one';
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
       // Building hotkeys:
-      Hotkey('b', builderMenu, runWhen: adminOnly),
+      Hotkey('b', builderMenu, runWhen: adminOnly, titleString: 'Builder menu'),
 
       // General hotkeys:
-      Hotkey('.', previousMessage),
-      Hotkey(',', nextMessage),
-      Hotkey('/', messages),
+      Hotkey('.', previousMessage, titleString: 'Show previous message'),
+      Hotkey(',', nextMessage, titleString: 'Show next message'),
+      Hotkey('/', messages, titleString: 'Show all messages in a list'),
+      Hotkey('?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
 
       // Menu hotkeys:
       Hotkey('arrowup', moveUp, runWhen: validBook, titleString: 'Move up in a menu'),
       Hotkey('arrowdown', moveDown, runWhen: validBook, titleString: 'Move down in a menu'),
-      Hotkey(' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),
-      Hotkey('enter', activateEnter, runWhen: validBook, titleString: 'Activate a menu item'),
-      Hotkey('arrowright', activateRightArrow , runWhen: validBook, titleString: 'Activate a menu item'),
-      Hotkey('escape', cancelEscape, runWhen: validBook, titleString: 'Go back to the previous menu'),
-      Hotkey('arrowleft', cancelLeftArrow, runWhen: validBook, titleString: 'Go back to the previous menu'),
+      Hotkey(' ', activateSpace, runWhen: validBook, titleString: activateString),
+      Hotkey('enter', activateEnter, runWhen: validBook, titleString: activateString),
+      Hotkey('arrowright', activateRightArrow , runWhen: validBook, titleString: activateString),
+      Hotkey('escape', cancelEscape, runWhen: validBook, titleString: cancelString),
+      Hotkey('arrowleft', cancelLeftArrow, runWhen: validBook, titleString: cancelString),
 
       /// Movement hotkeys:
-      Hotkey('c', coordinates,runWhen: validMap, titleString: 'Show coordinates'),
+      Hotkey('c', coordinates,runWhen: validMap, titleString: 'Show your coordinates'),
       Hotkey('v', mapName, runWhen: validMap, titleString: 'View your current location'),
       Hotkey('f', facing, runWhen: validMap, titleString: 'Show which way you are facing'),
       walkForwardsHotkey,
@@ -118,18 +121,18 @@ void main() {
       Hotkey('a', leftSnap, shift: true, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction'),
       Hotkey('d', right, runWhen: validMap, titleString: 'Turn right a bit'),
       Hotkey('d', rightSnap, shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction'),
-      Hotkey('s', aboutFace, runWhen: validMap),
+      Hotkey('s', aboutFace, runWhen: validMap, titleString: 'Turn around'),
 
       // Social hotkeys:
-      Hotkey("'", say, runWhen: validMap),
+      Hotkey("'", say, runWhen: validMap, titleString: 'Say something to other players nearby'),
 
       // Sound hotkeys:
-      Hotkey('j', soundVolumeDown, shift: true, runWhen: validSounds),
-      Hotkey('j', soundVolumeUp, runWhen: validSounds),
-      Hotkey('k', ambienceVolumeDown, shift: true, runWhen: validSounds),
-      Hotkey('k', ambienceVolumeUp, runWhen: validSounds),
-      Hotkey('l', musicVolumeDown, shift: true, runWhen: validSounds),
-      Hotkey('l', musicVolumeUp, runWhen: validSounds),
+      Hotkey('j', soundVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game sounds'),
+      Hotkey('j', soundVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game sounds'),
+      Hotkey('k', ambienceVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of the map ambience'),
+      Hotkey('k', ambienceVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of the map ambience'),
+      Hotkey('l', musicVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game music'),
+      Hotkey('l', musicVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game music'),
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
