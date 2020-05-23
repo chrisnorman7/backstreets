@@ -122,7 +122,7 @@ void move(double multiplier) {
     return commandContext.message('You cannot go that way.');
   }
   final Point<double> coordinates = Point<double>(x, y);
-  if (newSection != oldSection) {
+  if (newSection.name != oldSection.name) {
     String action, name;
     if (oldSection.rect.containsPoint(coordinates)) {
       action = 'Entering';
