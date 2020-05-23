@@ -15,6 +15,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   // General commands:
   'message': message,
   'error': error,
+  'playerOptions': playerOptions,
 
   // Sound commands:
   'interfaceSound': interfaceSound,

@@ -1,16 +1,25 @@
 /// Provides the [SoundPool] class, which is responsible for playing all sounds.
-library sound;
+library sound_pool;
 
 import 'dart:html';
 import 'dart:typed_data';
 import 'dart:web_audio';
 
+import '../main.dart';
+
 import 'music.dart';
 
 typedef OnEndedType = void Function(Event);
 
+/// The output types, for use with [SoundPool.setVolume].
 enum OutputTypes {
+  /// Game sounds.
   sound,
+
+  /// Map ambiences.
+  ambience,
+
+  /// Game and menu music.
   music
 }
 
@@ -21,11 +30,12 @@ class SoundPool {
       ..connectNode(output);
     musicOutput = audioContext.createGain()
       ..connectNode(output);
+    ambienceOutput = audioContext.createGain()
+      ..connectNode(output);
   }
 
   /// The underlying web audio context.
   final AudioContext audioContext;
-
 
   /// Get the listener from [audioContext].
   AudioListener get listener => audioContext.listener;
@@ -43,11 +53,14 @@ class SoundPool {
   /// This should be separated from [output], so it can have it's own independant volume control.
   AudioNode musicOutput;
 
+  /// The output for playing map ambiences through.
+  AudioNode ambienceOutput;
+
   /// All the buffers that have been downloaded.
   Map<String, AudioBuffer> buffers = <String, AudioBuffer>{};
 
   /// The amount volume should change by when volume change hotkeys are used.
-  num volumeChangeAmount = 0.1;
+  num volumeChangeAmount = 0.05;
 
   /// The volume of [soundOutput].
   num soundVolume = 0.75;
@@ -56,6 +69,9 @@ class SoundPool {
   ///
   /// It is important to use this value when changing the volume of the music, since nodes may fade out, and [musicOutput]'s gain may not be reliable.
   num musicVolume = 0.5;
+
+  /// The volume of [ambienceOutput].
+  num ambienceVolume = 0.75;
 
   /// The URL to the sound which should play when the volume is changed.
   String volumeSoundUrl;
@@ -110,6 +126,8 @@ class SoundPool {
     num start;
     if (outputType == OutputTypes.sound) {
       start = soundVolume;
+    } else if (outputType == OutputTypes.ambience) {
+      start = ambienceVolume;
     } else {
       start = musicVolume;
     }
@@ -126,6 +144,10 @@ class SoundPool {
       playSound(volumeSoundUrl, output: output);
     }
     setVolume(outputType, start);
+    String outputName = outputType.toString();
+    outputName = outputName.substring(outputName.indexOf('.') + 1);
+    outputName = outputName[0].toUpperCase() + outputName.substring(1);
+    showMessage('$outputName volume ${(start * 100).round()}%.');
   }
 
   /// Set the volume to an absolute value.
@@ -136,6 +158,9 @@ class SoundPool {
     if (outputType == OutputTypes.sound) {
       soundVolume = value;
       output = soundOutput;
+    } else if (outputType == OutputTypes.ambience) {
+      ambienceVolume = value;
+      output = ambienceOutput;
     } else {
       musicVolume = value;
       if (music != null) {

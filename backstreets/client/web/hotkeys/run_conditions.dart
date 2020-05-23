@@ -8,3 +8,5 @@ bool admin() => commandContext != null && commandContext.book == null && command
 
 /// Returns true if the map has been loaded, and there is no book in the way.
 bool validMap() => commandContext != null && commandContext.mapName != null && commandContext.book == null;
+
+bool validSounds() => commandContext != null && commandContext.sounds != null && commandContext.book == null;

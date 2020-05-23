@@ -18,6 +18,7 @@ import 'hotkeys/general.dart';
 import 'hotkeys/menu.dart';
 import 'hotkeys/movement.dart';
 import 'hotkeys/socials.dart';
+import 'hotkeys/sound.dart';
 
 import 'keyboard/hotkey.dart';
 import 'keyboard/key_state.dart';
@@ -112,6 +113,14 @@ void main() {
 
       // Social hotkeys:
       say,
+
+      // Sound hotkeys:
+      soundVolumeDown,
+      soundVolumeUp,
+      ambienceVolumeDown,
+      ambienceVolumeUp,
+      musicVolumeDown,
+      musicVolumeUp,
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {

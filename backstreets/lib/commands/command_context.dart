@@ -13,6 +13,7 @@ import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/map_tile.dart';
+import '../model/player_options.dart';
 
 import '../sound.dart';
 
@@ -147,12 +148,20 @@ class CommandContext{
   /// Tell the connected player about the connected character.
   Future<void> sendCharacter() async {
     final GameObject c = await getCharacter();
+    final Query<PlayerOptions> q = Query<PlayerOptions>(db)
+      ..where((PlayerOptions o) => o.object).identifiedBy(characterId);
+    if (await q.reduce.count() == 0) {
+      final PlayerOptions p = PlayerOptions()
+        ..object = c;
+      await db.insertObject(p);
+    }
     send('characterName', <String>[c.name]);
     send('characterSpeed', <int>[c.speed]);
     send('characterTheta', <double>[c.theta]);
     send('characterCoordinates', <double>[c.x, c.y]);
     logger.info('Sent character details.');
     send('admin', <bool>[c.admin]);
+    await sendPlayerOptions();
     await sendMap();
     await c.doSocial(db, c.connectSocial);
   }
@@ -200,5 +209,12 @@ class CommandContext{
     final Map<String, String> a = <String, String>{};
     ambiences.forEach((String name, Sound sound) => a[name] = sound.url);
     send('ambiences', <Map<String, String>>[a]);
+  }
+
+  Future<void> sendPlayerOptions() async {
+    final Query<PlayerOptions> q = Query<PlayerOptions>(db)
+      ..where((PlayerOptions o) => o.object).identifiedBy(characterId);
+    final PlayerOptions o = await q.fetchOne();
+    send('playerOptions', <Map<String, dynamic>>[o.asMap()]);
   }
 }

@@ -103,7 +103,7 @@ Future<void> mapAmbience(CommandContext ctx) async {
   if (ctx.ambienceUrl == null) {
     ctx.ambience = null;
   } else {
-    ctx.ambience = ctx.sounds.playSound(ctx.ambienceUrl, loop: true);
+    ctx.ambience = ctx.sounds.playSound(ctx.ambienceUrl, output: ctx.sounds.ambienceOutput, loop: true);
   }
 }
 
