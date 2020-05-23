@@ -10,6 +10,7 @@ import '../map_section.dart';
 
 import '../menus/book.dart';
 import '../menus/line.dart';
+import '../menus/map_section_menu.dart';
 import '../menus/page.dart';
 
 import 'run_conditions.dart';
@@ -19,91 +20,19 @@ final Hotkey builderMenu = Hotkey('b', () {
   final Page page = Page(
     lines: <Line>[
       Line(commandContext.book, (Book b) {
-        final List<Line> lines = <Line>[];
-        if (commandContext.section == null) {
-          lines.add(Line(b, (Book b) {
-            b.pop();
-            commandContext.section = MapSection(
-              null, commandContext.coordinates.x.floor(),
-              commandContext.coordinates.y.floor(),
-              commandContext.coordinates.x.floor(),
-              commandContext.coordinates.y.floor(),
-              'Untitled Section', commandContext.tileNames[0], 0.5
-            );
-            commandContext.message('Empty section created. Go back to the building menu to see further options.');
-          }, titleString: 'Create'));
-        } else {
-          lines.addAll(<Line>[
-            Line(b, (Book b) {
-              FormBuilder('Rename', (Map<String, String> data) {
-                if (commandContext.section == null) {
-                  b.message('You must create a new section.');
-                } else {
-                  commandContext.section.name = data['name'];
-                  commandContext.book = null;
-                }
-              })
-                ..addElement('name', validator: notEmptyValidator, value: commandContext.section.name)
-                ..render();
-            }, titleFunc: () => 'Rename (${commandContext.section.name})'),
-            Line(b, (Book b) {
-              b.push(
-                Page.selectTilePage(
-                  b, () => commandContext.section.tileName,
-                  (String name) {
-                    b.pop();
-                    commandContext.section.tileName = name;
-                    commandContext.message('Default tile set to $name.');
-                  },
-                )
-              );
-            }, titleFunc: () => 'Set DefaultTile (${commandContext.section.tileName})'),
-            Line(b, (Book b) {
-              if (commandContext.section == null) {
-                b.message('You must create a new section.');
-              } else {
-                commandContext.section
-                  ..startX = commandContext.coordinates.x.floor()
-                  ..startY = commandContext.coordinates.y.floor();
-                commandContext.message('Start coordinates set.');
-              }
-            }, titleFunc: () => 'Set Start Coordinates (${commandContext.section.startCoordinates})'),
-            Line(b, (Book b) {
-              if (commandContext.section == null) {
-                b.message('You must create a new section.');
-              } else {
-                commandContext.section
-                  ..endX = commandContext.coordinates.x.floor()
-                  ..endY = commandContext.coordinates.y.floor();
-                commandContext.message('End coordinates set.');
-              }
-            }, titleFunc: () => 'Set End Coordinates ((${commandContext.section.endCoordinates})'),
-            Line(b, (Book b) {
-              if (commandContext.section == null) {
-                commandContext.message('You must first create a section.');
-              } else if (commandContext.section.name == null || commandContext.section.name.isEmpty) {
-                commandContext.message('You must first set a name.');
-              } else if (commandContext.section.tileName == null) {
-                commandContext.message('You must set the default tile.');
-              } else if (commandContext.section.startCoordinates == null) {
-                commandContext.message('You must first set start coordinates.');
-              } else if (commandContext.section.endCoordinates == null) {
-                commandContext.message('You must first set end coordinates.');
-              } else {
-                commandContext.send('addMapSection', <Map<String, dynamic>>[commandContext.section.asMap()]);
-                commandContext.message('Uploading.');
-                commandContext.book = null;
-                commandContext.section = null;
-              }
-            }, titleString: 'Upload'),
-            Line(b, (Book b) {
-              commandContext.section = null;
-              commandContext.book = null;
-              commandContext.message('Reset.');
-            }, titleString: 'Reset')
-          ]);
-        }
-        b.push(Page(titleString: 'New Section', lines: lines));
+        commandContext.section ??= MapSection(
+          null, commandContext.coordinates.x.floor(),
+          commandContext.coordinates.y.floor(),
+          commandContext.coordinates.x.floor(),
+          commandContext.coordinates.y.floor(),
+          'Untitled Section', commandContext.tileNames[0], 0.5
+        );
+        b.push(
+          mapSectionMenu(b, commandContext.section, commandContext, () {
+            commandContext.section = null;
+            commandContext.book = null;
+          })
+        );
       }, titleString: 'New Section Menu'),
       Line(commandContext.book, (Book b) {
         b.push(Page(
