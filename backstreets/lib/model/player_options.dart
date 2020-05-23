@@ -22,6 +22,10 @@ class _PlayerOptions with PrimaryKeyMixin {
   // Ambience volume.
   @Column(defaultValue: '0.75')
   double ambienceVolume;
+
+  // Music volume.
+  @Column(defaultValue: '0.50')
+  double musicVolume;
 }
 
 /// A class to hold player options.

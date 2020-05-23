@@ -146,8 +146,8 @@ class SoundPool {
     setVolume(outputType, start);
     String outputName = outputType.toString();
     outputName = outputName.substring(outputName.indexOf('.') + 1);
-    outputName = outputName[0].toUpperCase() + outputName.substring(1);
-    showMessage('$outputName volume ${(start * 100).round()}%.');
+    commandContext.send('playerOption', <dynamic>[outputName + 'Volume', start]);
+    showMessage('${outputName[0].toUpperCase()}${outputName.substring(1)} volume ${(start * 100).round()}%.');
   }
 
   /// Set the volume to an absolute value.
