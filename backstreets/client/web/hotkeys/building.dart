@@ -58,7 +58,7 @@ final Hotkey builderMenu = Hotkey('b', () {
               if (commandContext.section == null) {
                 b.message('You must create a new section.');
               } else {
-                commandContext.section.startCoordinates = Point<int>(commandContext.coordinates.x.toInt(), commandContext.coordinates.y.toInt());
+                commandContext.section.startCoordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
                 commandContext.message('Start coordinates set.');
               }
             }, titleFunc: () => 'Set Start Coordinates (${commandContext.section.startCoordinates})'),
@@ -66,7 +66,7 @@ final Hotkey builderMenu = Hotkey('b', () {
               if (commandContext.section == null) {
                 b.message('You must create a new section.');
               } else {
-                commandContext.section.endCoordinates = Point<int>(commandContext.coordinates.x.toInt(), commandContext.coordinates.y.toInt());
+                commandContext.section.endCoordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
                 commandContext.message('End coordinates set.');
               }
             }, titleFunc: () => 'Set End Coordinates ((${commandContext.section.endCoordinates})'),
