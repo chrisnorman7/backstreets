@@ -39,4 +39,5 @@ Future<void> playerOptions(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.sounds.setVolume(OutputTypes.sound, (data['soundVolume'] as num).toDouble());
   ctx.sounds.setVolume(OutputTypes.ambience, (data['ambienceVolume'] as num).toDouble());
+  ctx.sounds.setVolume(OutputTypes.music, (data['musicVolume'] as num).toDouble());
 }
