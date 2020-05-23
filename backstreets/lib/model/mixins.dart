@@ -1,8 +1,10 @@
 /// Provides various mixins for use with database objects.
 ///
 /// * [PrimaryKeyMixin]
-/// * [CoordinatesMixin]
 /// * [NameMixin]
+/// * [IntCoordinatesMixin]
+/// * [DoubleCoordinatesMixin]
+/// * [AmbienceMixin]
 library mixins;
 
 import 'package:aqueduct/aqueduct.dart';

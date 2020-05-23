@@ -8,7 +8,7 @@
 /// commandsList.add(Command('function', someFunction));
 /// ```
 ///
-/// The [buildCommands] function will handle moving them into the [commands] dictionary.
+/// The [buildCommands] function will handle moving them into the [commands.commands] dictionary.
 library commands;
 
 import 'builder.dart';
@@ -21,7 +21,7 @@ import 'socials.dart';
 
 /// The list of pre-processed commands.
 ///
-/// The [buildCommands] function migrates them to the [commands] dictionary.
+/// The [buildCommands] function migrates them to the [commands.commands] dictionary.
 List<Command> commandsList = <Command>[
   // Building commands.
   Command('renameMap', renameMap, authenticationType: AuthenticationTypes.admin),

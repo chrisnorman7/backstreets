@@ -3,7 +3,7 @@ library socials;
 
 import '../model/game_object.dart';
 
-import '../socials.dart';
+import '../socials_factory.dart';
 
 import 'command_context.dart';
 

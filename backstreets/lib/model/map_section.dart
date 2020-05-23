@@ -1,4 +1,4 @@
-/// Provides the [MapTerrain] class.
+/// Provides the [MapSection] class.
 library map_section;
 
 import 'package:aqueduct/aqueduct.dart';
@@ -6,9 +6,9 @@ import 'package:aqueduct/aqueduct.dart';
 import 'game_map.dart';
 import 'mixins.dart';
 
-/// The terrains table.
+/// The sections table.
 ///
-/// To work with terrains directly, use the [MapTerrain] class.
+/// To work with map sections directly, use the [MapSection] class.
 @Table(name: 'map_sections')
 class _MapSection with PrimaryKeyMixin, NameMixin {
   /// The start x coordinate.

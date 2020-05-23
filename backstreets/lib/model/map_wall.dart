@@ -1,4 +1,4 @@
-/// Provides the [WallTypes] enumeration, and the [Wall] class.
+/// Provides the [WallTypes] enumeration, and the [MapWall] class.
 library map_wall;
 
 import 'package:aqueduct/aqueduct.dart';

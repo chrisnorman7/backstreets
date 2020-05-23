@@ -22,7 +22,7 @@ import 'model/game_map.dart';
 import 'model/game_object.dart';
 import 'model/map_section.dart';
 
-import 'socials.dart';
+import 'socials_factory.dart';
 import 'sound.dart';
 
 /// This type initializes an application.

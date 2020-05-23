@@ -7,7 +7,7 @@ import 'package:aqueduct/aqueduct.dart';
 
 import '../commands/command_context.dart';
 
-import '../socials.dart';
+import '../socials_factory.dart';
 
 import '../sound.dart';
 

@@ -54,7 +54,7 @@ class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
 ///
 /// Maps contain sections, tiles, walls, and objects.
 class GameMap extends ManagedObject<_GameMap> implements _GameMap {
-  /// Returns [true] if the passed coordinates are valid for this Map.
+  /// Returns true if the passed coordinates are valid for this Map.
   ///
   /// Valid coordinates means either there is a [MapSection] encompassing the coordinates, or there is a [MapTile] there.
   Future<bool> validCoordinates(ManagedContext db, int x, int y) async {
