@@ -8,18 +8,14 @@ import '../model/game_object.dart';
 
 import 'command_context.dart';
 
+/// The player has moved their character, now they're letting us know the new coordinates.
+///
+/// This function ensures the coordinates they are trying to move to are valid.
+///
+/// If they are not, a counter coordinates call is sent, hopefully re-aligning the character's client.
 Future<void> characterCoordinates(CommandContext ctx) async {
-  double x, y;
-  if (ctx.args[0] is int) {
-    x = (ctx.args[0] as int).toDouble();
-  } else {
-    x = ctx.args[0] as double;
-  }
-  if (ctx.args[1] is int) {
-    y = (ctx.args[1] as int).toDouble();
-  } else {
-    y = ctx.args[1] as double;
-  }
+  final double x = (ctx.args[0] as num).toDouble();
+  final double y = (ctx.args[1] as num).toDouble();
   final GameMap m = await ctx.getMap();
   final GameObject c = await ctx.getCharacter();
   if (await m.validCoordinates(ctx.db, x.floor(), y.floor())) {
@@ -33,6 +29,9 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   }
 }
 
+/// The character has turned their player, now they're letting us know.
+///
+/// No checks are performed here. If the value is < 0 or > 360, it's because the player is doing something dodgy, but there's no risk as far as I can tell.
 Future<void> characterTheta(CommandContext ctx) async {
   double theta;
   if (ctx.args[0] is int) {

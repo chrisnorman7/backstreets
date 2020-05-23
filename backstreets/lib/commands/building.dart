@@ -12,6 +12,7 @@ import '../sound.dart';
 
 import 'command_context.dart';
 
+/// Renames the map the connected object is on.
 Future<void> renameMap(CommandContext ctx) async {
   final Query<GameMap> q = Query<GameMap>(ctx.db)
     ..values.name = ctx.args[0] as String
@@ -21,6 +22,7 @@ Future<void> renameMap(CommandContext ctx) async {
   ctx.sendMessage('Map renamed.');
 }
 
+/// Adds a new [MapSection] instance from the given data.
 Future<void> addMapSection(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final int startX = data['startX'] as int;
@@ -42,6 +44,7 @@ Future<void> addMapSection(CommandContext ctx) async {
   ctx.sendMessage('Section added.');
 }
 
+/// Change the ambience for the map the connected object is on.
 Future<void> mapAmbience(CommandContext ctx) async {
   String ambience = ctx.args[0] as String;
   if (ambience == null || ambiences.containsKey(ambience)) {
@@ -58,6 +61,7 @@ Future<void> mapAmbience(CommandContext ctx) async {
   }
 }
 
+/// Given a Map of data, edit a section of the current map by its ID.
 Future<void> editMapSection(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final int id = data['id'] as int;
@@ -85,6 +89,7 @@ Future<void> editMapSection(CommandContext ctx) async {
   }
 }
 
+/// Delete a section of the map the connected object is on.
 Future<void> deleteMapSection(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final Query<MapSection> q = Query<MapSection>(ctx.db)

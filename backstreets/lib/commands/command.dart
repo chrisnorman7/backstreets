@@ -37,7 +37,7 @@ class Command {
   ///
   /// The [func] argument is the function which will be called when this command has been requested.
   ///
-  /// If you want to change when this command will be available, pass an authenticationType argument.
+  /// If you want to change when this command will be available, pass the [authenticationType} argument.
   Command(this.name, this.func, {this.authenticationType = AuthenticationTypes.authenticated});
 
   /// The name of this command.

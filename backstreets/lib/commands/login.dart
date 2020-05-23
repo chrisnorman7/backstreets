@@ -16,6 +16,7 @@ const String loginSound = 'general/welcome.wav';
 /// The sound to play when there is a login failure.
 const String loginError = 'general/loginerror.wav';
 
+/// Create an account with the given username and password.
 Future<void> createAccount(CommandContext ctx) async {
   final String username = ctx.args[0] as String;
   final String password = ctx.args[1] as String;
@@ -35,6 +36,7 @@ Future<void> createAccount(CommandContext ctx) async {
   }
 }
 
+/// Login with the given username and password.
 Future<void> login(CommandContext ctx) async {
   final String username = ctx.args[0] as String;
   final String password = ctx.args[1] as String;
@@ -51,6 +53,17 @@ Future<void> login(CommandContext ctx) async {
   ctx.sendError('Invalid username or password.', sound: Sound(loginError));
 }
 
+/// Create a character with the given name.
+///
+/// This command checks for the existance of character objects ([GameObject] instances with a not-null account property) with the same name.
+///
+/// If any are found, then `ctx.sendError` is used to complain.
+///
+/// This triggers the client to show the character menu again.
+///
+/// At some point we should probably disconnect them after 3 failed login attempts or something, but (like death), not today.
+///
+/// Should probably also ensure that only a finite number of characters per account can be created.
 Future<void> createCharacter(CommandContext ctx) async {
   final String name = ctx.args[0] as String;
   final Query<GameObject> q = Query<GameObject>(ctx.db)
@@ -77,12 +90,15 @@ Future<void> createCharacter(CommandContext ctx) async {
   ctx.logger.info('Created character $character.');
 }
 
+/// Connect the player to a character on their account.
+/// The query that is used will only retrieve a character with given id, if their account id is the same as the one the socket is logged in with.
 Future<void> connectCharacter(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..join(object: (GameObject c) => c.location)
+    ..join(object: (GameObject o) => o.account)
     ..where((GameObject c) => c.id).equalTo(id)
-    ..where((GameObject c) => c.account.id).equalTo(ctx.accountId);
+    ..where((GameObject c) => c.account).identifiedBy(ctx.accountId);
   final GameObject c = await q.fetchOne();
   if (c == null) {
     return ctx.sendError('That character is not registered to your account.');

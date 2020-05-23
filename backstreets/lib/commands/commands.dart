@@ -4,6 +4,8 @@
 ///
 /// ```
 /// commandsList.add(Command('time', (CommandContext ctx) => ctx.sendMessage('The current time is ${DateTime.now()}.')));
+/// // OR:
+/// commandsList.add(Command('function', someFunction));
 /// ```
 ///
 /// The [buildCommands] function will handle moving them into the [commands] dictionary.
@@ -17,6 +19,9 @@ import 'login.dart';
 import 'movement.dart';
 import 'socials.dart';
 
+/// The list of pre-processed commands.
+///
+/// The [buildCommands] function migrates them to the [commands] dictionary.
 List<Command> commandsList = <Command>[
   // Building commands.
   Command('renameMap', renameMap, authenticationType: AuthenticationTypes.admin),
@@ -43,4 +48,7 @@ List<Command> commandsList = <Command>[
   Command('say', say),
 ];
 
+/// The final dictionary of commands.
+///
+/// It is this dictionary (not [commandsList]) that websockets use to find the command they want.
 Map<String, Command> commands = <String, Command>{};
