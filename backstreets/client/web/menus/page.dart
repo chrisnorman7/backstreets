@@ -94,7 +94,7 @@ class Page {
     final List<Line> lines = <Line>[
       Line(book, () {
         onOk(null);
-      }, titleString: 'Clear')
+      }, titleString: '<Silent>')
     ];
     commandContext.ambiences.forEach((String name, String url) {
       lines.add(
@@ -104,6 +104,7 @@ class Page {
         soundUrl: () => url)
       );
     });
+    lines.sort((Line a, Line b) => a.getTitle().toLowerCase().compareTo(b.getTitle().toLowerCase()));
     return Page(titleString: titleString, titleFunc: titleFunc, lines: lines);
   }
 
