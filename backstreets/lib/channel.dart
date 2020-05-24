@@ -123,6 +123,9 @@ class BackstreetsChannel extends ApplicationChannel {
     // Serve out of build.
     router.route('/*').link(() => FileController('client/build/'));
 
+    // Serve API docs.
+    router.route('/doc/api/*').link(() => FileController('doc/api/'));
+
     // Setup the websocket first.
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
