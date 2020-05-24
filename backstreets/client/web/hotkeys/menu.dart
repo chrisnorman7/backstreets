@@ -1,18 +1,18 @@
 /// Provides menu-related hotkeys.
 library menu;
 
-import '../commands/command_context.dart';
+import '../main.dart';
 
-void moveUp(CommandContext ctx) => ctx.book.moveUp();
+void moveUp() => commandContext.book.moveUp();
 
-void moveDown(CommandContext ctx) => ctx.book.moveDown();
+void moveDown() => commandContext.book.moveDown();
 
-void activateSpace(CommandContext ctx) => ctx.book.activate();
+void activateSpace() => commandContext.book.activate();
 
-void activateEnter(CommandContext ctx) => ctx.book.activate();
+void activateEnter() => commandContext.book.activate();
 
-void activateRightArrow(CommandContext ctx) => ctx.book.activate();
+void activateRightArrow() => commandContext.book.activate();
 
-void cancelEscape(CommandContext ctx) => ctx.book.cancel();
+void cancelEscape() => commandContext.book.cancel();
 
-void cancelLeftArrow(CommandContext ctx) => ctx.book.cancel();
+void cancelLeftArrow() => commandContext.book.cancel();

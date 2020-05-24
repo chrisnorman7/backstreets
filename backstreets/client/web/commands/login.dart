@@ -1,12 +1,12 @@
 /// Provides login commands.
 library login;
 
+import 'package:game_utils/game_utils.dart';
+
 import '../authentication.dart';
-import '../form_builder.dart';
 import '../main.dart';
-import '../menus/book.dart';
-import '../menus/line.dart';
-import '../menus/page.dart';
+
+import '../util.dart';
 
 import 'command_context.dart';
 
@@ -15,7 +15,8 @@ import 'command_context.dart';
 /// Show the menu with all the players for the given account, and let the player create a new character.
 Future<void> account(CommandContext ctx) async {
   authenticationStage = AuthenticationStages.account;
-  commandContext.book = Book(ctx.sounds, showMessage);
+  ctx.book = Book(bookOptions);
+  ctx.username = ctx.args[0] as String;
   final List<Line> lines = <Line>[];
   characterList = ctx.args[1] as List<dynamic>;
   for (final dynamic characterData in characterList) {
@@ -35,23 +36,22 @@ Future<void> account(CommandContext ctx) async {
   lines.add(
     Line(
       commandContext.book, () {
-        final FormBuilder createForm = FormBuilder(
+        FormBuilder(
           'New Character', (Map<String, String> data) {
-            commandContext.book = null;
+            clearBook();
             ctx.message('Creating character...');
             ctx.send('createCharacter', <String>[data['name']]);
-          },
+          }, showMessage,
           subTitle: 'Enter the name for your new character',
           submitLabel: 'Create Character',
-          cancellable: true
-        );
-        createForm.addElement('name', label: 'Character Name');
-        createForm.render();
+          cancellable: true, onCancel: resetFocus
+        )
+          ..addElement('name', label: 'Character Name')
+          ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
       }, titleString: 'New Character'
     )
   );
-  ctx.username = ctx.args[0] as String;
-  commandContext.book.push(
+  ctx.book.push(
     Page(
       titleString: 'Character Selection',
       lines: lines,

@@ -3,7 +3,7 @@ library movement;
 
 import 'dart:math';
 
-import '../keyboard/hotkey.dart';
+import 'package:game_utils/game_utils.dart';
 
 import '../main.dart';
 import '../map_section.dart';

@@ -5,13 +5,13 @@ import 'dart:convert';
 import 'dart:html';
 import 'dart:web_audio';
 
+import 'package:game_utils/game_utils.dart';
+
 import 'authentication.dart';
 
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'commands/login.dart';
-
-import 'form_builder.dart';
 
 import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
@@ -20,22 +20,12 @@ import 'hotkeys/movement.dart';
 import 'hotkeys/socials.dart';
 import 'hotkeys/sound.dart';
 
-import 'keyboard/hotkey.dart';
-import 'keyboard/key_state.dart';
-import 'keyboard/keyboard.dart';
-
-import 'menus/book.dart';
 import 'menus/main_menu.dart';
 
 import 'run_conditions.dart';
 
-import 'sound/sound_pool.dart';
-
 /// Character data, as sent to the [account] command.
 List<dynamic> characterList;
-
-/// The currently activated form builder.
-FormBuilder currentFormBuilder;
 
 /// Where to put new [FormBuilder]s, when calling [FormBuilder.render].
 final Element formBuilderDiv = querySelector('#formBuilderDiv');
@@ -47,10 +37,13 @@ CommandContext commandContext;
 AuthenticationStages authenticationStage;
 
 /// The hotkey for forward movement.
-final Hotkey walkForwardsHotkey = Hotkey('w', walkForwards, interval: 50, runWhen: validMap, titleString: 'Move forward');
+final Hotkey walkForwardsHotkey = Hotkey(keyboard, 'w', walkForwards, interval: 50, runWhen: validMap, titleString: 'Move forward');
 
 /// The hotkey for moving backwards;
-final Hotkey walkBackwardsHotkey = Hotkey('s', walkBackwards, shift: true, interval: 50, runWhen: validMap, titleString: 'Move backwards');
+final Hotkey walkBackwardsHotkey = Hotkey(keyboard, 's', walkBackwards, shift: true, interval: 50, runWhen: validMap, titleString: 'Move backwards');
+
+/// The options for any books that get created.
+BookOptions bookOptions;
 
 /// Set the document title. [state] will be shown in square brackets.
 void setTitle({String state}) {
@@ -94,53 +87,51 @@ void main() {
   keyboard.addHotkeys(
     <Hotkey>[
       // Building hotkeys:
-      Hotkey('b', builderMenu, runWhen: adminOnly, titleString: 'Builder menu'),
+      Hotkey(keyboard, 'b', builderMenu, runWhen: adminOnly, titleString: 'Builder menu'),
 
       // General hotkeys:
-      Hotkey('.', previousMessage, titleString: 'Show previous message'),
-      Hotkey(',', nextMessage, titleString: 'Show next message'),
-      Hotkey('/', messages, titleString: 'Show all messages in a list'),
-      Hotkey('?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
+      Hotkey(keyboard, '.', previousMessage, titleString: 'Show previous message'),
+      Hotkey(keyboard, ',', nextMessage, titleString: 'Show next message'),
+      Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list'),
+      Hotkey(keyboard, '?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
 
       // Menu hotkeys:
-      Hotkey('arrowup', moveUp, runWhen: validBook, titleString: 'Move up in a menu'),
-      Hotkey('arrowdown', moveDown, runWhen: validBook, titleString: 'Move down in a menu'),
-      Hotkey(' ', activateSpace, runWhen: validBook, titleString: activateString),
-      Hotkey('enter', activateEnter, runWhen: validBook, titleString: activateString),
-      Hotkey('arrowright', activateRightArrow , runWhen: validBook, titleString: activateString),
-      Hotkey('escape', cancelEscape, runWhen: validBook, titleString: cancelString),
-      Hotkey('arrowleft', cancelLeftArrow, runWhen: validBook, titleString: cancelString),
+      Hotkey(keyboard, 'arrowup', moveUp, runWhen: validBook, titleString: 'Move up in a menu'),
+      Hotkey(keyboard, 'arrowdown', moveDown, runWhen: validBook, titleString: 'Move down in a menu'),
+      Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: activateString),
+      Hotkey(keyboard, 'enter', activateEnter, runWhen: validBook, titleString: activateString),
+      Hotkey(keyboard, 'arrowright', activateRightArrow , runWhen: validBook, titleString: activateString),
+      Hotkey(keyboard, 'escape', cancelEscape, runWhen: validBook, titleString: cancelString),
+      Hotkey(keyboard, 'arrowleft', cancelLeftArrow, runWhen: validBook, titleString: cancelString),
 
       /// Movement hotkeys:
-      Hotkey('c', coordinates,runWhen: validMap, titleString: 'Show your coordinates'),
-      Hotkey('v', mapName, runWhen: validMap, titleString: 'View your current location'),
-      Hotkey('f', facing, runWhen: validMap, titleString: 'Show which way you are facing'),
+      Hotkey(keyboard, 'c', coordinates,runWhen: validMap, titleString: 'Show your coordinates'),
+      Hotkey(keyboard, 'v', mapName, runWhen: validMap, titleString: 'View your current location'),
+      Hotkey(keyboard, 'f', facing, runWhen: validMap, titleString: 'Show which way you are facing'),
       walkForwardsHotkey,
       walkBackwardsHotkey,
-      Hotkey('a', left, runWhen: validMap, titleString: 'Turn left a bit'),
-      Hotkey('a', leftSnap, shift: true, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction'),
-      Hotkey('d', right, runWhen: validMap, titleString: 'Turn right a bit'),
-      Hotkey('d', rightSnap, shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction'),
-      Hotkey('s', aboutFace, runWhen: validMap, titleString: 'Turn around'),
+      Hotkey(keyboard, 'a', left, runWhen: validMap, titleString: 'Turn left a bit'),
+      Hotkey(keyboard, 'a', leftSnap, shift: true, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction'),
+      Hotkey(keyboard, 'd', right, runWhen: validMap, titleString: 'Turn right a bit'),
+      Hotkey(keyboard, 'd', rightSnap, shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction'),
+      Hotkey(keyboard, 's', aboutFace, runWhen: validMap, titleString: 'Turn around'),
 
       // Social hotkeys:
-      Hotkey("'", say, runWhen: validMap, titleString: 'Say something to other players nearby'),
+      Hotkey(keyboard, "'", say, runWhen: validMap, titleString: 'Say something to other players nearby'),
 
       // Sound hotkeys:
-      Hotkey('j', soundVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game sounds'),
-      Hotkey('j', soundVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game sounds'),
-      Hotkey('k', ambienceVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of the map ambience'),
-      Hotkey('k', ambienceVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of the map ambience'),
-      Hotkey('l', musicVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game music'),
-      Hotkey('l', musicVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game music'),
+      Hotkey(keyboard, 'j', soundVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game sounds'),
+      Hotkey(keyboard, 'j', soundVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game sounds'),
+      Hotkey(keyboard, 'k', ambienceVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of the map ambience'),
+      Hotkey(keyboard, 'k', ambienceVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of the map ambience'),
+      Hotkey(keyboard, 'l', musicVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game music'),
+      Hotkey(keyboard, 'l', musicVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game music'),
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
-    if (currentFormBuilder == null) {
-      final KeyState ks = keyboard.press(e.key.toLowerCase(), shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey);
-      if (keyboard.hotkeys.where((Hotkey hk) => hk.state == ks).isNotEmpty) {
-        e.preventDefault();
-      }
+    final KeyState ks = keyboard.press(e.key.toLowerCase(), shift: e.shiftKey, control: e.ctrlKey, alt: e.altKey);
+    if (keyboard.hotkeys.where((Hotkey hk) => hk.state == ks).isNotEmpty) {
+      e.preventDefault();
     }
   });
   keyboardArea.onKeyUp.listen((KeyboardEvent e) => keyboard.release(e.key.toLowerCase()));
@@ -150,7 +141,7 @@ void main() {
   startDiv.hidden = false;
   startButton.onClick.listen((Event event) {
     final AudioContext audio = AudioContext();
-    final SoundPool sounds = SoundPool(audio);
+    final SoundPool sounds = SoundPool(audio, showMessage: showMessage);
     sounds.playSound('sounds/general/start.wav');
     startDiv.hidden = true;
     mainDiv.hidden = false;
@@ -163,7 +154,8 @@ void main() {
         commandContext.messages.add(message);
         showMessage(message);
       }, sounds);
-      commandContext.book = Book(sounds, showMessage)
+      bookOptions = BookOptions(sounds, showMessage);
+      commandContext.book = Book(bookOptions)
         ..push(mainMenu());
       setTitle(state: 'Connected');
     });

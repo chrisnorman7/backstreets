@@ -1,13 +1,12 @@
 /// General commands.
 library general;
 
+import 'package:game_utils/game_utils.dart';
+
 import '../authentication.dart';
 import '../main.dart';
 
-import '../menus/book.dart';
 import '../menus/main_menu.dart';
-
-import '../sound/sound_pool.dart';
 
 import 'command_context.dart';
 import 'login.dart';
@@ -24,7 +23,7 @@ Future<void> error(CommandContext ctx) async {
   final String msg = ctx.args[0] as String;
   if (authenticationStage == AuthenticationStages.anonymous) {
     // Probably a login failure.
-    commandContext.book = Book(ctx.sounds, showMessage)
+    commandContext.book = Book(bookOptions)
       ..push(mainMenu());
   } else if (authenticationStage == AuthenticationStages.account) {
     // A problem creating or connecting to a player.

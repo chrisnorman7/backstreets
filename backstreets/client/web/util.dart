@@ -3,6 +3,8 @@ library util;
 
 import 'dart:math';
 
+import 'package:game_utils/game_utils.dart' show randomElement;
+
 import 'main.dart';
 import 'map_section.dart';
 
@@ -22,51 +24,7 @@ String headingToString(double angle) {
   ];
   final int index =
       (((angle %= 360) < 0 ? angle + 360 : angle) ~/ 45 % 8).round();
-  return '${angle.toStringAsFixed(0)} degrees ${directions[index]}';
-}
-
-/// Convert a list of items to a properly formatted english list.
-String englishList(
-  {
-    List<String> items,
-    String andString = ', and ',
-    String sepString = ', ',
-    String emptyString = 'nothing'
-  }
-) {
-  if (items.isEmpty) {
-    return emptyString;
-  }
-  if (items.length == 1) {
-    return items[0];
-  }
-  String string = '';
-  final int lastIndex = items.length - 1;
-  final int penultimateIndex = lastIndex - 1;
-  for (int i = 0; i < items.length; i++) {
-    final String item = items[i];
-    string += item;
-    if (i == penultimateIndex) {
-      string += andString;
-    } else if (i != lastIndex) {
-      string += sepString;
-    }
-  }
-  return string;
-}
-
-/// Generate a random number between start and end inclusive.
-int randInt(int end, {int start = 0}) {
-  return random.nextInt(end) + start;
-}
-
-T randomElement<T>(List<T> items) {
-  return items[randInt(items.length)];
-}
-
-/// A shortcut for getting a milliseconds timestamp.
-int timestamp() {
-  return DateTime.now().millisecondsSinceEpoch;
+  return directions[index];
 }
 
 /// Turn the player by [amount]..
@@ -141,4 +99,16 @@ void move(double multiplier) {
   commandContext.coordinates = coordinates;
   commandContext.sounds.audioContext.listener.positionX.value = coordinates.x;
   commandContext.sounds.audioContext.listener.positionY.value = coordinates.y;
+}
+
+void clearBook() {
+  commandContext.book = null;
+  keyboardArea.focus();
+}
+
+void resetFocus() {
+  keyboardArea.focus();
+  if (commandContext.book != null) {
+    commandContext.book.showFocus();
+  }
 }

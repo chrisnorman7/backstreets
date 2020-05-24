@@ -3,25 +3,30 @@ library map_section_menu;
 
 import 'dart:html';
 
+import 'package:game_utils/game_utils.dart';
+
 import '../commands/command_context.dart';
 
-import '../form_builder.dart';
+import '../main.dart';
 import '../map_section.dart';
+import '../util.dart';
 
-import 'book.dart';
-import 'line.dart';
-import 'page.dart';
+import 'select_tile_menu.dart';
 
+/// Edit a map section.
 Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() onUpload}) {
   final List<Line> lines = <Line>[
     Line(b, () {
-      FormBuilder('Rename', (Map<String, String> data) => s.name = data['name'])
+      FormBuilder('Rename', (Map<String, String> data) {
+        resetFocus();
+        s.name = data['name'];
+      }, showMessage)
         ..addElement('name', validator: notEmptyValidator, value: s.name)
-        ..render();
+        ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
     }, titleFunc: () => 'Rename (${s.name})'),
     Line(b, () {
       b.push(
-        Page.selectTilePage(
+        selectTilePage(
           b, () => s.tileName,
           (String name) {
             b.pop();
@@ -48,10 +53,12 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
         ..min = '0.01'
         ..max = '1.0'
         ..step = '0.01';
-      FormBuilder('Tile Size', (Map<String, String> data) => s.tileSize = double.tryParse(data['tileSize']))
-        ..addElement('tileSize', element: e, label: 'Tile size', value: s.tileSize.toString()
-        )
-        ..render();
+      FormBuilder('Tile Size', (Map<String, String> data) {
+        resetFocus();
+        s.tileSize = double.tryParse(data['tileSize']);
+      }, showMessage)
+        ..addElement('tileSize', element: e, label: 'Tile size', value: s.tileSize.toString())
+        ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
     }, titleFunc: () => 'Tile Size (${s.tileSize})'),
     Line(b, () {
       if (s.name == null || s.name.isEmpty) {
