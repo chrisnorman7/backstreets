@@ -13,6 +13,7 @@ import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'commands/login.dart';
 
+import 'hotkeys/admin.dart';
 import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
 import 'hotkeys/menu.dart';
@@ -86,6 +87,9 @@ void main() {
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
+      // Admin hotkeys:
+      Hotkey(keyboard, 'backspace', adminMenu, runWhen: adminOnly, titleString: 'Admin Menu'),
+
       // Building hotkeys:
       Hotkey(keyboard, 'b', builderMenu, runWhen: builderOnly, titleString: 'Builder menu'),
 

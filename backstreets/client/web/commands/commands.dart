@@ -16,11 +16,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'message': message,
   'error': error,
   'playerOptions': playerOptions,
-
-  // Sound commands:
-  'interfaceSound': interfaceSound,
-  'sound': sound,
-  'ambiences': ambiences,
+  'listOfObjects': listOfObjects,
 
   // Login commands:
   'account': account,
@@ -42,4 +38,9 @@ Map<String, CommandType> commands = <String, CommandType>{
   'mapSection': mapSection,
   'mapAmbience': mapAmbience,
   'deleteMapSection': deleteMapSection,
+
+  // Sound commands:
+  'interfaceSound': interfaceSound,
+  'sound': sound,
+  'ambiences': ambiences,
 };

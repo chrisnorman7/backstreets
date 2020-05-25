@@ -1,5 +1,5 @@
-/// Provides the [mapSectionMenu] function.
-library map_section_menu;
+/// Provides the [mapSectionPage] function.
+library map_section_page;
 
 import 'dart:html';
 
@@ -11,10 +11,10 @@ import '../main.dart';
 import '../map_section.dart';
 import '../util.dart';
 
-import 'select_tile_menu.dart';
+import 'select_tile_page.dart';
 
 /// Edit a map section.
-Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() onUpload}) {
+Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() onUpload}) {
   final List<Line> lines = <Line>[
     Line(b, () {
       FormBuilder('Rename', (Map<String, String> data) {

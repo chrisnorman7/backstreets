@@ -1,5 +1,5 @@
 /// Provides the [selectTilePage] function.
-library tile_menu;
+library select_tile_page;
 
 import 'package:game_utils/game_utils.dart';
 

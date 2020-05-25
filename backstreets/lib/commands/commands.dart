@@ -11,6 +11,7 @@
 /// The [buildCommands] function will handle setting command names (unless you do it yourself), and moving them into the [commands.commands] dictionary.
 library commands;
 
+import 'admin.dart';
 import 'builder.dart';
 import 'building.dart';
 import 'command.dart';
@@ -23,24 +24,29 @@ import 'socials.dart';
 ///
 /// The [buildCommands] function migrates them to the [commands.commands] dictionary.
 List<Command> commandsList = <Command>[
-  // Building commands.
+  // Admin commands:
+  Command(adminPlayerList, authenticationType: AuthenticationTypes.admin),
+  Command(renameObject, authenticationType: AuthenticationTypes.admin),
+  Command(setObjectPermission, authenticationType: AuthenticationTypes.admin),
+
+  // Building commands:
   Command(renameMap, authenticationType: AuthenticationTypes.builder),
   Command(addMapSection, authenticationType: AuthenticationTypes.builder),
   Command(mapAmbience, authenticationType: AuthenticationTypes.builder),
   Command(editMapSection, authenticationType: AuthenticationTypes.builder),
   Command(deleteMapSection, authenticationType: AuthenticationTypes.builder),
 
-  // General commands.
+  // General commands:
   Command(serverTime, authenticationType: AuthenticationTypes.any),
   Command(playerOption),
 
-  // Login commands.
+  // Login commands:
   Command(createAccount, authenticationType: AuthenticationTypes.anonymous),
   Command(login, authenticationType: AuthenticationTypes.anonymous),
   Command(createCharacter, authenticationType: AuthenticationTypes.account),
   Command(connectCharacter, authenticationType: AuthenticationTypes.account),
 
-  // Movement commands.
+  // Movement commands:
   Command(characterCoordinates),
   Command(characterTheta),
   Command(resetMapSection),

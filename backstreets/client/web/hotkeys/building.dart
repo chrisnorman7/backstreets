@@ -6,7 +6,7 @@ import 'package:game_utils/game_utils.dart';
 import '../main.dart';
 import '../map_section.dart';
 
-import '../menus/map_section_menu.dart';
+import '../menus/map_section_page.dart';
 
 import '../util.dart';
 
@@ -24,20 +24,20 @@ void builderMenu() {
           'Untitled Section', commandContext.tileNames[0], 0.5
         );
         commandContext.book.push(
-          mapSectionMenu(commandContext.book, commandContext.section, commandContext, onUpload: () {
+          mapSectionPage(commandContext.book, commandContext.section, commandContext, onUpload: () {
             commandContext.section = null;
             commandContext.book = null;
           })
         );
       }, titleString: 'New Section Menu'),
       Line(commandContext.book, () =>commandContext.book.push(
-        mapSectionMenu(commandContext.book, commandContext.getCurrentSection(), commandContext)
+        mapSectionPage(commandContext.book, commandContext.getCurrentSection(), commandContext)
       ), titleString: 'Current Section Menu'),
       Line(commandContext.book, () {
         final List<Line> lines = <Line>[];
         commandContext.sections.forEach((int id, MapSection s) => lines.add(
           Line(
-            commandContext.book, () => commandContext.book.push(mapSectionMenu(commandContext.book, s, commandContext)
+            commandContext.book, () => commandContext.book.push(mapSectionPage(commandContext.book, s, commandContext)
           ), titleFunc: () => '${s.name} (${s.startX}, ${s.startY} -> ${s.endX}, ${s.endY})', soundUrl: () => getFootstepSound(s.tileName))
         ));
         commandContext.book.push(Page(titleString: 'Map Sections', lines: lines));

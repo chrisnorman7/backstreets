@@ -7,9 +7,11 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../game_object.dart';
+
 import '../map_section.dart';
 
-/// A command context. Will be passed to all commands, instead of using individiaul arguments, which will quickly become unmanageable.
+/// A command context. Will be passed to all commands, instead of using individual arguments, which will quickly become unmanageable.
 class CommandContext {
   /// Create a context.
   CommandContext(this.socket, this.message, this.sounds);
@@ -99,17 +101,20 @@ class CommandContext {
   /// Added to by [footstepSound].
   Map<String, List<String>> footstepSounds = <String, List<String>>{};
 
-  /// The builder flag of the connected character.
-  bool builder;
-
-  /// The admin flag of the connected character.
-  bool admin;
+  /// The permissions of the connected character.
+  Permissions permissions = Permissions();
 
   /// The section which is in the process of being created.
   MapSection section;
 
   /// The id of a [MapSection] that the player wants resetting.
   int sectionResetId;
+
+  /// The list of objects sent from the server.
+  List<GameObject> objects;
+
+  /// The function to be called when [objects] are sent.
+  void Function() onListOfObjects;
 
   /// Get the section spanned by the provided coordinates.
   ///
