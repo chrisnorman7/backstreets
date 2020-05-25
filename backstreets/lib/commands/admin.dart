@@ -40,6 +40,7 @@ Future<void> setObjectPermission(CommandContext ctx) async {
   final String permission = ctx.args[1] as String;
   final bool value = ctx.args[2] as bool;
   final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.account).isNotNull()
     ..where((GameObject o) => o.id).equalTo(id);
   if (permission == 'builder') {
     q.values.builder = value;
@@ -49,6 +50,9 @@ Future<void> setObjectPermission(CommandContext ctx) async {
     return ctx.sendError('Invalid permission name "$permission".');
   }
   final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object.');
+  }
   ctx.sendMessage('Permissions updated.');
   final CommandContext c = o.commandContext;
   if (c != null) {
