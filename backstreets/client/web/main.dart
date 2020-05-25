@@ -92,7 +92,7 @@ void main() {
       // General hotkeys:
       Hotkey(keyboard, '.', previousMessage, titleString: 'Show previous message'),
       Hotkey(keyboard, ',', nextMessage, titleString: 'Show next message'),
-      Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list'),
+      Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list', runWhen: validMap),
       Hotkey(keyboard, '?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
 
       // Menu hotkeys:

@@ -39,31 +39,16 @@ void nextMessage() {
 }
 
 void messages() {
-  bool removeBook;
-  void Function() onCancel;
-  if (commandContext.book == null) {
-    removeBook = true;
-    onCancel = clearBook;
-    commandContext.book = Book(bookOptions);
-  } else {
-    removeBook = false;
-    onCancel = () => commandContext.book.showFocus();
-  }
   final List<Line> lines = <Line>[];
   for (final String message in commandContext.messages.reversed) {
     lines.add(
       Line(
-        commandContext.book, () {
-          if (removeBook) {
-            commandContext.book = null;
-          } else {
-            commandContext.book.pop();
-          }
-        }, titleString: message
+        commandContext.book, clearBook, titleString: message
       )
     );
   }
-  commandContext.book.push(Page(titleString: 'Messages', lines: lines, onCancel: onCancel));
+  commandContext.book = Book(bookOptions)
+    ..push(Page(titleString: 'Messages', lines: lines, onCancel: clearBook));
 }
 
 void hotkeys() {
