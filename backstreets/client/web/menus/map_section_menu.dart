@@ -85,7 +85,13 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
     }, titleString: 'Upload')
   ];
   if (s.id != null) {
-    lines.add(
+    lines.addAll(<Line>[
+      Line(b, () {
+        commandContext.send('resetMapSection', <int>[s.id]);
+        b.pop();
+        showMessage('Resetting Section...');
+        commandContext.sectionResetId = s.id;
+      }, titleString: 'Reset'),
       Line(b, () {
         b.push(
           Page.confirmPage(b, () {
@@ -94,7 +100,7 @@ Page mapSectionMenu(Book b, MapSection s, CommandContext ctx, {void Function() o
           })
         );
       }, titleString: 'Delete')
-    );
+    ]);
   }
   return Page(titleFunc: () => s.id == null? 'Add Section' : 'Edit Section', lines: lines);
 }

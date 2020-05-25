@@ -105,6 +105,9 @@ class CommandContext {
   /// The section which is in the process of being created.
   MapSection section;
 
+  /// The id of a [MapSection] that the player wants resetting.
+  int sectionResetId;
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].

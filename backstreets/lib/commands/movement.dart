@@ -5,6 +5,7 @@ import 'package:aqueduct/aqueduct.dart';
 
 import '../model/game_map.dart';
 import '../model/game_object.dart';
+import '../model/map_section.dart';
 
 import 'command_context.dart';
 
@@ -43,4 +44,12 @@ Future<void> characterTheta(CommandContext ctx) async {
     ..values.theta = theta
     ..where((GameObject o) => o.id).equalTo(ctx.characterId);
   await q.updateOne();
+}
+
+Future<void> resetMapSection(CommandContext ctx) async {
+  final Query<MapSection> q = Query<MapSection>(ctx.db)
+    ..where((MapSection s) => s.id).equalTo(ctx.args[0] as int)
+    ..where((MapSection s) => s.location).identifiedBy(ctx.mapId);
+  final MapSection s = await q.fetchOne();
+  return ctx.send('mapSection', <Map<String, dynamic>>[s.asMap()]);
 }

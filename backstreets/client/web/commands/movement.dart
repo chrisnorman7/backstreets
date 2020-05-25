@@ -123,6 +123,9 @@ Future<void> mapSection(CommandContext ctx) async {
     sectionData['tileName'] as String,
     sectionData['tileSize'] as double,
   );
+  if (id == ctx.sectionResetId) {
+    ctx.message('Section reset.');
+  }
 }
 
 /// The ambience of this map has changed.

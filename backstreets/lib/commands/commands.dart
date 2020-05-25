@@ -43,6 +43,7 @@ List<Command> commandsList = <Command>[
   // Movement commands.
   Command('characterCoordinates', characterCoordinates),
   Command('characterTheta', characterTheta),
+  Command('resetMapSection', resetMapSection),
 
   // Social commands:
   Command('say', say),
