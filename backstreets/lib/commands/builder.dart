@@ -1,6 +1,8 @@
 /// Provides the [buildCommands] function, for populating the [commands.commands] dictionary.
 library builder;
 
+import 'dart:mirrors';
+
 import 'command.dart';
 import 'commands.dart';
 
@@ -11,6 +13,10 @@ import 'commands.dart';
 /// If two commands have the same name, an error is thrown.
 void buildCommands() {
   for (final Command command in commandsList) {
+    if (command.name == null) {
+      final ClosureMirror m = reflect(command.func) as ClosureMirror;
+      command.name = MirrorSystem.getName(m.function.simpleName);
+    }
     if (commands.containsKey(command.name)) {
       throw 'Duplicate "${command.name}" commands found.';
     }
