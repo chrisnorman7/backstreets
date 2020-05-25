@@ -99,6 +99,9 @@ class CommandContext {
   /// Added to by [footstepSound].
   Map<String, List<String>> footstepSounds = <String, List<String>>{};
 
+  /// The builder flag of the connected character.
+  bool builder;
+
   /// The admin flag of the connected character.
   bool admin;
 

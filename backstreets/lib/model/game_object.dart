@@ -54,6 +54,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   @Column(defaultValue: 'false')
   bool admin;
 
+  /// Whether or not this object is a builder.
+  @Column(defaultValue: 'false')
+  bool builder;
+
   /// When this object was first created.
   @Column(defaultValue: "'2020-01-01'")
   DateTime createdAt;

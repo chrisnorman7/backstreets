@@ -71,6 +71,11 @@ Future<void> characterName(CommandContext ctx) async {
   setTitle(state: ctx.characterName);
 }
 
+/// Says whether or not this character is a builder.
+Future<void> builder(CommandContext ctx) async {
+  ctx.builder= ctx.args[0] as bool;
+}
+
 /// Says whether or not this character is an admin.
 Future<void> admin(CommandContext ctx) async {
   ctx.admin = ctx.args[0] as bool;

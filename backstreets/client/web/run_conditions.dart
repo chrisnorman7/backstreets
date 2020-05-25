@@ -3,6 +3,9 @@ library run_condigiont;
 
 import 'main.dart';
 
+/// Returns true if the player is connected to a builder character.
+bool builderOnly() => commandContext != null && commandContext.book == null && commandContext.builder == true;
+
 /// Returns true if the player is connected to an admin character.
 bool adminOnly() => commandContext != null && commandContext.book == null && commandContext.admin == true;
 

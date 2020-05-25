@@ -23,9 +23,10 @@ Map<String, CommandType> commands = <String, CommandType>{
   'ambiences': ambiences,
 
   // Login commands:
-  'admin': admin,
   'account': account,
   'characterName': characterName,
+  'builder': builder,
+  'admin': admin,
 
   // Movement commands:
   'characterCoordinates': characterCoordinates,

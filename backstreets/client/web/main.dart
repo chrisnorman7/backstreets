@@ -87,7 +87,7 @@ void main() {
   keyboard.addHotkeys(
     <Hotkey>[
       // Building hotkeys:
-      Hotkey(keyboard, 'b', builderMenu, runWhen: adminOnly, titleString: 'Builder menu'),
+      Hotkey(keyboard, 'b', builderMenu, runWhen: builderOnly, titleString: 'Builder menu'),
 
       // General hotkeys:
       Hotkey(keyboard, '.', previousMessage, titleString: 'Show previous message'),

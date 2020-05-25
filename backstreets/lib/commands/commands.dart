@@ -24,11 +24,11 @@ import 'socials.dart';
 /// The [buildCommands] function migrates them to the [commands.commands] dictionary.
 List<Command> commandsList = <Command>[
   // Building commands.
-  Command(renameMap, authenticationType: AuthenticationTypes.admin),
-  Command(addMapSection, authenticationType: AuthenticationTypes.admin),
-  Command(mapAmbience, authenticationType: AuthenticationTypes.admin),
-  Command(editMapSection, authenticationType: AuthenticationTypes.admin),
-  Command(deleteMapSection, authenticationType: AuthenticationTypes.admin),
+  Command(renameMap, authenticationType: AuthenticationTypes.builder),
+  Command(addMapSection, authenticationType: AuthenticationTypes.builder),
+  Command(mapAmbience, authenticationType: AuthenticationTypes.builder),
+  Command(editMapSection, authenticationType: AuthenticationTypes.builder),
+  Command(deleteMapSection, authenticationType: AuthenticationTypes.builder),
 
   // General commands.
   Command(serverTime, authenticationType: AuthenticationTypes.any),

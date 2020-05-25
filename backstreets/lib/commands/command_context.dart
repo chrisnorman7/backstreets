@@ -196,6 +196,7 @@ class CommandContext{
     send('characterSpeed', <int>[c.speed]);
     send('characterTheta', <double>[c.theta]);
     send('characterCoordinates', <double>[c.x, c.y]);
+    send('builder', <bool>[c.builder]);
     send('admin', <bool>[c.admin]);
     await sendPlayerOptions();
     logger.info('Sent character details.');
