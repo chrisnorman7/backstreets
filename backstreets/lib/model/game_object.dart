@@ -42,6 +42,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   @Column(defaultValue: '0', nullable: false)
   int deaths;
 
+  /// The number of times this object has moved.
+  @Column(defaultValue: '0', nullable: false)
+  int steps;
+
   /// The direction this object is facing.
   @Column(defaultValue: '0.0')
   double theta;

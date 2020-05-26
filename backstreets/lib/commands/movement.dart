@@ -28,6 +28,7 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..values.x = x
     ..values.y = y
+    ..values.steps = c.steps + 1
     ..where((GameObject o) => o.id).equalTo(c.id);
   await q.updateOne();
 }
