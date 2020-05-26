@@ -17,17 +17,19 @@ import 'command_context.dart';
 Future<void> characterCoordinates(CommandContext ctx) async {
   final double x = (ctx.args[0] as num).toDouble();
   final double y = (ctx.args[1] as num).toDouble();
-  final GameMap m = await ctx.getMap();
   final GameObject c = await ctx.getCharacter();
-  if (c.staff || await m.validCoordinates(ctx.db, x.floor(), y.floor())) {
-    final Query<GameObject> q = Query<GameObject>(ctx.db)
-      ..values.x = x
-      ..values.y = x
-      ..where((GameObject o) => o.id).equalTo(c.id);
-    await q.updateOne();
-  } else {
-    ctx.send('characterCoordinates', <double>[c.x, c.y]);
+  if (!c.staff) {
+    final GameMap m = await ctx.getMap();
+    if (!(await m.validCoordinates(ctx.db, x.floor(), y.floor()))) {
+      ctx.logger.warning('Tried to move to $x, $y.');
+      return ctx.send('characterCoordinates', <double>[c.x, c.y]);
+    }
   }
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.x = x
+    ..values.y = y
+    ..where((GameObject o) => o.id).equalTo(c.id);
+  await q.updateOne();
 }
 
 /// The character has turned their player, now they're letting us know.
