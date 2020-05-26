@@ -20,7 +20,6 @@ import 'game/tile.dart';
 import 'model/account.dart';
 import 'model/game_map.dart';
 import 'model/game_object.dart';
-import 'model/map_section.dart';
 
 import 'socials_factory.dart';
 import 'sound.dart';
@@ -69,20 +68,9 @@ class BackstreetsChannel extends ApplicationChannel {
           final int mapCount = await q.reduce.count();
           if (mapCount < 1) {
             logger.info('Creating default map.');
-            await databaseContext.transaction((ManagedContext db) async {
-              GameMap m = GameMap()
-                ..name = 'Map 1';
-              m = await db.insertObject(m);
-              final MapSection s = MapSection()
-                ..name = 'Untitled Section'
-                ..startX = 0
-                ..startY = 0
-                ..endX = 200
-                ..endY = 200
-                ..tileName = tiles.keys.toList()[0]
-                ..location = m;
-              await db.insertObject(s);
-            });
+            GameMap m = GameMap()
+              ..name = 'Map 1';
+            m = await databaseContext.insertObject(m);
             logger.info('Map created.');
           } else {
             logger.info('Maps: $mapCount.');
