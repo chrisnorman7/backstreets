@@ -3,6 +3,7 @@ library general;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../directions.dart';
 import '../main.dart';
 
 import '../menus/map_section_page.dart';
@@ -64,32 +65,48 @@ void hotkeys() {
 
 
 void leftArrow() {
-  if (builderOnly() && commandContext.mapSectionResizer != null) {
-    resizeMapSection(Directions.left);
+  if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null) {
+      resizeMapSection(Directions.left);
+    } else {
+      instantMove(Directions.left);
+    }
   } else if (validBook()) {
     commandContext.book.cancel();
   }
 }
 
 void rightArrow() {
-  if (builderOnly() && commandContext.mapSectionResizer != null) {
-    resizeMapSection(Directions.right);
+  if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null) {
+      resizeMapSection(Directions.right);
+    } else {
+      instantMove(Directions.right);
+    }
   } else if (validBook()) {
     commandContext.book.activate();
   }
 }
 
 void upArrow() {
-  if (builderOnly() && commandContext.mapSectionResizer != null) {
-    resizeMapSection(Directions.up);
+  if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null) {
+      resizeMapSection(Directions.up);
+    } else {
+      instantMove(Directions.up);
+    }
   } else if (validBook()) {
     commandContext.book.moveUp();
   }
 }
 
 void downArrow() {
-  if (builderOnly() && commandContext.mapSectionResizer != null) {
-    resizeMapSection(Directions.down);
+  if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null) {
+      resizeMapSection(Directions.down);
+    } else {
+      instantMove(Directions.down);
+    }
   } else if (validBook()) {
     commandContext.book.moveDown();
   }

@@ -5,20 +5,12 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart' show randomElement;
 
+import 'directions.dart';
+
 import 'main.dart';
 import 'map_section.dart';
 
 final Random random = Random();
-
-/// A set of directions.
-///
-/// At the minute, only used when resizing a [MapSection].
-enum Directions {
-  left,
-  right,
-  up,
-  down,
-}
 
 /// Convert a theta to a human readable string.
 String headingToString(double angle) {
@@ -138,28 +130,17 @@ void resetFocus() {
 
 /// Used to drag [MapSection] coordinates.
 void resizeMapSection(Directions d) {
-  commandContext.message('Resize $d.');
-  int x = 0;
-  int y = 0;
-  switch(d) {
-    case Directions.left:
-      x = -1;
-      break;
-    case Directions.right:
-      x = 1;
-      break;
-    case Directions.up:
-      y = 1;
-      break;
-    case Directions.down:
-      y = -1;
-      break;
-    default:
-      throw 'Unimplemented direction $d.';
-      break;
-  }
+  final DirectionAdjustments da = DirectionAdjustments(d);
   Point<int> coordinates = commandContext.mapSectionResizer.coordinates;
-  coordinates = Point<int>(coordinates.x + x, coordinates.y + y);
+  coordinates = Point<int>(coordinates.x + da.x, coordinates.y + da.y);
   commandContext.mapSectionResizer.updateCoordinates(coordinates);
   showMessage('${commandContext.mapSectionResizer.section.textSize}: ${commandContext.mapSectionResizer.coordinates.x}, ${commandContext.mapSectionResizer.coordinates.y}.');
+}
+
+/// Instantly move the character.
+void instantMove(Directions d) {
+  final DirectionAdjustments da = DirectionAdjustments(d);
+  Point<double> coordinates = commandContext.coordinates;
+  coordinates = Point<double>(coordinates.x + da.x, coordinates.y + da.y);
+  moveCharacter(coordinates.x, coordinates.y, force: true);
 }
