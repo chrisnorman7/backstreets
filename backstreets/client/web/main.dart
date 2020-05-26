@@ -120,6 +120,7 @@ void main() {
       Hotkey(keyboard, 'd', right, runWhen: validMap, titleString: 'Turn right a bit'),
       Hotkey(keyboard, 'd', rightSnap, shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction'),
       Hotkey(keyboard, 's', aboutFace, runWhen: validMap, titleString: 'Turn around'),
+      Hotkey(keyboard, 'v', sectionSize, shift: true, runWhen: validMap, titleString: 'Show the size of the current section.'),
 
       // Social hotkeys:
       Hotkey(keyboard, "'", say, runWhen: validMap, titleString: 'Say something to other players nearby'),

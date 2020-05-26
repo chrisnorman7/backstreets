@@ -1,6 +1,8 @@
 /// Provides movement hotkeys.
 library hotkeys;
 
+import 'dart:math';
+
 import '../main.dart';
 import '../map_section.dart';
 import '../util.dart';
@@ -37,4 +39,13 @@ void aboutFace() {
     commandContext.theta -= 360;
   }
   snap(SnapDirections.left);
+}
+
+void sectionSize() {
+  final MapSection s = commandContext.getCurrentSection();
+  if (s == null) {
+    return showMessage('You are not currently on a section.');
+  }
+  final Rectangle<int> r = s.rect;
+  showMessage('${r.width + 1} x ${r.height + 1}.');
 }
