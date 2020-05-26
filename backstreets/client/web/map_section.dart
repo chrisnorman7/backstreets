@@ -58,6 +58,9 @@ class MapSection {
     };
   }
 
+  /// Get the area of [rect].
+  int get area => rect.width * rect.height;
+
   /// Get the size of this section as text.
   String get textSize => '${rect.width + 1} x ${rect.height + 1}';
 }

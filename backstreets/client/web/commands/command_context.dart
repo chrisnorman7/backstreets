@@ -141,7 +141,7 @@ class CommandContext {
       if (a.rect.containsRectangle(b.rect)) {
         return 1;
       } else if (a.rect.intersects(b.rect)) {
-        return (a.rect.width * a.rect.height).compareTo(b.rect.width * b.rect.height);
+        return a.area.compareTo(b.area);
       } else {
         return -1;
       }
