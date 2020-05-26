@@ -120,7 +120,7 @@ class CommandContext {
   ///
   /// If no coordinates are provided, use [coordinates].
   MapSection getCurrentSection([Point<int> c]) {
-    c ??= Point<int>(coordinates.x.toInt(), coordinates.y.toInt());
+    c ??= Point<int>(coordinates.x.floor(), coordinates.y.floor());
     final List<MapSection> matchingSections = <MapSection>[];
     sections.forEach((int id, MapSection s) {
       if (s.rect.containsPoint(c)) {
