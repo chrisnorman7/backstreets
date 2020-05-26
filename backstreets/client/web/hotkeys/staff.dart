@@ -5,8 +5,6 @@ import 'dart:html';
 
 import 'package:game_utils/game_utils.dart';
 
-import '../commands/movement.dart';
-
 import '../main.dart';
 import '../util.dart';
 
@@ -15,9 +13,7 @@ void goto() {
     resetFocus();
     final double x = double.tryParse(data['x']);
     final double y = double.tryParse(data['y']);
-    commandContext.send('characterCoordinates', <double>[x, y]);
-    commandContext.args = <double>[x, y];
-    await characterCoordinates(commandContext);
+    moveCharacter(x, y, force: true);
   }, showMessage)
     ..addElement('x', element: NumberInputElement(), value:commandContext.coordinates.x.round().toString())
     ..addElement('y', element: NumberInputElement(), value: commandContext.coordinates.y.round().toString())

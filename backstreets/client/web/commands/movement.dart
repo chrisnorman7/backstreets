@@ -7,17 +7,14 @@ import 'package:game_utils/game_utils.dart';
 
 import '../main.dart';
 import '../map_section.dart';
+import '../util.dart';
 
 import 'command_context.dart';
 
 /// Save the character's coordinates.
 ///
 /// These get stored in [ctx].coordinates.
-Future<void> characterCoordinates(CommandContext ctx) async {
-  ctx.coordinates = Point<double>(ctx.args[0] as double, ctx.args[1] as double);
-  ctx.sounds.audioContext.listener.positionX.value = ctx.coordinates.x;
-  ctx.sounds.audioContext.listener.positionY.value = ctx.coordinates.y;
-}
+Future<void> characterCoordinates(CommandContext ctx) async => moveCharacter(ctx.args[0] as double, ctx.args[1] as double, force: true, informServer: false);
 
 /// Store the name of the current map.
 ///

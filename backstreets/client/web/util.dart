@@ -76,33 +76,42 @@ void move(double multiplier) {
   double y = commandContext.coordinates.y;
   x += amount * cos((commandContext.theta * pi) / 180);
   y += amount * sin((commandContext.theta * pi) / 180);
+  moveCharacter(x, y);
+}
+
+void moveCharacter(double x, double y, {bool force = false, bool informServer = true}) {
   final Point<int> tileCoordinates = Point<int>(x.floor(), y.floor());
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
-  if (newSection == null) {
+  if (!force && newSection == null) {
     commandContext.sounds.playSound('sounds/wall/wall.wav');
     return commandContext.message('You cannot go that way.');
   }
   final Point<double> coordinates = Point<double>(x, y);
-  if (newSection.name != oldSection.name) {
+  if (newSection?.name != oldSection?.name) {
     String action, name;
-    if (oldSection.rect.containsPoint(coordinates)) {
+    if (oldSection?.rect?.containsPoint(coordinates) == true) {
       action = 'Entering';
-      name = newSection.name;
+      name = newSection?.name ?? 'Nowhere';
     } else {
       action = 'Leaving';
-      name = oldSection.name;
+      name = oldSection?.name ?? 'Nowhere';
     }
     commandContext.message('$action $name.');
   }
   String tileName = commandContext.tiles[tileCoordinates];
-  tileName ??= newSection.tileName;
-  final String url = getFootstepSound(tileName);
-  commandContext.sounds.playSound(url);
-  commandContext.send('characterCoordinates', <double>[x, y]);
+  tileName ??= newSection?.tileName;
+  if (tileName != null) {
+    final String url = getFootstepSound(tileName);
+    commandContext.sounds.playSound(url);
+  }
+  if (informServer) {
+    commandContext.send('characterCoordinates', <double>[x, y]);
+  }
   commandContext.coordinates = coordinates;
-  commandContext.sounds.audioContext.listener.positionX.value = coordinates.x;
-  commandContext.sounds.audioContext.listener.positionY.value = coordinates.y;
+  commandContext.sounds.audioContext.listener
+    ..positionX.value = x
+    ..positionY.value = y;
 }
 
 void clearBook() {

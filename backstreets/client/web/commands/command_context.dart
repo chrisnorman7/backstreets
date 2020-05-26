@@ -50,7 +50,7 @@ class CommandContext {
   /// The coordinates of the connected character.
   ///
   /// Send by [characterCoordinates].
-  Point<double> coordinates;
+  Point<double> coordinates = const Point<double>(0, 0);
 
   /// The speed of this character.
   ///
