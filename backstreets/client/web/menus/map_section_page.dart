@@ -61,6 +61,14 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
         ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
     }, titleFunc: () => 'Tile Size (${s.tileSize})'),
     Line(b, () {
+      clearBook();
+      moveCharacter(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble(), force: true);
+    }, titleString: 'Move To Start Coordinates'),
+    Line(b, () {
+      clearBook();
+      moveCharacter(s.endCoordinates.x.toDouble(), s.endCoordinates.y.toDouble(), force: true);
+    }, titleString: 'Move To End Coordinates'),
+    Line(b, () {
       if (s.name == null || s.name.isEmpty) {
         ctx.message('You must first set a name.');
       } else if (s.tileName == null) {
