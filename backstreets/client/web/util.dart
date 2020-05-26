@@ -92,7 +92,7 @@ void moveCharacter(double x, double y, {bool force = false, bool informServer = 
   final Point<double> coordinates = Point<double>(x, y);
   if (newSection?.name != oldSection?.name) {
     String action, name;
-    if (oldSection?.rect?.containsPoint(coordinates) == true) {
+    if (oldSection == null || oldSection.rect.containsPoint(coordinates) == true) {
       action = 'Entering';
       name = newSection?.name ?? 'Nowhere';
     } else {

@@ -26,6 +26,11 @@ void previousMessage() {
   showMessage(message);
 }
 
+void firstMessage() {
+  commandContext.messageIndex = 1;
+  return previousMessage();
+}
+
 void nextMessage() {
   String message;
   if (commandContext.messageIndex != null) {
@@ -40,6 +45,11 @@ void nextMessage() {
     message = commandContext.messages[commandContext.messageIndex];
   }
   showMessage(message);
+}
+
+void lastMessage() {
+  commandContext.messageIndex = null;
+  return nextMessage();
 }
 
 void messages() {
@@ -57,10 +67,15 @@ void messages() {
 
 void hotkeys() {
   commandContext.book = Book(bookOptions);
-  commandContext.book.push(Page.hotkeysPage(keyboard.hotkeys, commandContext.book, beforeRun: clearBook, onCancel: () {
+  final Page hotkeysPage = Page.hotkeysPage(keyboard.hotkeys, commandContext.book, beforeRun: clearBook, onCancel: () {
     clearBook();
     resetFocus();
+  });
+  hotkeysPage.lines.insert(0, Line.checkboxLine(commandContext.book, () => '${commandContext.helpMode ? "Disable" : "Enable"} help mode', () => commandContext.helpMode, (bool value) {
+    commandContext.helpMode = value;
+    commandContext.message('Help mode ${value ? "enabled" : "disabled"}.');
   }));
+  commandContext.book.push(hotkeysPage);
 }
 
 

@@ -71,6 +71,9 @@ final Keyboard keyboard = Keyboard((dynamic e, StackTrace s) {
   showMessage('$e\n$s');
   throw e;
 }, unhandledKey: (KeyState ks) {
+  if (commandContext?.helpMode == true) {
+    commandContext?.message(ks.toString());
+  }
   if (commandContext.book != null && !ks.shift && !ks.control && !ks.alt) {
     commandContext.book.handleSearch(ks.key);
   }
@@ -94,7 +97,9 @@ void main() {
 
       // General hotkeys:
       Hotkey(keyboard, '.', previousMessage, titleString: 'Show previous message'),
+      Hotkey(keyboard, '>', firstMessage, shift: true, titleString: 'Show the first message'),
       Hotkey(keyboard, ',', nextMessage, titleString: 'Show next message'),
+      Hotkey(keyboard, '<', lastMessage, shift: true, titleString: 'Show the last message'),
       Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list', runWhen: validMap),
       Hotkey(keyboard, '?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
       Hotkey(keyboard, 'arrowleft', leftArrow, titleString: 'Left arrow'),

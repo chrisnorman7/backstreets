@@ -120,6 +120,9 @@ class CommandContext {
   /// Used when resizing a [MapSection].
   MapSectionResizer mapSectionResizer;
 
+  /// If `true`, any key that is not handled as a hotkey will be printed.
+  bool helpMode = false;
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].
@@ -136,14 +139,14 @@ class CommandContext {
     }
     matchingSections.sort((MapSection a, MapSection b) {
       if (a.rect.containsRectangle(b.rect)) {
-        return -1;
+        return 1;
       } else if (a.rect.intersects(b.rect)) {
-        return 0;
+        return (a.rect.width * a.rect.height).compareTo(b.rect.width * b.rect.height);
       } else {
         return -1;
       }
     });
-    return matchingSections.last;
+    return matchingSections.first;
   }
 
   /// Send arbitrary commands to the server.
