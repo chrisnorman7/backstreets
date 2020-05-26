@@ -1,6 +1,8 @@
 /// Provides movement hotkeys.
 library hotkeys;
 
+import 'dart:math';
+
 import '../main.dart';
 import '../map_section.dart';
 import '../util.dart';
@@ -45,4 +47,32 @@ void sectionSize() {
     return showMessage('You are not currently on a section.');
   }
   showMessage('${s.textSize}.');
+}
+
+void mapSize() {
+  int startX, startY, endX, endY;
+  commandContext.sections.forEach((int id, MapSection s) {
+    if (startX == null) {
+      startX = s.startX;
+    } else {
+      startX = min(s.startX, startX);
+    }
+    if (startY == null) {
+      startY = s.startY;
+    } else {
+      startY = min(s.startY, startY);
+    }
+    if (endX == null) {
+      endX = s.endX;
+    } else {
+      endX = max(s.endX, endX);
+    }
+    if (endY == null) {
+      endY = s.endY;
+    } else {
+      endY = max(s.endY, endY);
+    }
+  });
+  final Rectangle<int> rect = Rectangle<int>.fromPoints(Point<int>(startX, startY), Point<int>(endX, endY));
+  showMessage('${rect.width + 1} x ${rect.height + 1}: $startX, $endX to $endX, $endY.');
 }
