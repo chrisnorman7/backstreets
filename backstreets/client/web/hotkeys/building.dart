@@ -30,9 +30,13 @@ void builderMenu() {
           })
         );
       }, titleString: 'New Section Menu'),
-      Line(commandContext.book, () =>commandContext.book.push(
-        mapSectionPage(commandContext.book, commandContext.getCurrentSection(), commandContext)
-      ), titleString: 'Current Section Menu'),
+      Line(commandContext.book, () {
+        final MapSection s = commandContext.getCurrentSection();
+        if (s == null) {
+          return showMessage('There is currently no section. Either return to an existing section, or create a new section.');
+        }
+        commandContext.book.push(mapSectionPage(commandContext.book, s, commandContext));
+      }, titleString: 'Current Section Menu'),
       Line(commandContext.book, () {
         final List<Line> lines = <Line>[];
         commandContext.sections.forEach((int id, MapSection s) => lines.add(
@@ -57,10 +61,8 @@ void builderMenu() {
               Line(commandContext.book, () {
                   commandContext.book = null;
                 FormBuilder('Rename Map', (Map<String, String> data) {
-                  resetFocus();
                   commandContext.send('renameMap', <String>[data['name']]);
-                },
-                showMessage, subTitle: 'Enter the new name for this map.')
+                }, showMessage, subTitle: 'Enter the new name for this map.', onCancel: resetFocus)
                   ..addElement(
                     'name', label: 'Map Name',
                     validator: notSameAsValidator(() => commandContext.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),

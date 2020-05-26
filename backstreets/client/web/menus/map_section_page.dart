@@ -20,7 +20,7 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
       FormBuilder('Rename', (Map<String, String> data) {
         resetFocus();
         s.name = data['name'];
-      }, showMessage)
+      }, showMessage, onCancel: resetFocus)
         ..addElement('name', validator: notEmptyValidator, value: s.name)
         ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
     }, titleFunc: () => 'Rename (${s.name})'),
