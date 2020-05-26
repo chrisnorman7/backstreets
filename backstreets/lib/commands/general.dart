@@ -17,9 +17,8 @@ Future<void> serverTime(CommandContext ctx) async => ctx.sendMessage('Server tim
 Future<void> playerOption(CommandContext ctx) async {
   final String name = ctx.args[0] as String;
   final dynamic value = ctx.args[1];
-  final PlayerOptions o = await ctx.getPlayerOptions();
   final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
-    ..where((PlayerOptions i) => i.id).equalTo(o.id);
+    ..where((PlayerOptions o) => o.object).identifiedBy(ctx.characterId);
   if (name == 'soundVolume') {
     q.values.soundVolume = (value as num).toDouble();
   } else if (name == 'ambienceVolume') {
