@@ -14,7 +14,7 @@ void goto() {
     final double x = double.tryParse(data['x']);
     final double y = double.tryParse(data['y']);
     moveCharacter(x, y, force: true);
-  }, showMessage)
+  }, showMessage, onCancel: resetFocus)
     ..addElement('x', element: NumberInputElement(), value:commandContext.coordinates.x.round().toString())
     ..addElement('y', element: NumberInputElement(), value: commandContext.coordinates.y.round().toString())
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
