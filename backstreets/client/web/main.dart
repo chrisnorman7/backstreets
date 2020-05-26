@@ -20,6 +20,7 @@ import 'hotkeys/menu.dart';
 import 'hotkeys/movement.dart';
 import 'hotkeys/socials.dart';
 import 'hotkeys/sound.dart';
+import 'hotkeys/staff.dart';
 
 import 'menus/main_menu.dart';
 
@@ -130,6 +131,9 @@ void main() {
       Hotkey(keyboard, 'k', ambienceVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of the map ambience'),
       Hotkey(keyboard, 'l', musicVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game music'),
       Hotkey(keyboard, 'l', musicVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game music'),
+
+      // Staff only hotkeys:
+      Hotkey(keyboard, 'g', goto, runWhen:staffOnly, titleString: 'Jump to specific coordinates on the map'),
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {

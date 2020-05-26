@@ -9,6 +9,9 @@ bool builderOnly() => commandContext != null && commandContext.book == null && c
 /// Returns true if the player is connected to an admin character.
 bool adminOnly() => commandContext != null && commandContext.book == null && commandContext.permissions.admin == true;
 
+/// Returns true if the player is connected to an admin or builder character.
+bool staffOnly() => builderOnly() || adminOnly();
+
 /// Returns true if the map has been loaded, and there is no book in the way.
 bool validMap() => commandContext != null && commandContext.mapName != null && commandContext.book == null;
 

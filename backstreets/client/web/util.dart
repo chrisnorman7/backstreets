@@ -67,7 +67,11 @@ String getFootstepSound(String tileName) {
 }
 
 void move(double multiplier) {
-  final double amount = commandContext.getCurrentSection().tileSize * multiplier;
+  final MapSection s = commandContext.getCurrentSection();
+  if (s == null) {
+    return showMessage('There is nothing here for you to walk on.');
+  }
+  final double amount = s.tileSize * multiplier;
   double x = commandContext.coordinates.x;
   double y = commandContext.coordinates.y;
   x += amount * cos((commandContext.theta * pi) / 180);
@@ -93,9 +97,9 @@ void move(double multiplier) {
   }
   String tileName = commandContext.tiles[tileCoordinates];
   tileName ??= newSection.tileName;
-  commandContext.send('characterCoordinates', <double>[x, y]);
   final String url = getFootstepSound(tileName);
   commandContext.sounds.playSound(url);
+  commandContext.send('characterCoordinates', <double>[x, y]);
   commandContext.coordinates = coordinates;
   commandContext.sounds.audioContext.listener.positionX.value = coordinates.x;
   commandContext.sounds.audioContext.listener.positionY.value = coordinates.y;

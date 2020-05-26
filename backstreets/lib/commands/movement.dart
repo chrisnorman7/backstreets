@@ -19,7 +19,7 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   final double y = (ctx.args[1] as num).toDouble();
   final GameMap m = await ctx.getMap();
   final GameObject c = await ctx.getCharacter();
-  if (await m.validCoordinates(ctx.db, x.floor(), y.floor())) {
+  if (c.staff || await m.validCoordinates(ctx.db, x.floor(), y.floor())) {
     final Query<GameObject> q = Query<GameObject>(ctx.db)
       ..values.x = x
       ..values.y = x

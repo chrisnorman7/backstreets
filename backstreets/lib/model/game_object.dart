@@ -69,10 +69,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
 
 /// An object in a game. Contained by a [GameMap] instance.
 class GameObject extends ManagedObject<_GameObject> implements _GameObject {
-  @override
-  String toString() {
-    return '<Object $name (#$id)>';
-  }
+  /// Get the staff status of this object.
+  ///
+  /// An object is considered a member of staff if it is either a builder or an admin.
+  bool get staff => admin || builder;
 
   /// Get the command context which is connected to this object.
   ///
@@ -127,6 +127,11 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
         obj.message(message);
       }
     );
+  }
+
+  @override
+  String toString() {
+    return '<Object $name (#$id)>';
   }
 
   @override
