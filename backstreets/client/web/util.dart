@@ -10,6 +10,16 @@ import 'map_section.dart';
 
 final Random random = Random();
 
+/// A set of directions.
+///
+/// At the minute, only used when resizing a [MapSection].
+enum Directions {
+  left,
+  right,
+  up,
+  down,
+}
+
 /// Convert a theta to a human readable string.
 String headingToString(double angle) {
   const List<String> directions = <String>[
@@ -124,4 +134,32 @@ void resetFocus() {
   if (commandContext.book != null) {
     commandContext.book.showFocus();
   }
+}
+
+/// Used to drag [MapSection] coordinates.
+void resizeMapSection(Directions d) {
+  commandContext.message('Resize $d.');
+  int x = 0;
+  int y = 0;
+  switch(d) {
+    case Directions.left:
+      x = -1;
+      break;
+    case Directions.right:
+      x = 1;
+      break;
+    case Directions.up:
+      y = 1;
+      break;
+    case Directions.down:
+      y = -1;
+      break;
+    default:
+      throw 'Unimplemented direction $d.';
+      break;
+  }
+  Point<int> coordinates = commandContext.mapSectionResizer.coordinates;
+  coordinates = Point<int>(coordinates.x + x, coordinates.y + y);
+  commandContext.mapSectionResizer.updateCoordinates(coordinates);
+  showMessage('${commandContext.mapSectionResizer.section.textSize}: ${commandContext.mapSectionResizer.coordinates.x}, ${commandContext.mapSectionResizer.coordinates.y}.');
 }

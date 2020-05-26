@@ -5,6 +5,9 @@ import 'package:game_utils/game_utils.dart';
 
 import '../main.dart';
 
+import '../menus/map_section_page.dart';
+
+import '../run_conditions.dart';
 import '../util.dart';
 
 void previousMessage() {
@@ -57,4 +60,67 @@ void hotkeys() {
     clearBook();
     resetFocus();
   }));
+}
+
+
+void leftArrow() {
+  if (builderOnly() && commandContext.mapSectionResizer != null) {
+    resizeMapSection(Directions.left);
+  } else if (validBook()) {
+    commandContext.book.cancel();
+  }
+}
+
+void rightArrow() {
+  if (builderOnly() && commandContext.mapSectionResizer != null) {
+    resizeMapSection(Directions.right);
+  } else if (validBook()) {
+    commandContext.book.activate();
+  }
+}
+
+void upArrow() {
+  if (builderOnly() && commandContext.mapSectionResizer != null) {
+    resizeMapSection(Directions.up);
+  } else if (validBook()) {
+    commandContext.book.moveUp();
+  }
+}
+
+void downArrow() {
+  if (builderOnly() && commandContext.mapSectionResizer != null) {
+    resizeMapSection(Directions.down);
+  } else if (validBook()) {
+    commandContext.book.moveDown();
+  }
+}
+
+void escapeKey() {
+  if (builderOnly() && commandContext.mapSectionResizer != null) {
+    commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
+    showMessage('Coordinates reset.');
+  } else if (validBook()) {
+    commandContext.book.cancel();
+  } else {
+    showMessage('There is nothing to escape.');
+  }
+}
+
+void enterKey() {
+  if (builderOnly() && commandContext.mapSectionResizer != null) {
+    commandContext.book = Book(bookOptions)
+      ..push(mapSectionPage(commandContext.book, commandContext.mapSectionResizer.section, commandContext, onUpload: () {
+        commandContext.section = null;
+        clearBook();
+      }, onCancel: () {
+        showMessage('Cancelled.');
+        clearBook();
+      }));
+    commandContext.mapSectionResizer = null;
+    return;
+  } else if (validBook()) {
+    commandContext.book.activate();
+  } else {
+    showMessage('There is nothing to enter.');
+  }
 }

@@ -11,16 +11,16 @@ class MapSection {
 
   /// The id of this section.
   int id;
-  
+
   /// The starting x coordinate.
   int startX;
-  
+
   /// The starting y coordinate.
   int startY;
-  
+
   /// The ending x coordinate.
   int endX;
-  
+
   /// The ending y coordinate.
   int endY;
 
@@ -41,7 +41,7 @@ class MapSection {
 
   /// The end coordinates of this section.
   Point<int> get endCoordinates => Point<int>(endX, endY);
-  
+
   /// Convert this section to a map.
   ///
   /// Used when uploading new sections.
@@ -57,4 +57,7 @@ class MapSection {
       'tileSize': tileSize
     };
   }
+
+  /// Get the size of this section as text.
+  String get textSize => '${rect.width + 1} x ${rect.height + 1}';
 }

@@ -9,12 +9,13 @@ import '../commands/command_context.dart';
 
 import '../main.dart';
 import '../map_section.dart';
+import '../map_section_resizer.dart';
 import '../util.dart';
 
 import 'select_tile_page.dart';
 
 /// Edit a map section.
-Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() onUpload}) {
+Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() onUpload, void Function() onCancel}) {
   final List<Line> lines = <Line>[
     Line(b, () {
       FormBuilder('Rename', (Map<String, String> data) {
@@ -48,6 +49,16 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
         ..endY = ctx.coordinates.y.floor();
       ctx.message('End coordinates set.');
     }, titleFunc: () => 'End Coordinates (${s.endCoordinates.x}, ${s.endCoordinates.y})'),
+    Line(b, () {
+      commandContext.mapSectionResizer = MapSectionResizer(s, DragCoordinates.start);
+      clearBook();
+      ctx.message('Dragging the start coordinates for ${s.name}. Use your arrow keys to drag, and your enter key when done.');
+    }, titleString: 'Drag Start Coordinates'),
+    Line(b, () {
+      commandContext.mapSectionResizer = MapSectionResizer(s, DragCoordinates.end);
+      clearBook();
+      ctx.message('Dragging the end coordinates for ${s.name}. Use your arrow keys to drag, and your enter key when done.');
+    }, titleString: 'Drag end Coordinates'),
     Line(b, () {
       final NumberInputElement e = NumberInputElement()
         ..min = '0.01'
@@ -110,5 +121,5 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
       }, titleString: 'Delete')
     ]);
   }
-  return Page(titleFunc: () => s.id == null? 'Add Section' : 'Edit Section', lines: lines);
+  return Page(titleFunc: () => s.id == null? 'Add Section' : 'Edit Section', lines: lines, onCancel: onCancel);
 }

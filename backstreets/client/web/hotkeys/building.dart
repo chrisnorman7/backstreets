@@ -26,7 +26,7 @@ void builderMenu() {
         commandContext.book.push(
           mapSectionPage(commandContext.book, commandContext.section, commandContext, onUpload: () {
             commandContext.section = null;
-            commandContext.book = null;
+            clearBook();
           })
         );
       }, titleString: 'New Section Menu'),

@@ -10,6 +10,7 @@ import 'package:game_utils/game_utils.dart';
 import '../game_object.dart';
 
 import '../map_section.dart';
+import '../map_section_resizer.dart';
 
 /// A command context. Will be passed to all commands, instead of using individual arguments, which will quickly become unmanageable.
 class CommandContext {
@@ -115,6 +116,9 @@ class CommandContext {
 
   /// The function to be called when [objects] are sent.
   void Function() onListOfObjects;
+
+  /// Used when resizing a [MapSection].
+  MapSectionResizer mapSectionResizer;
 
   /// Get the section spanned by the provided coordinates.
   ///

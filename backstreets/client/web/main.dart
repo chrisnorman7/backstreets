@@ -83,8 +83,6 @@ final Map<int, Hotkey> mouseButtons = <int, Hotkey>{
 
 /// Main entry point.
 void main() {
-  const String activateString = 'Activate a menu item';
-  const String cancelString = 'Close the current menu, or go back to the previous one';
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
@@ -99,15 +97,15 @@ void main() {
       Hotkey(keyboard, ',', nextMessage, titleString: 'Show next message'),
       Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list', runWhen: validMap),
       Hotkey(keyboard, '?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
+      Hotkey(keyboard, 'arrowleft', leftArrow, titleString: 'Left arrow'),
+      Hotkey(keyboard, 'arrowright', rightArrow, titleString: 'Right arrow'),
+      Hotkey(keyboard, 'arrowup', upArrow, titleString: 'Up arrow'),
+      Hotkey(keyboard, 'arrowdown', downArrow, titleString: 'down arrow'),
+      Hotkey(keyboard, 'escape', escapeKey, titleString: 'Various escape / reset actions'),
+      Hotkey(keyboard, 'enter', enterKey, titleString: 'Performs a multitude of actions'),
 
       // Menu hotkeys:
-      Hotkey(keyboard, 'arrowup', moveUp, runWhen: validBook, titleString: 'Move up in a menu'),
-      Hotkey(keyboard, 'arrowdown', moveDown, runWhen: validBook, titleString: 'Move down in a menu'),
-      Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: activateString),
-      Hotkey(keyboard, 'enter', activateEnter, runWhen: validBook, titleString: activateString),
-      Hotkey(keyboard, 'arrowright', activateRightArrow , runWhen: validBook, titleString: activateString),
-      Hotkey(keyboard, 'escape', cancelEscape, runWhen: validBook, titleString: cancelString),
-      Hotkey(keyboard, 'arrowleft', cancelLeftArrow, runWhen: validBook, titleString: cancelString),
+      Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),
 
       /// Movement hotkeys:
       Hotkey(keyboard, 'c', coordinates,runWhen: validMap, titleString: 'Show your coordinates'),
