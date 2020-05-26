@@ -53,5 +53,8 @@ void messages() {
 
 void hotkeys() {
   commandContext.book = Book(bookOptions);
-  commandContext.book.push(Page.hotkeysPage(keyboard.hotkeys, commandContext.book));
+  commandContext.book.push(Page.hotkeysPage(keyboard.hotkeys, commandContext.book, beforeRun: clearBook, onCancel: () {
+    clearBook();
+    resetFocus();
+  }));
 }
