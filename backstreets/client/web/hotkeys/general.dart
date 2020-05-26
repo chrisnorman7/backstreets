@@ -118,8 +118,6 @@ void escapeKey() {
     showMessage('Coordinates reset.');
   } else if (validBook()) {
     commandContext.book.cancel();
-  } else {
-    showMessage('There is nothing to escape.');
   }
 }
 
@@ -137,7 +135,5 @@ void enterKey() {
     return;
   } else if (validBook()) {
     commandContext.book.activate();
-  } else {
-    showMessage('There is nothing to enter.');
   }
 }
