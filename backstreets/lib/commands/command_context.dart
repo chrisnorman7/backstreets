@@ -9,6 +9,7 @@ import 'package:aqueduct/aqueduct.dart';
 import '../game/tile.dart';
 
 import '../model/account.dart';
+import '../model/connection_record.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
@@ -22,7 +23,7 @@ import 'commands.dart';
 /// Used when calling commands.
 class CommandContext{
   /// Pass this object to a command in the [commands] dictionary.
-  CommandContext(this.socket, this.logger, this.db);
+  CommandContext(this.socket, this.logger, this.db, this.host);
 
   /// All instances.
   static List<CommandContext> instances = <CommandContext>[];
@@ -35,6 +36,9 @@ class CommandContext{
 
   /// The interface to the database.
   ManagedContext db;
+  
+  /// The hostname [socket] is connecting from.
+  String host;
 
   /// The id of the [Account] that [socket] is logged in on.
   ///
@@ -185,6 +189,11 @@ class CommandContext{
   /// I feel like this function should send one big data package, like [sendMap] does, but as player stuff is most likely only going to get sent once - when the player connects, it's probably not all that important.
   Future<void> sendCharacter() async {
     final GameObject c = await getCharacter();
+    final ConnectionRecord cr = ConnectionRecord()
+      ..host = host
+      ..object = c
+      ..connected = DateTime.now();
+    await db.insertObject(cr);
     final Query<PlayerOptions> q = Query<PlayerOptions>(db)
       ..where((PlayerOptions o) => o.object).identifiedBy(characterId);
     if (await q.reduce.count() == 0) {

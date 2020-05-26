@@ -18,6 +18,7 @@ import 'config.dart';
 import 'game/tile.dart';
 
 import 'model/account.dart';
+import 'model/connection_record.dart';
 import 'model/game_map.dart';
 import 'model/game_object.dart';
 
@@ -119,7 +120,7 @@ class BackstreetsChannel extends ApplicationChannel {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
       final File motdFile = File('motd.txt');
       final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
-      final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext);
+      final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
       CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
       ctx.sendMessage(motd);
@@ -131,71 +132,87 @@ class BackstreetsChannel extends ApplicationChannel {
       });
       ctx.sendAmbiences();
       socketLogger.info('Connection established.');
-      socket.listen(
-        (dynamic payload) async {
-          if (payload is! String) {
-            await socket.close(400, 'Binary communication is not supported.');
-            return null;
-          }
-          List<dynamic> data;
-          try {
-            data = jsonDecode(payload as String) as List<dynamic>;
-          }
-          on FormatException {
-            socketLogger.severe('Invalid JSON received: $payload');
-            await socket.close(400, 'Invalid JSON: $payload.');
-            return null;
-          }
-          try {
-            if (data.length != 2) {
-              throw 'Invalid command sent.';
-            }
-            final String name = data[0] as String;
-            final List<dynamic> arguments = data[1] as List<dynamic>;
-            if (commands.containsKey(name)) {
-              final Command command = commands[name];
-              final Account account = await ctx.getAccount();
-              final GameObject character = await ctx.getCharacter();
-              ///Let's check that the player has the right level of authentication.
-              //
-              // When checking AuthenticationTypes.anonymous, we only need to check ctx.account, since if they have a player, and no account, then there's a larger bug going on.
-              if (command.authenticationType == AuthenticationTypes.anonymous && account != null) {
-                throw 'Attempting to call an anonymous command while connected to an account.';
-              // When checking AuthenticationTypes.account, check to see if they have an invalid account or a valid player.
-              } else if (command.authenticationType == AuthenticationTypes.account && (account == null || character != null)) {
-                throw 'Attempting to call an account command with an invalid account or a valid player.';
-              // When checking AuthenticationTypes.authenticated, check to see if they have no player.
-              } else if (command.authenticationType == AuthenticationTypes.authenticated && character == null) {
-                throw 'Attempting to call an authenticated command without being connected to a player.';
-              // When checking AuthenticationTypes.builder, check to see if they have no player, or their player's builder field isn't true.
-              } else if (command.authenticationType == AuthenticationTypes.builder&& character?.builder!= true) {
-                throw 'Attempting to call a builder command without being a builder.';
-              // When checking AuthenticationTypes.admin, check to see if they have no player, or their player's admin field isn't true.
-              } else if (command.authenticationType == AuthenticationTypes.admin && character?.admin != true) {
-                throw 'Attempting to call an admin command without being an administrator.';
-              }
-              ctx.args = arguments;
-              await command.func(ctx);
-            } else {
-              final String msg = 'Invalid command: $name.';
-              logger.warning(msg);
-              ctx.sendError(msg);
-            }
-          }
-          catch(e, s) {
-            socketLogger.severe(e);
-            logger.severe(s.toString());
-            ctx.sendError(e.toString());
-          }
-        },
-        onError: (dynamic error) => logger.warning(error),
-        onDone: () {
-          CommandContext.instances.remove(ctx);
-          socketLogger.info('Websocket closed.');
+      socket.listen((dynamic payload) async {
+        if (payload is! String) {
+          await socket.close(400, 'Binary communication is not supported.');
+          return null;
         }
-      );
+        List<dynamic> data;
+        try {
+          data = jsonDecode(payload as String) as List<dynamic>;
+        }
+        on FormatException {
+          socketLogger.severe('Invalid JSON received: $payload');
+          await socket.close(400, 'Invalid JSON: $payload.');
+          return null;
+        }
+        try {
+          if (data.length != 2) {
+            throw 'Invalid command sent.';
+          }
+          final String name = data[0] as String;
+          final List<dynamic> arguments = data[1] as List<dynamic>;
+          if (commands.containsKey(name)) {
+            final Command command = commands[name];
+            final Account account = await ctx.getAccount();
+            final GameObject character = await ctx.getCharacter();
+            ///Let's check that the player has the right level of authentication.
+            //
+            // When checking AuthenticationTypes.anonymous, we only need to check ctx.account, since if they have a player, and no account, then there's a larger bug going on.
+            if (command.authenticationType == AuthenticationTypes.anonymous && account != null) {
+              throw 'Attempting to call an anonymous command while connected to an account.';
+            // When checking AuthenticationTypes.account, check to see if they have an invalid account or a valid player.
+            } else if (command.authenticationType == AuthenticationTypes.account && (account == null || character != null)) {
+              throw 'Attempting to call an account command with an invalid account or a valid player.';
+            // When checking AuthenticationTypes.authenticated, check to see if they have no player.
+            } else if (command.authenticationType == AuthenticationTypes.authenticated && character == null) {
+              throw 'Attempting to call an authenticated command without being connected to a player.';
+            // When checking AuthenticationTypes.builder, check to see if they have no player, or their player's builder field isn't true.
+            } else if (command.authenticationType == AuthenticationTypes.builder&& character?.builder!= true) {
+              throw 'Attempting to call a builder command without being a builder.';
+            // When checking AuthenticationTypes.admin, check to see if they have no player, or their player's admin field isn't true.
+            } else if (command.authenticationType == AuthenticationTypes.admin && character?.admin != true) {
+              throw 'Attempting to call an admin command without being an administrator.';
+            }
+            ctx.args = arguments;
+            await command.func(ctx);
+          } else {
+            final String msg = 'Invalid command: $name.';
+            logger.warning(msg);
+            ctx.sendError(msg);
+          }
+        }
+        catch(e, s) {
+          socketLogger.severe(e);
+          logger.severe(s.toString());
+          ctx.sendError(e.toString());
+        }
+      },
+      onError: (dynamic error) => logger.warning(error),
+      onDone: () async {
+        CommandContext.instances.remove(ctx);
+        if (ctx.characterId != null) {
+          final Query<ConnectionRecord> q = Query<ConnectionRecord>(ctx.db)
+            ..values.disconnected = DateTime.now()
+            ..where((ConnectionRecord c) => c.object).identifiedBy(ctx.characterId)
+            ..where((ConnectionRecord c) => c.disconnected).isNull()
+            ..sortBy((ConnectionRecord c) => c.connected, QuerySortOrder.descending);
+          await q.updateOne();
+        }
+        socketLogger.info('Websocket closed.');
+      });
       return null;
     });
     return router;
+  }
+  
+  @override
+  Future<void> close() async {
+    super.close();
+    final Query<ConnectionRecord> q = Query<ConnectionRecord>(databaseContext)
+      ..values.disconnected = DateTime.now()
+      ..where((ConnectionRecord c) => c.disconnected).isNull();
+    final List<ConnectionRecord> records = await q.update();
+    logger.info('Connection records amended: ${records.length}.');
   }
 }

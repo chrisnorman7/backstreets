@@ -142,4 +142,16 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   void willInsert() {
     createdAt = DateTime.now().toUtc();
   }
+
+  /// Get the total duration this object has been connected for.
+  Future<Duration> connectedDuration(ManagedContext db) async {
+    final Query<ConnectionRecord> q = Query<ConnectionRecord>(db)
+      ..where((ConnectionRecord r) => r.object).identifiedBy(this);
+    final List<ConnectionRecord> records = await q.fetch();
+    Duration d = const Duration();
+    for (final ConnectionRecord r in records) {
+      d += r.duration;
+    }
+    return d;
+  }
 }
