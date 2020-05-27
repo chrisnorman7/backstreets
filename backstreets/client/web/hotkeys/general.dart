@@ -129,8 +129,13 @@ void downArrow() {
 
 void escapeKey() {
   if (builderOnly() && commandContext.mapSectionResizer != null) {
-    commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
-    showMessage('Coordinates reset.');
+    if (commandContext.mapSectionResizer.coordinates == commandContext.mapSectionResizer.defaultCoordinates) {
+      showMessage('Stop dragging ${commandContext.mapSectionResizer.section.name}.');
+      commandContext.mapSectionResizer = null;
+    } else {
+      commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
+      showMessage('Coordinates reset.');
+    }
   } else if (validBook()) {
     commandContext.book.cancel();
   }
