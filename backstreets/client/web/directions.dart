@@ -23,10 +23,10 @@ class DirectionAdjustments {
         x = 1;
         break;
       case Directions.up:
-        y = 1;
+        y = -1;
         break;
       case Directions.down:
-        y = -1;
+        y = 1;
         break;
       default:
         throw 'Unimplemented direction $direction.';
