@@ -19,7 +19,12 @@ enum WallTypes {
 /// To work with walls directly, use the [MapWall] class.
 @Table(name: 'map_walls')
 class _MapWall with PrimaryKeyMixin, IntCoordinatesMixin {
-  WallTypes wallType;
+  /// The type of this wall.
+  WallTypes type;
+
+  /// The sound made when walking into this wall.
+  @Column(nullable: true)
+  String sound;
 
   /// The map this wall is part of.
   @Relate(#walls, isRequired: true, onDelete: DeleteRule.cascade)

@@ -6,7 +6,9 @@ import 'dart:math';
 import 'package:aqueduct/aqueduct.dart';
 
 import '../model/game_map.dart';
+import '../model/game_object.dart';
 import '../model/map_section.dart';
+import '../model/map_wall.dart';
 
 import '../sound.dart';
 
@@ -121,5 +123,49 @@ Future<void> mapConvolver(CommandContext ctx) async {
   } else {
     await m.broadcastCommand(ctx.db, 'mapConvolver', <Map<String, dynamic>>[<String, dynamic>{'url': url, 'volume': volume}]);
     ctx.sendMessage('Convolver updated.');
+  }
+}
+
+/// Actually perform the building of a wall.
+Future<void> buildWall(CommandContext ctx, WallTypes t) async {
+  final GameObject c = await ctx.getCharacter();
+  final GameMap m = await ctx.getMap();
+  MapWall w = MapWall()
+    ..location = m
+    ..x = c.x.floor()
+    ..y = c.y.floor()
+    ..type = t;
+  final Query<MapWall> q = Query<MapWall>(ctx.db)
+    ..where((MapWall w) => w.location).identifiedBy(m.id)
+    ..where((MapWall w) => w.x).equalTo(w.x)
+    ..where((MapWall w) => w.y).equalTo(w.y);
+  if (await q.reduce.count() == 0) {
+    w = await ctx.db.insertObject(w);
+  } else {
+    q.values = w;
+    w = await q.updateOne();
+  }
+  await m.broadcastWall(ctx.db, w);
+  String s = t.toString();
+  s = s.substring(s.indexOf('.') + 1);
+  s = s[0].toUpperCase() + s.substring(1);
+  ctx.sendMessage('$s added at ${w.x}, ${w.y}.');
+}
+
+Future<void> addWall(CommandContext ctx) async => buildWall(ctx, WallTypes.wall);
+
+Future<void> addBarricade(CommandContext ctx) async => buildWall(ctx, WallTypes.barricade);
+
+Future<void> deleteWall(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Query<MapWall> q = Query<MapWall>(ctx.db)
+    ..where((MapWall w) => w.id).equalTo(id)
+    ..where((MapWall w) => w.location).identifiedBy(ctx.mapId);
+  final int count = await q.delete();
+  if (count == 0) {
+    ctx.sendError('No such wall. Maybe somebody else already deleted it.');
+  } else {
+    final GameMap m = await ctx.getMap();
+    await m.broadcastCommand(ctx.db, 'deleteWall', <int>[id]);
   }
 }

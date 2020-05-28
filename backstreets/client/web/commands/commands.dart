@@ -39,6 +39,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   'mapAmbience': mapAmbience,
   'deleteMapSection': deleteMapSection,
   'mapConvolver': mapConvolver,
+  'mapWall': mapWall,
+  'deleteWall': deleteWall,
 
   // Sound commands:
   'interfaceSound': interfaceSound,

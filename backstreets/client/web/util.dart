@@ -9,6 +9,7 @@ import 'package:game_utils/game_utils.dart' show randomElement;
 import 'directions.dart';
 
 import 'game/map_section.dart';
+import 'game/wall.dart';
 
 import 'main.dart';
 
@@ -102,9 +103,22 @@ void moveCharacter(double x, double y, {MoveModes mode = MoveModes.normal}) {
   final Point<int> tileCoordinates = Point<int>(x.floor(), y.floor());
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
-  if (mode != MoveModes.staff && newSection == null) {
-    playSoundAtCoordinates('sounds/wall/wall.wav');
-    return commandContext.message('You cannot go that way.');
+  final Wall wall = commandContext.map.walls[tileCoordinates];
+  if (newSection == null || wall != null) {
+    const String wallSoundsDirectory = 'sounds/wall';
+    String url = '$wallSoundsDirectory/cantgo.wav';
+    if (wall != null) {
+      if (wall.sound != null) {
+        url = wall.sound;
+      } else {
+        final String s = wall.type.toString();
+        url = '$wallSoundsDirectory/${s.substring(s.indexOf('.') + 1)}.wav';
+      }
+    }
+    playSoundAtCoordinates(url);
+    if (mode == MoveModes.normal) {
+      return commandContext.message('You cannot go that way.');
+    }
   }
   final Point<double> coordinates = Point<double>(x, y);
   if (mode != MoveModes.silent && newSection?.name != oldSection?.name) {
@@ -181,7 +195,7 @@ void playSoundAtCoordinates(String url, {Point<double> coordinates, double volum
     ..connectNode(output);
   ConvolverNode convolver;
   final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
-  if (s.convolver.convolver == null) {
+  if (s?.convolver?.convolver == null) {
     if (commandContext.map.convolver.convolver != null) {
       convolver = commandContext.map.convolver.convolver;
     }

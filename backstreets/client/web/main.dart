@@ -95,6 +95,9 @@ void main() {
 
       // Building hotkeys:
       Hotkey(keyboard, 'b', builderMenu, runWhen: builderOnly, titleString: 'Builder menu'),
+      Hotkey(keyboard, '[', buildWall, runWhen: builderOnly, titleString: 'Build a wall at your current coordinates'),
+      Hotkey(keyboard, ']', buildBarricade, runWhen: builderOnly, titleString: 'Build a barricade at your current coordinates'),
+      Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: builderOnly, titleString: 'Wall menu'),
 
       // General hotkeys:
       Hotkey(keyboard, '.', previousMessage, titleString: 'Show previous message'),

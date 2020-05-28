@@ -5,6 +5,8 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../game/wall.dart';
+
 import '../main.dart';
 
 import 'convolver.dart';
@@ -32,6 +34,9 @@ class GameMap {
 
   /// Every section on this map.
   Map<int, MapSection> sections = <int, MapSection>{};
+
+  /// Every wall on this map.
+  Map<Point<int>, Wall> walls = <Point<int>, Wall>{};
 
   /// Every tile on this map.
   Map<Point<int>, String> tiles = <Point<int>, String>{};

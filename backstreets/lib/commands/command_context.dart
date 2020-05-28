@@ -14,6 +14,7 @@ import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/map_tile.dart';
+import '../model/map_wall.dart';
 import '../model/player_options.dart';
 
 import '../sound.dart';
@@ -232,7 +233,8 @@ class CommandContext{
       'convolverUrl': m.convolverUrl,
       'convolverVolume': m.convolverVolume,
       'sections': <Map<String, dynamic>>[],
-      'tiles': <Map<String, dynamic>>[]
+      'tiles': <Map<String, dynamic>>[],
+      'walls': <Map<String, dynamic>>[],
     };
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location).identifiedBy(mapId);
@@ -247,6 +249,17 @@ class CommandContext{
         'index': tileNames.indexOf(t.tileName),
         'x': t.x,
         'y': t.y
+      });
+    }
+    final Query<MapWall> wallsQuery = Query<MapWall>(db)
+      ..where((MapWall w) => w.location).identifiedBy(mapId);
+    for (final MapWall w in await wallsQuery.fetch()) {
+      mapData['walls'].add(<String, dynamic>{
+        'id': w.id,
+        'x': w.x,
+        'y': w.y,
+        'sound': w.sound,
+        'type': w.type.index,
       });
     }
     send('mapData', <Map<String, dynamic>>[mapData]);

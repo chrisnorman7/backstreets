@@ -91,4 +91,14 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
       obj.commandContext?.send(name, args);
     }
   }
+  
+  Future<void> broadcastWall(ManagedContext db, MapWall w) async {
+    return broadcastCommand(db, 'mapWall', <Map<String, dynamic>>[<String, dynamic>{
+      'id': w.id,
+      'x': w.x,
+      'y': w.y,
+      'sound': w.sound,
+      'type': w.type.index,
+    }]);
+  }
 }

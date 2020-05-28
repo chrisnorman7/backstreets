@@ -36,6 +36,9 @@ List<Command> commandsList = <Command>[
   Command(editMapSection, authenticationType: AuthenticationTypes.builder),
   Command(deleteMapSection, authenticationType: AuthenticationTypes.builder),
   Command(mapConvolver, authenticationType: AuthenticationTypes.builder),
+  Command(addWall, authenticationType: AuthenticationTypes.builder),
+  Command(addBarricade, authenticationType: AuthenticationTypes.builder),
+  Command(deleteWall, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   Command(serverTime, authenticationType: AuthenticationTypes.any),

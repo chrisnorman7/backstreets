@@ -1,9 +1,12 @@
 /// Provides building related hotkeys.
 library building;
 
+import 'dart:math';
+
 import 'package:game_utils/game_utils.dart';
 
 import '../game/map_section.dart';
+import '../game/wall.dart';
 
 import '../main.dart';
 
@@ -99,4 +102,33 @@ void builderMenu() {
     }
   );
   commandContext.book.push(page);
+}
+
+void buildWall() => commandContext.send('addWall', <String>[]);
+
+void buildBarricade () => commandContext.send('addBarricade', <String>[]);
+
+void wallMenu() {
+  final Point<int> coordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+  final Wall currentWall = commandContext.map.walls[coordinates];
+  final List<Line> lines = <Line>[];
+  if (currentWall == null) {
+    lines.addAll(<Line>[
+      Line(commandContext.book, buildWall, titleString: 'Build a wall'),
+      Line(commandContext.book, buildBarricade, titleString: 'Build a barricade'),
+    ]);
+  } else {
+    lines.addAll(<Line>[
+      Line(commandContext.book, () {
+        commandContext.message('You cannot currently change wall sounds.');
+      }, titleFunc: () => 'Sound (${currentWall.sound})'),
+      Line(commandContext.book, () {
+        commandContext.send('deleteWall', <int>[currentWall.id]);
+        clearBook();
+        commandContext.message('Wall deleted.');
+      }, titleString: 'Delete')
+    ]);
+  }
+  commandContext.book = Book(bookOptions)
+    ..push(Page(lines: lines, titleString: 'Wall Menu', onCancel: clearBook));
 }

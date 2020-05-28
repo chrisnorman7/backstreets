@@ -7,6 +7,7 @@ import 'package:game_utils/game_utils.dart';
 
 import '../game/game_map.dart';
 import '../game/map_section.dart';
+import '../game/wall.dart';
 
 import '../main.dart';
 import '../util.dart';
@@ -86,6 +87,10 @@ void mapData(CommandContext ctx) {
     ctx.args[0] = tileData;
     tile(ctx);
   }
+  for (final dynamic wallData in data['walls'] as List<dynamic>) {
+    ctx.args[0] = wallData as Map<String, dynamic>;
+    mapWall(ctx);
+  }
 }
 
 /// The speed the character can move at.
@@ -163,4 +168,28 @@ void mapConvolver(CommandContext ctx) {
   ctx.map.convolver.url = data['url'] as String;
   ctx.map.convolver.volume.gain.value = (data['volume'] as num).toDouble();
   ctx.map.convolver.resetConvolver();
+}
+
+void mapWall(CommandContext ctx) {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final int x = data['x'] as int;
+  final int y = data['y'] as int;
+  final String sound = data['sound'] as String;
+  final int typeIndex = data['type'] as int;
+  final WallTypes type = WallTypes.values.toList()[typeIndex];
+  final Point<int> coordinates = Point<int>(x, y);
+  if (ctx.map.walls.containsKey(coordinates)) {
+    ctx.map.walls[coordinates]
+      ..id = id
+      ..type = type
+      ..sound = sound;
+  } else {
+    ctx.map.walls[coordinates] = Wall(id, type, sound);
+  }
+}
+
+void deleteWall(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  ctx.map.walls.removeWhere((Point<int> coordinates, Wall w) => w.id == id);
 }
