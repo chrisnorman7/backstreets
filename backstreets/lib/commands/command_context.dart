@@ -229,6 +229,8 @@ class CommandContext{
     final Map<String, dynamic> mapData = <String, dynamic>{
       'name': m.name,
       'ambience': m.ambience == null ? null : ambiences[m.ambience].url,
+      'convolverUrl': m.convolverUrl,
+      'convolverVolume': m.convolverVolume,
       'sections': <Map<String, dynamic>>[],
       'tiles': <Map<String, dynamic>>[]
     };

@@ -40,6 +40,14 @@ class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// The y coordinate where players should pop.
   @Column(defaultValue: '0')
   int popY = 0;
+
+  /// The convolver URL for this map.
+  @Column(nullable: true)
+  String convolverUrl;
+
+  /// The convolver volume for this map.
+  @Column(defaultValue: '1.0')
+  double convolverVolume;
 }
 
 /// A map.
