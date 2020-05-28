@@ -100,7 +100,7 @@ enum MoveModes {
 
 /// Move the character to the provided coordinates.
 ///
-/// The command operates differently, depending on the value of the [mode] argument.
+/// The function operates differently, depending on the value of the [mode] argument.
 void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal}) {
   final Point<int> tileCoordinates = Point<int>(coordinates.x.floor(), coordinates.y.floor());
   final MapSection oldSection = commandContext.getCurrentSection();
