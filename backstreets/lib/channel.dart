@@ -33,6 +33,9 @@ class BackstreetsChannel extends ApplicationChannel {
   /// Enables communication to and from the database.
   ManagedContext databaseContext;
 
+  /// All the loaded impulses.
+  Map<String, dynamic> impulses;
+
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -41,6 +44,7 @@ class BackstreetsChannel extends ApplicationChannel {
   /// This method is invoked prior to [entryPoint] being accessed.
   @override
   Future<void> prepare() async {
+    final int started = DateTime.now().millisecondsSinceEpoch;
     bool mapBuilt = false;
     final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
     final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
@@ -56,7 +60,7 @@ class BackstreetsChannel extends ApplicationChannel {
     buildCommands();
     logger.info('Commands: ${commands.length}.');
     logger.info('Gathering tile sounds.');
-    tileSoundsDirectory.list().listen((FileSystemEntity entity) async {
+    for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
       if (entity is Directory) {
         final String name = path.basename(entity.path);
         final Tile tile = Tile(name);
@@ -78,25 +82,31 @@ class BackstreetsChannel extends ApplicationChannel {
           }
         }
       }
-    });
-    socialSoundsDirectory.list().listen((FileSystemEntity entity) {
+    }
+    socials.addSuffix(
+      <String>['name', 'n'],
+      (GameObject o) => SuffixResult('you', o.name)
+    );
+    logger.info('Gathering social sounds.');
+    for (final FileSystemEntity entity in socialSoundsDirectory.listSync()) {
       if (entity is File) {
         final String socialName = path.basenameWithoutExtension(entity.path);
         socialSounds[socialName] = Sound(entity.path.substring(soundsDirectory.length + 1));
         logger.info('Added sound for social $socialName.');
       }
-    });
-    socials.addSuffix(
-      <String>['name', 'n'],
-      (GameObject o) => SuffixResult('you', o.name)
-    );
-    ambienceDirectory.list().listen((FileSystemEntity entity) {
+    }
+    logger.info('Gathering ambiences.');
+    for (final FileSystemEntity entity in ambienceDirectory.listSync()) {
       if (entity is File) {
         final String ambienceName = path.basenameWithoutExtension(entity.path);
         ambiences[ambienceName] = Sound(entity.path.substring(soundsDirectory.length + 1));
         logger.info('Added ambience $ambienceName.');
       }
-    });
+    }
+    logger.info('Gathering impulse files.');
+    impulses = loadImpulses();
+    final double duration = (DateTime.now().millisecondsSinceEpoch - started) / 1000;
+    logger.info('Preparation completed in ${duration.toStringAsFixed(2)} seconds.');
   }
 
   /// Construct the request channel.
@@ -131,6 +141,8 @@ class BackstreetsChannel extends ApplicationChannel {
         }
       });
       ctx.sendAmbiences();
+      ctx.send('impulses', <Map<String, dynamic>>[impulses]);
+      logger.info('Sent impulses.');
       socketLogger.info('Connection established.');
       socket.listen((dynamic payload) async {
         if (payload is! String) {
@@ -205,14 +217,14 @@ class BackstreetsChannel extends ApplicationChannel {
     });
     return router;
   }
-  
+
   @override
   Future<void> close() async {
-    super.close();
     final Query<ConnectionRecord> q = Query<ConnectionRecord>(databaseContext)
       ..values.disconnected = DateTime.now()
       ..where((ConnectionRecord c) => c.disconnected).isNull();
     final List<ConnectionRecord> records = await q.update();
     logger.info('Connection records amended: ${records.length}.');
+    super.close();
   }
 }

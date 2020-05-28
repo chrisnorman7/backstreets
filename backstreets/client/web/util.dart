@@ -2,6 +2,7 @@
 library util;
 
 import 'dart:math';
+import 'dart:web_audio';
 
 import 'package:game_utils/game_utils.dart' show randomElement;
 
@@ -86,7 +87,7 @@ void moveCharacter(double x, double y, {bool force = false, bool informServer = 
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
   if (!force && newSection == null) {
-    commandContext.sounds.playSound('sounds/wall/wall.wav');
+    playSoundAtCoordinates('sounds/wall/wall.wav');
     return commandContext.message('You cannot go that way.');
   }
   final Point<double> coordinates = Point<double>(x, y);
@@ -103,17 +104,17 @@ void moveCharacter(double x, double y, {bool force = false, bool informServer = 
   }
   String tileName = commandContext.tiles[tileCoordinates];
   tileName ??= newSection?.tileName;
-  if (tileName != null) {
-    final String url = getFootstepSound(tileName);
-    commandContext.sounds.playSound(url);
-  }
-  if (informServer) {
-    commandContext.send('characterCoordinates', <double>[x, y]);
-  }
   commandContext.coordinates = coordinates;
   commandContext.sounds.audioContext.listener
     ..positionX.value = x
     ..positionY.value = y;
+  if (tileName != null) {
+    final String url = getFootstepSound(tileName);
+    playSoundAtCoordinates(url);
+  }
+  if (informServer) {
+    commandContext.send('characterCoordinates', <double>[x, y]);
+  }
 }
 
 void clearBook() {
@@ -123,7 +124,7 @@ void clearBook() {
 
 void resetFocus() {
   keyboardArea.focus();
-  if (commandContext.book != null) {
+  if (commandContext != null && commandContext.book != null) {
     commandContext.book.showFocus();
   }
 }
@@ -143,4 +144,27 @@ void instantMove(Directions d) {
   Point<double> coordinates = commandContext.coordinates;
   coordinates = Point<double>(coordinates.x + da.x, coordinates.y + da.y);
   moveCharacter(coordinates.x, coordinates.y, force: true);
+}
+
+void playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0}) {
+  coordinates ??= commandContext.coordinates;
+  final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
+  AudioNode output;
+  if (s == null) {
+    output = commandContext.sounds.soundOutput;
+  } else {
+    output = s.output;
+  }
+  if (coordinates != commandContext.coordinates) {
+    final PannerNode panner = commandContext.sounds.audioContext.createPanner()
+      ..positionX.value = coordinates.x
+      ..positionY.value = coordinates.y
+      ..panningModel = 'HRTF'
+      ..connectNode(output);
+    output = panner;
+  }
+  final GainNode gain = commandContext.sounds.audioContext.createGain()
+    ..gain.value = volume
+    ..connectNode(output);
+  commandContext.sounds.playSound(url, output: gain);
 }

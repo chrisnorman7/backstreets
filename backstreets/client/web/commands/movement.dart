@@ -111,7 +111,7 @@ Future<void> mapSection(CommandContext ctx) async {
   final Map<String, dynamic> sectionData = ctx.args[0] as Map<String, dynamic>;
   final int id = sectionData['id'] as int;
   ctx.sections[id] = MapSection(
-    id,
+    ctx.sounds, id,
     sectionData['startX'] as int,
     sectionData['startY'] as int,
     sectionData['endX'] as int,
@@ -119,6 +119,8 @@ Future<void> mapSection(CommandContext ctx) async {
     sectionData['name'] as String,
     sectionData['tileName'] as String,
     sectionData['tileSize'] as double,
+    sectionData['convolverUrl'] as String,
+    (sectionData['convolverVolume'] as num).toDouble(),
   );
   if (id == ctx.sectionResetId) {
     ctx.message('Section reset.');

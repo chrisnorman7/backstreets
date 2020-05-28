@@ -77,6 +77,8 @@ Future<void> editMapSection(CommandContext ctx) async {
     ..values.endX = max(endX, startX)
     ..values.endY = max(endY, startY)
     ..values.tileSize = (data['tileSize'] as num).toDouble()
+    ..values.convolverUrl = data['convolverUrl'] as String
+    ..values.convolverVolume = (data['convolverVolume'] as num).toDouble()
     ..where((MapSection s) => s.location).identifiedBy(ctx.mapId)
     ..where((MapSection s) => s.id).equalTo(id);
   final MapSection s = await q.updateOne();
@@ -84,7 +86,7 @@ Future<void> editMapSection(CommandContext ctx) async {
     ctx.sendError('Invalid map section. Maybe someone else deleted it?');
   } else {
     final GameMap m = await ctx.getMap();
-    await m.broadcastCommand(ctx.db, 'mapSection', <Map<String, dynamic>>[s.asMap()]);
+    await m.broadcastCommand(ctx.db, 'mapSection', <Map<String, dynamic>>[s.toJson()]);
     ctx.sendMessage('Section edited.');
   }
 }

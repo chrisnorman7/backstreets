@@ -33,14 +33,6 @@ class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// All the [MapSection] instances on this map.
   ManagedSet<MapSection> sections;
 
-  /// The convolver URL for this map.
-  @Column(nullable: true)
-  String convolverUrl;
-
-  /// The volume of the convolver.
-  @Column(defaultValue: '1.0')
-  double convolverVolume;
-
   /// The x coordinate where players should pop.
   @Column(defaultValue: '0')
   int popX = 0;

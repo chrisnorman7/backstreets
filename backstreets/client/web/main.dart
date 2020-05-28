@@ -25,6 +25,7 @@ import 'hotkeys/staff.dart';
 import 'menus/main_menu.dart';
 
 import 'run_conditions.dart';
+import 'util.dart';
 
 /// Character data, as sent to the [account] command.
 List<dynamic> characterList;
@@ -202,6 +203,7 @@ void main() {
         commandContext.message('Unrecognised command: $commandName.');
       }
     });
+    resetFocus();
   });
   document.onMouseDown.listen((MouseEvent e) {
     e.stopPropagation();

@@ -5,6 +5,16 @@ import 'dart:io';
 
 import 'package:path/path.dart' as _path;
 
+/// Sound file extensions supported by the server.
+///
+/// This list is used to ensure we're not sending `.ds_store` and `desktop.ini` files among others.
+const List<String> allowedExtensions = <String>[
+  '.wav',
+  '.mp3',
+  '.ogg',
+  '.m4a',
+];
+
 /// The directory where all sounds are stored.
 final String soundsDirectory = _path.join('client', 'web', 'sounds');
 
@@ -13,6 +23,30 @@ final Directory ambienceDirectory = Directory(_path.join(soundsDirectory, 'ambie
 
 /// All the possible ambiences.
 final Map<String, Sound> ambiences = <String, Sound>{};
+
+/// The directory where ambiences are stored.
+final Directory impulseDirectory = Directory(_path.join(soundsDirectory, 'impulses'));
+
+Map<String, dynamic> loadImpulses([Directory start]) {
+  start ??= impulseDirectory;
+  const String directoriesKey = 'directories';
+  const String filesKey = 'files';
+  final Map<String, dynamic> impulses = <String, dynamic>{
+    'name': start.path,
+    directoriesKey: <Map<String, dynamic>>[],
+    filesKey: <String>[],
+  };
+  for (final FileSystemEntity entity in start.listSync()) {
+    if (entity is Directory) {
+      impulses[directoriesKey].add(loadImpulses(entity));
+    } else {
+      if (allowedExtensions.contains(_path.extension(entity.path))) {
+        impulses[filesKey].add(_path.relative(entity.path, from: Directory(soundsDirectory).parent.path));
+      }
+    }
+  }
+return impulses;
+}
 
 /// A sound object.
 ///

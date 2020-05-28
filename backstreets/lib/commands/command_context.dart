@@ -36,7 +36,7 @@ class CommandContext{
 
   /// The interface to the database.
   ManagedContext db;
-  
+
   /// The hostname [socket] is connecting from.
   String host;
 
@@ -228,8 +228,6 @@ class CommandContext{
     final GameMap m = await mapQuery.fetchOne();
     final Map<String, dynamic> mapData = <String, dynamic>{
       'name': m.name,
-      'convolverUrl': m.convolverUrl,
-      'convolverVolume': m.convolverVolume,
       'ambience': m.ambience == null ? null : ambiences[m.ambience].url,
       'sections': <Map<String, dynamic>>[],
       'tiles': <Map<String, dynamic>>[]
@@ -237,7 +235,7 @@ class CommandContext{
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location).identifiedBy(mapId);
     for (final MapSection s in await sectionsQuery.fetch()) {
-      mapData['sections'].add(s.asMap());
+      mapData['sections'].add(s.toJson());
     }
     final Query<MapTile> tilesQuery = Query<MapTile>(db)
       ..where((MapTile t) => t.location.id).equalTo(mapId);
@@ -258,7 +256,7 @@ class CommandContext{
   ///
   /// This method is used after a section has been updated for example.
   void sendMapSection(MapSection s) {
-    send('mapSection', <Map<String, dynamic>>[s.asMap()]);
+    send('mapSection', <Map<String, dynamic>>[s.toJson()]);
   }
 
   /// Send all the registered [ambiences].

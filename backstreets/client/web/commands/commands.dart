@@ -43,4 +43,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'interfaceSound': interfaceSound,
   'sound': sound,
   'ambiences': ambiences,
+  'impulses': impulses,
 };

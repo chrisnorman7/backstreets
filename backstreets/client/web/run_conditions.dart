@@ -19,4 +19,4 @@ bool validMap() => commandContext != null && commandContext.mapName != null && c
 bool validSounds() => commandContext != null && commandContext.sounds != null && commandContext.book == null;
 
 /// Only run if we have a valid book.
-bool validBook() => commandContext.book != null;
+bool validBook() => commandContext != null && commandContext.book != null;

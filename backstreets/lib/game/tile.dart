@@ -28,12 +28,12 @@ class Tile {
     logger = Logger(name);
     soundsDirectory = path.join(tileSoundsDirectory.path, name);
     final Directory footstepSoundsDirectory = Directory(path.join(soundsDirectory, 'footsteps'));
-    footstepSoundsDirectory.list(recursive: true).listen((FileSystemEntity entity) {
+    for (final FileSystemEntity entity in footstepSoundsDirectory.listSync(recursive: true)) {
       if (entity is File) {
         footstepSounds.add(sound.Sound(entity.path.substring(sound.soundsDirectory.length + 1)));
         logger.info('Added footstep sound ${footstepSounds.last.url} to $name tile.');
       }
-    });
+    }
   }
 
   /// The name of this tile.

@@ -7,6 +7,7 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../directory.dart';
 import '../game_object.dart';
 
 import '../map_section.dart';
@@ -122,6 +123,9 @@ class CommandContext {
 
   /// If `true`, any key that is not handled as a hotkey will be printed.
   bool helpMode = false;
+
+  /// The impulses sent by the server.
+  Directory impulses;
 
   /// Get the section spanned by the provided coordinates.
   ///

@@ -7,7 +7,7 @@ environment:
   sdk: '>=2.7.2 <3.0.0'
 
 dependencies:
-#  path: ^1.7.0
+  path:
   game_utils:
 
 dev_dependencies:

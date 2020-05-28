@@ -17,11 +17,12 @@ void builderMenu() {
     lines: <Line>[
       Line(commandContext.book, () {
         commandContext.section ??= MapSection(
-          null, commandContext.coordinates.x.floor(),
+          commandContext.sounds, null, commandContext.coordinates.x.floor(),
           commandContext.coordinates.y.floor(),
           commandContext.coordinates.x.floor(),
           commandContext.coordinates.y.floor(),
-          'Untitled Section', commandContext.tileNames[0], 0.5
+          'Untitled Section', commandContext.tileNames[0], 0.5,
+          null, 1.0
         );
         commandContext.book.push(
           mapSectionPage(commandContext.book, commandContext.section, commandContext, onUpload: () {
