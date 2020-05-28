@@ -11,7 +11,7 @@ import 'command_context.dart';
 /// Play a sound which should alert the character of something.
 ///
 /// This sound should play without any fx or panning.
-Future<void> interfaceSound(CommandContext ctx) async {
+void interfaceSound(CommandContext ctx) {
   final String url = ctx.args[0] as String;
   ctx.sounds.playSound(url);
 }
@@ -19,7 +19,7 @@ Future<void> interfaceSound(CommandContext ctx) async {
 /// Play a sound relating to the game.
 ///
 /// The sound should play at specific coordinates (which could be the same as those of the character), and with fx applied.
-Future<void> sound(CommandContext ctx) async {
+void sound(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final String url = data['url'] as String;
   final double volume = (data['volume'] as num).toDouble();
@@ -29,12 +29,12 @@ Future<void> sound(CommandContext ctx) async {
 }
 
 
-Future<void> ambiences(CommandContext ctx) async {
+void ambiences(CommandContext ctx) {
   final Map<dynamic, dynamic> data = ctx.args[0] as Map<dynamic, dynamic>;
   data.forEach((dynamic name, dynamic url) => ctx.ambiences[name as String] = url as String);
 }
 
-Future<void> impulses(CommandContext ctx) async {
+void impulses(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.impulses = Directory.fromData(data);
 }

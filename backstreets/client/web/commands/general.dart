@@ -17,14 +17,14 @@ import 'command_context.dart';
 import 'login.dart';
 
 /// Show a quick message.
-Future<void> message(CommandContext ctx) async {
+void message(CommandContext ctx) {
   ctx.message(ctx.args[0] as String);
 }
 
 /// Alert the player to an error.
 ///
 /// Handles some special cases, like errors during the login process, where a certain menu needs to be re-shown.
-Future<void> error(CommandContext ctx) async {
+void error(CommandContext ctx) {
   final String msg = ctx.args[0] as String;
   if (authenticationStage == AuthenticationStages.anonymous) {
     // Probably a login failure.
@@ -34,7 +34,7 @@ Future<void> error(CommandContext ctx) async {
     // A problem creating or connecting to a player.
     ctx.args = <dynamic>[ctx.username, characterList];
     ctx.username = null;
-    await account(ctx);
+    account(ctx);
   } else if (authenticationStage == AuthenticationStages.connected) {
     // Do nothing but show the message.
   } else {
@@ -44,7 +44,7 @@ Future<void> error(CommandContext ctx) async {
 }
 
 /// Parses player options.
-Future<void> playerOptions(CommandContext ctx) async {
+void playerOptions(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.sounds.setVolume(OutputTypes.sound, (data['soundVolume'] as num).toDouble());
   ctx.sounds.setVolume(OutputTypes.ambience, (data['ambienceVolume'] as num).toDouble());
@@ -54,7 +54,7 @@ Future<void> playerOptions(CommandContext ctx) async {
 /// A list of objects has been sent.
 ///
 /// The onListOfObjects callback on the command context should know what to do with them.
-Future<void> listOfObjects(CommandContext ctx) async {
+void listOfObjects(CommandContext ctx) {
   ctx.objects = <GameObject>[];
   final Map<int, Account> accounts = <int, Account>{};
   for (final dynamic data in ctx.args[0] as List<dynamic>) {

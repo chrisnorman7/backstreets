@@ -194,7 +194,7 @@ void main() {
         commandContext.args = commandArgs;
         final CommandType command = commands[commandName];
         try {
-          await command(commandContext);
+          command(commandContext);
         }
         catch (e, s) {
           commandContext.message('${e.toString()}\n${s.toString()}');

@@ -8,7 +8,7 @@ import 'movement.dart';
 import 'sound.dart';
 
 /// The type for all command functions.
-typedef CommandType = Future<void> Function(CommandContext);
+typedef CommandType = void Function(CommandContext);
 
 /// A map containing all the commands which can be called by the server.
 Map<String, CommandType> commands = <String, CommandType>{

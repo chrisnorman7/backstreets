@@ -13,7 +13,7 @@ import 'command_context.dart';
 /// Login was successful.
 ///
 /// Show the menu with all the players for the given account, and let the player create a new character.
-Future<void> account(CommandContext ctx) async {
+void account(CommandContext ctx) {
   authenticationStage = AuthenticationStages.account;
   ctx.book = Book(bookOptions);
   ctx.username = ctx.args[0] as String;
@@ -63,7 +63,7 @@ Future<void> account(CommandContext ctx) async {
 /// Save the character name.
 ///
 /// Also sets the title of the page.
-Future<void> characterName(CommandContext ctx) async {
+void characterName(CommandContext ctx) {
   // Don't keep the character list lying around.
   characterList = null;
   authenticationStage = AuthenticationStages.connected;
@@ -72,11 +72,11 @@ Future<void> characterName(CommandContext ctx) async {
 }
 
 /// Says whether or not this character is a builder.
-Future<void> builder(CommandContext ctx) async {
+void builder(CommandContext ctx) {
   ctx.permissions.builder= ctx.args[0] as bool;
 }
 
 /// Says whether or not this character is an admin.
-Future<void> admin(CommandContext ctx) async {
+void admin(CommandContext ctx) {
   ctx.permissions.admin = ctx.args[0] as bool;
 }
