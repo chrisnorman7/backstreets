@@ -201,6 +201,7 @@ class CommandContext{
         ..object = c;
       await db.insertObject(p);
     }
+    await sendMap();
     send('characterName', <String>[c.name]);
     send('characterSpeed', <int>[c.speed]);
     send('characterTheta', <double>[c.theta]);
@@ -209,7 +210,6 @@ class CommandContext{
     send('admin', <bool>[c.admin]);
     await sendPlayerOptions();
     logger.info('Sent character details.');
-    await sendMap();
     await c.doSocial(db, c.connectSocial);
   }
 

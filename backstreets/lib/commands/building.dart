@@ -106,3 +106,20 @@ Future<void> deleteMapSection(CommandContext ctx) async {
     ctx.sendMessage('Section Deleted.');
   }
 }
+
+Future<void> mapConvolver(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final String url = data['url'] as String;
+  final double volume = (data['volume'] as num).toDouble();
+  final Query<GameMap> q = Query<GameMap>(ctx.db)
+    ..values.convolverUrl = url
+    ..values.convolverVolume = volume
+    ..where((GameMap m) => m.id).equalTo(ctx.mapId);
+  final GameMap m = await q.updateOne();
+  if (m == null) {
+    ctx.sendError('Invalid map ID.');
+  } else {
+    await m.broadcastCommand(ctx.db, 'mapConvolver', <Map<String, dynamic>>[<String, dynamic>{'url': url, 'volume': volume}]);
+    ctx.sendMessage('Convolver updated.');
+  }
+}

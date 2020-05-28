@@ -35,6 +35,7 @@ List<Command> commandsList = <Command>[
   Command(mapAmbience, authenticationType: AuthenticationTypes.builder),
   Command(editMapSection, authenticationType: AuthenticationTypes.builder),
   Command(deleteMapSection, authenticationType: AuthenticationTypes.builder),
+  Command(mapConvolver, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   Command(serverTime, authenticationType: AuthenticationTypes.any),

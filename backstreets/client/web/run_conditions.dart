@@ -13,7 +13,7 @@ bool adminOnly() => commandContext != null && commandContext.book == null && com
 bool staffOnly() => builderOnly() || adminOnly();
 
 /// Returns true if the map has been loaded, and there is no book in the way.
-bool validMap() => commandContext != null && commandContext.mapName != null && commandContext.book == null;
+bool validMap() => commandContext != null && commandContext.map != null && commandContext.book == null;
 
 /// Returns true if the sound system is present.
 bool validSounds() => commandContext != null && commandContext.sounds != null && commandContext.book == null;

@@ -3,8 +3,11 @@ library building;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../game/map_section.dart';
+
 import '../main.dart';
-import '../map_section.dart';
+
+import '../menus/edit_convolver_page.dart';
 
 import '../menus/map_section_page.dart';
 
@@ -40,7 +43,7 @@ void builderMenu() {
       }, titleString: 'Current Section Menu'),
       Line(commandContext.book, () {
         final List<Line> lines = <Line>[];
-        commandContext.sections.forEach((int id, MapSection s) => lines.add(
+        commandContext.map.sections.forEach((int id, MapSection s) => lines.add(
           Line(
             commandContext.book, () => commandContext.book.push(mapSectionPage(commandContext.book, s, commandContext)
           ), titleFunc: () => '${s.name} (${s.startX}, ${s.startY} -> ${s.endX}, ${s.endY})', soundUrl: () => getFootstepSound(s.tileName))
@@ -56,9 +59,24 @@ void builderMenu() {
                   commandContext.book, commandContext.ambiences.keys.toList(), (String ambience) {
                     commandContext.send('mapAmbience', <String>[ambience]);
                     commandContext.book.pop();
-                  }, (String name) => commandContext.ambiences[name], currentSound: commandContext.ambienceUrl
+                  }, (String name) => commandContext.ambiences[name], currentSound: commandContext.map.ambienceUrl
                 )
-              ), titleFunc: () => 'Ambience (${commandContext.ambienceUrl})'),
+              ), titleFunc: () => 'Ambience (${commandContext.map.ambienceUrl})'),
+              Line(
+                commandContext.book, () => commandContext.book.push(
+                  editConvolverPage(
+                    commandContext.book, commandContext.map.convolver,
+                    onChange: () {
+                      commandContext.send('mapConvolver', <Map<String, dynamic>>[
+                        <String, dynamic>{
+                          'url': commandContext.map.convolver.url,
+                          'volume': commandContext.map.convolver.volume.gain.value,
+                        }
+                      ]);
+                    }
+                  )
+                ), titleString: 'Convolver'
+              ),
               Line(commandContext.book, () {
                   commandContext.book = null;
                 FormBuilder('Rename Map', (Map<String, String> data) {
@@ -66,8 +84,8 @@ void builderMenu() {
                 }, showMessage, subTitle: 'Enter the new name for this map.', onCancel: resetFocus)
                   ..addElement(
                     'name', label: 'Map Name',
-                    validator: notSameAsValidator(() => commandContext.mapName, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
-                    value: commandContext.mapName
+                    validator: notSameAsValidator(() => commandContext.map.name, message: 'The new map name cannot be the same as the old one.', onSuccess: notEmptyValidator),
+                    value: commandContext.map.name
                   )
                   ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
               }, titleString: 'Rename Map'),

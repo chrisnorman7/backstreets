@@ -7,12 +7,12 @@ import 'package:game_utils/game_utils.dart';
 
 import '../commands/command_context.dart';
 
-import '../constants.dart';import '../main.dart';
-import '../map_section.dart';
-import '../map_section_resizer.dart';
+import '../game/map_section.dart';
+
+import '../main.dart';
 import '../util.dart';
 
-import 'file_chooser_page.dart';
+import 'edit_convolver_page.dart';
 import 'select_tile_page.dart';
 
 /// Edit a map section.
@@ -72,37 +72,14 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
         ..addElement('tileSize', element: e, label: 'Tile size', value: s.tileSize.toString())
         ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
     }, titleFunc: () => 'Tile Size (${s.tileSize})'),
-    Line(b, () => b.push(
-      fileChooserPage(b, () => 'Convolver URL (${s.convolverUrl == null ? "<Not set>" : s.compactConvolverUrl})', commandContext.impulses, () => s.convolverUrl == null ? null : s.convolverUrl.substring(0, s.convolverUrl.contains('?') ? s.convolverUrl.indexOf('?') : null), (String url) {
-        if (url == null) {
-          s.convolverUrl = null;
-        } else {
-          s.convolverUrl = '$soundsDirectory$url';
-        }
-        s.resetConvolver();
-        commandContext.message('URL set.');
-        clearBook();
-      })
-    ), titleFunc: () => 'Convolver URL (${s.convolverUrl == null ? "<Not set>" : s.compactConvolverUrl})'),
-    Line(b, () {
-      final NumberInputElement e = NumberInputElement()
-        ..step = '0.05'
-        ..min = '0.0'
-        ..max = '1.0';
-      FormBuilder('Convolver Volume', (Map<String, String> data) {
-        s.convolverVolume.gain.value = double.parse(data['volume']);
-        showMessage('Volume set.');
-      }, showMessage, onCancel: resetFocus)
-        ..addElement('volume', element: e, value: s.convolverVolume.gain.value.toStringAsFixed(2), label: 'Convolver Volume')
-        ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-    }, titleFunc: () => 'Convolver Volume (${s.convolverVolume.gain.value.toStringAsFixed(2)})'),
+    Line(b, () => b.push(editConvolverPage(b, s.convolver)), titleString: 'Convolver'),
     Line(b, () {
       clearBook();
-      moveCharacter(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble(), force: true);
+      moveCharacter(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble(), mode: MoveModes.staff);
     }, titleString: 'Move To Start Coordinates'),
     Line(b, () {
       clearBook();
-      moveCharacter(s.endCoordinates.x.toDouble(), s.endCoordinates.y.toDouble(), force: true);
+      moveCharacter(s.endCoordinates.x.toDouble(), s.endCoordinates.y.toDouble(), mode: MoveModes.staff);
     }, titleString: 'Move To End Coordinates'),
     Line(b, () {
       if (s.name == null || s.name.isEmpty) {

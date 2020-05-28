@@ -5,8 +5,10 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../game/game_map.dart';
+import '../game/map_section.dart';
+
 import '../main.dart';
-import '../map_section.dart';
 import '../util.dart';
 
 import 'command_context.dart';
@@ -14,12 +16,16 @@ import 'command_context.dart';
 /// Save the character's coordinates.
 ///
 /// These get stored in [ctx].coordinates.
-Future<void> characterCoordinates(CommandContext ctx) async => moveCharacter(ctx.args[0] as double, ctx.args[1] as double, force: true, informServer: false);
+Future<void> characterCoordinates(CommandContext ctx) async => moveCharacter(
+  (ctx.args[0] as num).toDouble(),
+  (ctx.args[1] as num).toDouble(),
+  mode: MoveModes.silent
+);
 
 /// Store the name of the current map.
 ///
 /// Used when the v key is pressed.
-Future<void> mapName(CommandContext ctx) async => ctx.mapName = ctx.args[0] as String;
+Future<void> mapName(CommandContext ctx) async => ctx.map = GameMap(ctx.args[0] as String);
 
 /// Used when a single tile is added to the map.
 Future<void> tile(CommandContext ctx) async {
@@ -27,7 +33,7 @@ Future<void> tile(CommandContext ctx) async {
   final int index = data['index'] as int;
   final double x = data['x'] as double;
   final double y = data['y'] as double;
-  ctx.tiles[Point<int>(x.toInt(), y.toInt())] = ctx.tileNames[index];
+  ctx.map.tiles[Point<int>(x.toInt(), y.toInt())] = ctx.tileNames[index];
 }
 
 /// Save a list of all the possible tile names.
@@ -62,8 +68,16 @@ Future<void> footstepSound(CommandContext ctx) async {
 /// The presence of multiple commands means we can send chunks as the map gets edited by a builder.
 Future<void> mapData(CommandContext ctx) async {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  ctx.args[0] = data['name'];
+  await mapName(ctx);
   ctx.args[0] = data['ambience'] as String;
   await mapAmbience(ctx);
+  final Map<String, dynamic> convolverData = <String, dynamic>{
+    'url': data['convolverUrl'] as String,
+    'volume': (data['convolverVolume'] as num).toDouble()
+  };
+  ctx.args[0] = convolverData;
+  await mapConvolver(ctx);
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
     ctx.args[0] = sectionData as Map<String, dynamic>;
     await mapSection(ctx);
@@ -72,8 +86,6 @@ Future<void> mapData(CommandContext ctx) async {
     ctx.args[0] = tileData;
     await tile(ctx);
   }
-  ctx.args[0] = data['name'];
-  await mapName(ctx);
 }
 
 /// The speed the character can move at.
@@ -94,14 +106,14 @@ Future<void> characterTheta(CommandContext ctx) async {
 Future<void> renameSection(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final String name = ctx.args[1] as String;
-  ctx.sections[id].name = name;
+  ctx.map.sections[id].name = name;
 }
 
 /// The tileName of a map section has changed.
 Future<void> sectionTileName(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final String tileName = ctx.args[1] as String;
-  ctx.sections[id].tileName = tileName;
+  ctx.map.sections[id].tileName = tileName;
 }
 
 /// Map section data has been received.
@@ -110,7 +122,7 @@ Future<void> sectionTileName(CommandContext ctx) async {
 Future<void> mapSection(CommandContext ctx) async {
   final Map<String, dynamic> sectionData = ctx.args[0] as Map<String, dynamic>;
   final int id = sectionData['id'] as int;
-  ctx.sections[id] = MapSection(
+  ctx.map.sections[id] = MapSection(
     ctx.sounds, id,
     sectionData['startX'] as int,
     sectionData['startY'] as int,
@@ -129,20 +141,26 @@ Future<void> mapSection(CommandContext ctx) async {
 
 /// The ambience of this map has changed.
 Future<void> mapAmbience(CommandContext ctx) async {
-  ctx.ambienceUrl = ctx.args[0] as String;
-  if (ctx.ambience != null) {
-    commandContext.message(ctx.ambienceUrl);
-    ctx.ambience.stop();
+  ctx.map.ambienceUrl = ctx.args[0] as String;
+  if (ctx.map.ambience != null) {
+    ctx.map.ambience.stop();
   }
-  if (ctx.ambienceUrl == null) {
-    ctx.ambience = null;
+  if (ctx.map.ambienceUrl == null) {
+    ctx.map.ambience = null;
   } else {
-    ctx.ambience = ctx.sounds.playSound(ctx.ambienceUrl, output: ctx.sounds.ambienceOutput, loop: true);
+    ctx.map.ambience = ctx.sounds.playSound(ctx.map.ambienceUrl, output: ctx.sounds.ambienceOutput, loop: true);
   }
 }
 
 /// A map section has been deleted.
 Future<void> deleteMapSection(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
-  ctx.sections.remove(id);
+  ctx.map.sections.remove(id);
+}
+
+Future<void> mapConvolver(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  ctx.map.convolver.url = data['url'] as String;
+  ctx.map.convolver.volume.gain.value = (data['volume'] as num).toDouble();
+  ctx.map.convolver.resetConvolver();
 }

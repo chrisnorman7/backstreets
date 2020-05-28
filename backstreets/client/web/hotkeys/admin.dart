@@ -3,7 +3,8 @@ library admin;
 
 import 'package:game_utils/game_utils.dart';
 
-import '../game_object.dart';
+import '../game/game_object.dart';
+
 import '../main.dart';
 
 import '../menus/edit_object_page.dart';

@@ -8,10 +8,9 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../directory.dart';
-import '../game_object.dart';
-
-import '../map_section.dart';
-import '../map_section_resizer.dart';
+import '../game/game_map.dart';
+import '../game/game_object.dart';
+import '../game/map_section.dart';
 
 /// A command context. Will be passed to all commands, instead of using individual arguments, which will quickly become unmanageable.
 class CommandContext {
@@ -71,27 +70,11 @@ class CommandContext {
   /// Set by [characterTheta].
   double theta;
 
-  /// The name of the map the connected character is on.
-  ///
-  /// Sent by [mapName].
-  String mapName;
-
-  /// The ambience of the current map.
-  String ambienceUrl;
-
-  /// The ambience to play.
-  Sound ambience;
+  /// The map the connected character is on.
+  GameMap map;
 
   /// All possible ambiences.
   Map<String, String> ambiences = <String, String>{};
-
-  /// Every section on the current map.
-  Map<int, MapSection> sections = <int, MapSection>{};
-
-  /// Every tile on the current map.
-  ///
-  /// Tiles updated by [tile].
-  Map<Point<int>, String> tiles = <Point<int>, String>{};
 
   /// All the tile names. Used so that [tile] doesn't send as much initial data.
   ///
@@ -133,7 +116,7 @@ class CommandContext {
   MapSection getCurrentSection([Point<int> c]) {
     c ??= Point<int>(coordinates.x.floor(), coordinates.y.floor());
     final List<MapSection> matchingSections = <MapSection>[];
-    sections.forEach((int id, MapSection s) {
+    map.sections.forEach((int id, MapSection s) {
       if (s.rect.containsPoint(c)) {
         matchingSections.add(s);
       }

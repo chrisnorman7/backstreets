@@ -5,6 +5,7 @@ import 'package:game_utils/game_utils.dart';
 import 'package:path/path.dart' as path;
 
 import '../directory.dart';
+import '../main.dart';
 
 Page fileChooserPage(
   Book b, String Function() titleFunc, Directory directory,
@@ -13,6 +14,8 @@ Page fileChooserPage(
   }
 ) {
   final String currentFile = getFile();
+  final String friendlyCurrentFile = currentFile == null? null : path.basename(currentFile);
+  commandContext.message(currentFile);
   final List<Line> lines = <Line>[];
   if (!fileOnly) {
     lines.add(Line(b, () => setFile(directory.name), titleString : '<Random file from directory>'));
@@ -21,14 +24,21 @@ Page fileChooserPage(
     lines.add(Line(b, () => setFile(null), titleString: '<Unset>'));
   }
   for (final Directory subdirectory in directory.directories) {
+    final String directoryName = path.basename(subdirectory.name);
     lines.add(
       Line(b, () => b.push(
         fileChooserPage(b, () => subdirectory.name, subdirectory, getFile, setFile, fileOnly: fileOnly, onCancel: onCancel, allowNull: false)
-      ), titleFunc : () => '${currentFile != null && path.dirname(currentFile).contains(subdirectory.name) ? "* " : ""}${path.basename(subdirectory.name)} (Directory)')
+      ), titleFunc : () => '${currentFile != null && currentFile.contains(directoryName) ? "* " : ""}$directoryName (Directory)')
     );
   }
   for (final String filename in directory.files) {
-    lines.add(Line(b, () => setFile(filename), titleFunc: () => '${currentFile != null && currentFile.endsWith(filename) ? "* " : ""}${path.basename(filename)} (File)'));
+    final String friendlyFilename = path.basename(filename);
+    lines.add(
+      Line(
+        b, () => setFile(filename),
+        titleFunc: () => '${currentFile != null && friendlyCurrentFile == friendlyFilename ? "* " : ""}$friendlyFilename} (File)'
+      )
+    );
   }
   return Page(lines: lines, titleFunc: titleFunc, onCancel: onCancel);
 }

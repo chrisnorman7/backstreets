@@ -3,7 +3,7 @@ library game_object;
 
 import 'dart:math';
 
-import 'main.dart';
+import '../main.dart';
 
 /// Store account information for a [GameObject] instance.
 class Account {

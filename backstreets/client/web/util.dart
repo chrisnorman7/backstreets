@@ -8,8 +8,9 @@ import 'package:game_utils/game_utils.dart' show randomElement;
 
 import 'directions.dart';
 
+import 'game/map_section.dart';
+
 import 'main.dart';
-import 'map_section.dart';
 
 final Random random = Random();
 
@@ -82,16 +83,31 @@ void move(double multiplier) {
   moveCharacter(x, y);
 }
 
-void moveCharacter(double x, double y, {bool force = false, bool informServer = true}) {
+/// An enumeration, for use with the [moveCharacter] function.
+enum MoveModes {
+  /// Move normally, respecting walls, and informing the server when done.
+  normal,
+  
+  /// Move like a staff member, ignoring walls, and not informing the server when done.
+  staff,
+  
+  /// Move silently, with no footstep sounds, and do not inform the server when done.
+  silent,
+}
+
+/// Move the character to the provided coordinates.
+///
+/// The command operates differently, depending on the value of the [mode] argument.
+void moveCharacter(double x, double y, {MoveModes mode = MoveModes.normal}) {
   final Point<int> tileCoordinates = Point<int>(x.floor(), y.floor());
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
-  if (!force && newSection == null) {
+  if (mode != MoveModes.staff && newSection == null) {
     playSoundAtCoordinates('sounds/wall/wall.wav');
     return commandContext.message('You cannot go that way.');
   }
   final Point<double> coordinates = Point<double>(x, y);
-  if (newSection?.name != oldSection?.name) {
+  if (mode != MoveModes.silent && newSection?.name != oldSection?.name) {
     String action, name;
     if (oldSection == null || (newSection != null && newSection.area < oldSection.area)) {
       action = 'Entering';
@@ -102,17 +118,19 @@ void moveCharacter(double x, double y, {bool force = false, bool informServer = 
     }
     commandContext.message('$action $name.');
   }
-  String tileName = commandContext.tiles[tileCoordinates];
-  tileName ??= newSection?.tileName;
   commandContext.coordinates = coordinates;
   commandContext.sounds.audioContext.listener
     ..positionX.value = x
     ..positionY.value = y;
-  if (tileName != null) {
-    final String url = getFootstepSound(tileName);
-    playSoundAtCoordinates(url);
+  if (mode != MoveModes.silent) {
+    String tileName = commandContext.map.tiles[tileCoordinates];
+    tileName ??= newSection?.tileName;
+    if (tileName != null) {
+      final String url = getFootstepSound(tileName);
+      playSoundAtCoordinates(url);
+    }
   }
-  if (informServer) {
+  if (mode != MoveModes.silent) {
     commandContext.send('characterCoordinates', <double>[x, y]);
   }
 }
@@ -143,18 +161,13 @@ void instantMove(Directions d) {
   final DirectionAdjustments da = DirectionAdjustments(d);
   Point<double> coordinates = commandContext.coordinates;
   coordinates = Point<double>(coordinates.x + da.x, coordinates.y + da.y);
-  moveCharacter(coordinates.x, coordinates.y, force: true);
+  moveCharacter(coordinates.x, coordinates.y, mode: MoveModes.staff);
 }
 
+/// Play a sound at a specific set of coordinates.
 void playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0}) {
   coordinates ??= commandContext.coordinates;
-  final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
-  AudioNode output;
-  if (s == null) {
-    output = commandContext.sounds.soundOutput;
-  } else {
-    output = s.output;
-  }
+  AudioNode output = commandContext.sounds.soundOutput;
   if (coordinates != commandContext.coordinates) {
     final PannerNode panner = commandContext.sounds.audioContext.createPanner()
       ..positionX.value = coordinates.x
@@ -166,5 +179,17 @@ void playSoundAtCoordinates(String url, {Point<double> coordinates, double volum
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume
     ..connectNode(output);
+  ConvolverNode convolver;
+  final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
+  if (s.convolver.convolver == null) {
+    if (commandContext.map.convolver.convolver != null) {
+      convolver = commandContext.map.convolver.convolver;
+    }
+  } else {
+    convolver = s.convolver.convolver;
+  }
+  if (convolver != null) {
+    gain.connectNode(convolver);
+  }
   commandContext.sounds.playSound(url, output: gain);
 }

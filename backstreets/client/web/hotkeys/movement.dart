@@ -3,14 +3,15 @@ library hotkeys;
 
 import 'dart:math';
 
+import '../game/map_section.dart';
+
 import '../main.dart';
-import '../map_section.dart';
 import '../util.dart';
 
 void coordinates() => showMessage('${commandContext.coordinates.x.floor()}, ${commandContext.coordinates.y.floor()}.');
 
 void mapName() {
-  String result = commandContext.mapName;
+  String result = commandContext.map.name;
   final MapSection s = commandContext.getCurrentSection();
   if (s != null) {
     result += ': ${s.name}';
@@ -51,7 +52,7 @@ void sectionSize() {
 
 void mapSize() {
   int startX, startY, endX, endY;
-  commandContext.sections.forEach((int id, MapSection s) {
+  commandContext.map.sections.forEach((int id, MapSection s) {
     if (startX == null) {
       startX = s.startX;
     } else {
