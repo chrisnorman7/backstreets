@@ -18,9 +18,10 @@ import 'command_context.dart';
 ///
 /// These get stored in [ctx].coordinates.
 void characterCoordinates(CommandContext ctx) => moveCharacter(
-  (ctx.args[0] as num).toDouble(),
-  (ctx.args[1] as num).toDouble(),
-  mode: MoveModes.silent
+  Point<double>(
+    (ctx.args[0] as num).toDouble(),
+    (ctx.args[1] as num).toDouble()
+  ), mode: MoveModes.silent
 );
 
 /// Store the name of the current map.

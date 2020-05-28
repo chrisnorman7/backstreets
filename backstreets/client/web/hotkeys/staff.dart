@@ -13,7 +13,7 @@ void goto() {
     resetFocus();
     final double x = double.tryParse(data['x']);
     final double y = double.tryParse(data['y']);
-    moveCharacter(x, y, mode: MoveModes.staff);
+    moveCharacter(Point<double>(x, y), mode: MoveModes.staff);
   }, showMessage, onCancel: resetFocus)
     ..addElement('x', element: NumberInputElement(), value:commandContext.coordinates.x.round().toString())
     ..addElement('y', element: NumberInputElement(), value: commandContext.coordinates.y.round().toString())

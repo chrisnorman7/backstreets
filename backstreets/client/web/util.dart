@@ -82,9 +82,8 @@ void move(double multiplier) {
   if (s == null) {
     return showMessage('There is nothing here for you to walk on.');
   }
-  final double distance = s.tileSize * multiplier;
-  final Point<double> coordinates = coordinatesInDirection(commandContext.coordinates, commandContext.theta, distance: distance);
-  moveCharacter(coordinates.x, coordinates.y);
+  final Point<double> coordinates = coordinatesInDirection(commandContext.coordinates, commandContext.theta, distance: s.tileSize * multiplier);
+  moveCharacter(coordinates);
 }
 
 /// An enumeration, for use with the [moveCharacter] function.
@@ -102,8 +101,8 @@ enum MoveModes {
 /// Move the character to the provided coordinates.
 ///
 /// The command operates differently, depending on the value of the [mode] argument.
-void moveCharacter(double x, double y, {MoveModes mode = MoveModes.normal}) {
-  final Point<int> tileCoordinates = Point<int>(x.floor(), y.floor());
+void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal}) {
+  final Point<int> tileCoordinates = Point<int>(coordinates.x.floor(), coordinates.y.floor());
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
   final Wall wall = commandContext.map.walls[tileCoordinates];
@@ -123,7 +122,6 @@ void moveCharacter(double x, double y, {MoveModes mode = MoveModes.normal}) {
       return commandContext.message('You cannot go that way.');
     }
   }
-  final Point<double> coordinates = Point<double>(x, y);
   if (mode != MoveModes.silent && newSection?.name != oldSection?.name) {
     String action, name;
     if (oldSection == null || (newSection != null && newSection.area < oldSection.area)) {
@@ -137,8 +135,8 @@ void moveCharacter(double x, double y, {MoveModes mode = MoveModes.normal}) {
   }
   commandContext.coordinates = coordinates;
   commandContext.sounds.audioContext.listener
-    ..positionX.value = x
-    ..positionY.value = y;
+    ..positionX.value = coordinates.x
+    ..positionY.value = coordinates.y;
   if (mode != MoveModes.silent) {
     String tileName = commandContext.map.tiles[tileCoordinates];
     tileName ??= newSection?.tileName;
@@ -148,7 +146,7 @@ void moveCharacter(double x, double y, {MoveModes mode = MoveModes.normal}) {
     }
   }
   if (mode != MoveModes.silent) {
-    commandContext.send('characterCoordinates', <double>[x, y]);
+    commandContext.send('characterCoordinates', <double>[coordinates.x, coordinates.y]);
   }
 }
 
@@ -178,7 +176,7 @@ void instantMove(Directions d) {
   final DirectionAdjustments da = DirectionAdjustments(d);
   Point<double> coordinates = commandContext.coordinates;
   coordinates = Point<double>(coordinates.x + da.x, coordinates.y + da.y);
-  moveCharacter(coordinates.x, coordinates.y, mode: MoveModes.staff);
+  moveCharacter(coordinates, mode: MoveModes.staff);
 }
 
 /// Play a sound at a specific set of coordinates.

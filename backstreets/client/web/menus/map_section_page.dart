@@ -75,11 +75,11 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
     Line(b, () => b.push(editConvolverPage(b, s.convolver)), titleString: 'Convolver'),
     Line(b, () {
       clearBook();
-      moveCharacter(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble(), mode: MoveModes.staff);
+      moveCharacter(Point<double>(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble()), mode: MoveModes.staff);
     }, titleString: 'Move To Start Coordinates'),
     Line(b, () {
       clearBook();
-      moveCharacter(s.endCoordinates.x.toDouble(), s.endCoordinates.y.toDouble(), mode: MoveModes.staff);
+      moveCharacter(Point<double>(s.endCoordinates.x.toDouble(), s.endCoordinates.y.toDouble()), mode: MoveModes.staff);
     }, titleString: 'Move To End Coordinates'),
     Line(b, () {
       if (s.name == null || s.name.isEmpty) {
