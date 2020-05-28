@@ -71,27 +71,30 @@ String getFootstepSound(String tileName) {
   return randomElement(commandContext.footstepSounds[tileName]);
 }
 
+Point<double> coordinatesInDirection(Point<double> start, double direction, {double distance = 1.0}) {
+  final double x = start.x + (distance * cos((direction * pi) / 180));
+  final double y = start.y + (distance * sin((direction * pi) / 180));
+  return Point<double>(x, y);
+}
+
 void move(double multiplier) {
   final MapSection s = commandContext.getCurrentSection();
   if (s == null) {
     return showMessage('There is nothing here for you to walk on.');
   }
-  final double amount = s.tileSize * multiplier;
-  double x = commandContext.coordinates.x;
-  double y = commandContext.coordinates.y;
-  x += amount * cos((commandContext.theta * pi) / 180);
-  y += amount * sin((commandContext.theta * pi) / 180);
-  moveCharacter(x, y);
+  final double distance = s.tileSize * multiplier;
+  final Point<double> coordinates = coordinatesInDirection(commandContext.coordinates, commandContext.theta, distance: distance);
+  moveCharacter(coordinates.x, coordinates.y);
 }
 
 /// An enumeration, for use with the [moveCharacter] function.
 enum MoveModes {
   /// Move normally, respecting walls, and informing the server when done.
   normal,
-  
+
   /// Move like a staff member, ignoring walls, and not informing the server when done.
   staff,
-  
+
   /// Move silently, with no footstep sounds, and do not inform the server when done.
   silent,
 }
