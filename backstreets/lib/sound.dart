@@ -45,8 +45,14 @@ Map<String, dynamic> loadImpulses([Directory start]) {
       }
     }
   }
-return impulses;
+  return impulses;
 }
+
+/// The directory where all echo sounds are held.
+final Directory echoSoundsDirectory = Directory(_path.join(soundsDirectory, 'echoes'));
+
+/// All the loaded echo sounds.
+Map<String, String> echoSounds = <String, String>{};
 
 /// A sound object.
 ///
@@ -61,14 +67,23 @@ class Sound {
   /// Create with a path.
   /// ```
   /// final Sound sound = Sound('beep.wav');
-  Sound(this.path);
-  final String path;
+  Sound(String p) {
+    if (p.startsWith(soundsDirectory)) {
+      path = p.substring(soundsDirectory.length + 1);
+    } else {
+      path = p;
+    }
+  }
+
+  /// The path there this sound is located.
+  String path;
 
   /// Get the url for this sound. The last modified timestamp of the file will be used as the get param.
   String get url {
-    final File file = File(_path.join(soundsDirectory, path));
+    final String filename = _path.join(soundsDirectory, path);
+    final File file = File(filename);
     if (!file.existsSync()) {
-      throw 'No such file: ${file.path}';
+      throw 'No such file: $filename';
     }
     final FileStat stat = file.statSync();
     return 'sounds/$path?${stat.modified.millisecondsSinceEpoch}';

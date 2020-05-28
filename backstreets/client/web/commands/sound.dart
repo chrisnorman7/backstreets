@@ -38,3 +38,8 @@ void impulses(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.impulses = Directory.fromData(data);
 }
+
+void echoSounds(CommandContext ctx) {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  data.forEach((String name, dynamic value) => ctx.echoSounds[name] = value as String);
+}

@@ -49,6 +49,9 @@ void playerOptions(CommandContext ctx) {
   ctx.sounds.setVolume(OutputTypes.sound, (data['soundVolume'] as num).toDouble());
   ctx.sounds.setVolume(OutputTypes.ambience, (data['ambienceVolume'] as num).toDouble());
   ctx.sounds.setVolume(OutputTypes.music, (data['musicVolume'] as num).toDouble());
+  ctx.options.echoLocationDistance = data['echoLocationDistance'] as int;
+  ctx.options.echoLocationDistanceMultiplier = data['echoLocationDistanceMultiplier'] as int;
+  ctx.options.echoSound = data['echoSound'] as String;
 }
 
 /// A list of objects has been sent.

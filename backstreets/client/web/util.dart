@@ -1,6 +1,7 @@
 /// Provides utility methods.
 library util;
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:web_audio';
 
@@ -34,13 +35,24 @@ String headingToString(double angle) {
 
 /// Turn the player by [amount]..
 void turn(double amount) {
-  commandContext.theta += amount;
-  if (commandContext.theta < 0) {
-    commandContext.theta += 360;
-  } else if (commandContext.theta > 360) {
-    commandContext.theta -= 360;
-  }
+  commandContext.theta = normaliseTheta(commandContext.theta + amount);
   commandContext.sendTheta();
+}
+
+/// Ensure that [t] is in the range 0-359.
+///
+/// For example:
+///
+/// * You are facing 0 degrees.
+/// * You turn 1 degree to the left, so your theta is now -1.
+/// * This function would return 359 instead.
+double normaliseTheta(double t) {
+  if (t< 0) {
+    return t + 360;
+  } else if (t >= 360) {
+    return t - 360;
+  }
+  return t;
 }
 
 /// Directions to snap in.
@@ -180,7 +192,7 @@ void instantMove(Directions d) {
 }
 
 /// Play a sound at a specific set of coordinates.
-void playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0}) {
+void playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false}) {
   coordinates ??= commandContext.coordinates;
   AudioNode output = commandContext.sounds.soundOutput;
   if (coordinates != commandContext.coordinates) {
@@ -194,17 +206,31 @@ void playSoundAtCoordinates(String url, {Point<double> coordinates, double volum
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume
     ..connectNode(output);
-  ConvolverNode convolver;
-  final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
-  if (s?.convolver?.convolver == null) {
-    if (commandContext.map.convolver.convolver != null) {
-      convolver = commandContext.map.convolver.convolver;
+  if (!dry) {
+    ConvolverNode convolver;
+    final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
+    if (s?.convolver?.convolver == null) {
+      if (commandContext.map.convolver.convolver != null) {
+        convolver = commandContext.map.convolver.convolver;
+      }
+    } else {
+      convolver = s.convolver.convolver;
     }
-  } else {
-    convolver = s.convolver.convolver;
-  }
-  if (convolver != null) {
-    gain.connectNode(convolver);
+    if (convolver != null) {
+      gain.connectNode(convolver);
+    }
   }
   commandContext.sounds.playSound(url, output: gain);
+}
+
+/// Ping the objects nearby.
+void echoLocate([String url]) {
+  url ??= commandContext.echoSounds[commandContext.options.echoSound];
+  final Point<int> startCoordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+  commandContext.map.walls.forEach((Point<int> coordinates, Wall w) {
+    final double distance = startCoordinates.distanceTo(coordinates);
+    if (distance <= commandContext.options.echoLocationDistance) {
+      Timer(Duration(milliseconds: (distance * commandContext.options.echoLocationDistanceMultiplier).round()), () => playSoundAtCoordinates(url, coordinates: Point<double>(coordinates.x.toDouble(), coordinates.y.toDouble()), dry: true));
+    }
+  });
 }

@@ -19,14 +19,28 @@ Future<void> playerOption(CommandContext ctx) async {
   final dynamic value = ctx.args[1];
   final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
     ..where((PlayerOptions o) => o.object).identifiedBy(ctx.characterId);
-  if (name == 'soundVolume') {
-    q.values.soundVolume = (value as num).toDouble();
-  } else if (name == 'ambienceVolume') {
-    q.values.ambienceVolume = (value as num).toDouble();
-  } else if (name == 'musicVolume') {
-    q.values.musicVolume = (value as num).toDouble();
-  } else {
-    return ctx.sendError('Invalid option name "$name".');
-  }
+  switch(name) {
+    case 'soundVolume':
+      q.values.soundVolume = (value as num).toDouble();
+      break;
+    case 'ambienceVolume':
+      q.values.ambienceVolume = (value as num).toDouble();
+      break;
+    case 'musicVolume':
+      q.values.musicVolume = (value as num).toDouble();
+      break;
+    case 'echoLocationDistance':
+      q.values.echoLocationDistance = value as int;
+      break;
+    case 'echoLocationDistanceMultiplier':
+      q.values.echoLocationDistanceMultiplier = value as int;
+      break;
+    case 'echoSound':
+      q.values.echoSound = value as String;
+      break;
+    default:
+      return ctx.sendError('Invalid option name "$name".');
+      break;
+    }
   await q.updateOne();
 }

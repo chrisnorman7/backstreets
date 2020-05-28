@@ -20,3 +20,5 @@ bool validSounds() => commandContext != null && commandContext.sounds != null &&
 
 /// Only run if we have a valid book.
 bool validBook() => commandContext != null && commandContext.book != null;
+
+bool validOptions() => commandContext?.options != null;

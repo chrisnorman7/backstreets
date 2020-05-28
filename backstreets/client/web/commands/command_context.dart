@@ -8,9 +8,11 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../directory.dart';
+
 import '../game/game_map.dart';
 import '../game/game_object.dart';
 import '../game/map_section.dart';
+import '../game/options.dart';
 
 /// A command context. Will be passed to all commands, instead of using individual arguments, which will quickly become unmanageable.
 class CommandContext {
@@ -109,6 +111,12 @@ class CommandContext {
 
   /// The impulses sent by the server.
   Directory impulses;
+
+  /// Any player options not handled elsewhere.
+  Options options = Options();
+
+  /// The list of possible echo sounds.
+  Map<String, String> echoSounds = <String, String>{};
 
   /// Get the section spanned by the provided coordinates.
   ///

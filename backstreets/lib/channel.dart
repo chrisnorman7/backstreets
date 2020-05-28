@@ -91,7 +91,7 @@ class BackstreetsChannel extends ApplicationChannel {
     for (final FileSystemEntity entity in socialSoundsDirectory.listSync()) {
       if (entity is File) {
         final String socialName = path.basenameWithoutExtension(entity.path);
-        socialSounds[socialName] = Sound(entity.path.substring(soundsDirectory.length + 1));
+        socialSounds[socialName] = Sound(entity.path);
         logger.info('Added sound for social $socialName.');
       }
     }
@@ -99,12 +99,16 @@ class BackstreetsChannel extends ApplicationChannel {
     for (final FileSystemEntity entity in ambienceDirectory.listSync()) {
       if (entity is File) {
         final String ambienceName = path.basenameWithoutExtension(entity.path);
-        ambiences[ambienceName] = Sound(entity.path.substring(soundsDirectory.length + 1));
+        ambiences[ambienceName] = Sound(entity.path);
         logger.info('Added ambience $ambienceName.');
       }
     }
     logger.info('Gathering impulse files.');
     impulses = loadImpulses();
+    for (final FileSystemEntity entity in echoSoundsDirectory.listSync()) {
+      final String echoSound = path.basenameWithoutExtension(entity.path);
+      echoSounds[echoSound] = Sound(entity.path).url;
+    }
     final double duration = (DateTime.now().millisecondsSinceEpoch - started) / 1000;
     logger.info('Preparation completed in ${duration.toStringAsFixed(2)} seconds.');
   }
@@ -128,8 +132,9 @@ class BackstreetsChannel extends ApplicationChannel {
     // Setup the websocket first.
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
-      final File motdFile = File('motd.txt');
       final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
+      socketLogger.info('Connection established.');
+      final File motdFile = File('motd.txt');
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
       CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
@@ -143,7 +148,7 @@ class BackstreetsChannel extends ApplicationChannel {
       ctx.sendAmbiences();
       ctx.send('impulses', <Map<String, dynamic>>[impulses]);
       logger.info('Sent impulses.');
-      socketLogger.info('Connection established.');
+      ctx.send('echoSounds', <Map<String, String>>[echoSounds]);
       socket.listen((dynamic payload) async {
         if (payload is! String) {
           await socket.close(400, 'Binary communication is not supported.');

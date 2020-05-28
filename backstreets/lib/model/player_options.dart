@@ -26,6 +26,20 @@ class _PlayerOptions with PrimaryKeyMixin {
   // Music volume.
   @Column(defaultValue: '0.50')
   double musicVolume;
+
+  /// The distance that echo location should work at.
+  @Column(defaultValue: '50')
+  int echoLocationDistance;
+
+  /// The distance multiplier for echo location.
+  ///
+  /// This number will be multiplied by the distance between a character and an object, to get the time delay before the echo sound is played.
+  @Column(defaultValue: '20')
+  int echoLocationDistanceMultiplier;
+
+  /// The default echo sound.
+  @Column(defaultValue: "'clack'")
+  String echoSound;
 }
 
 /// A class to hold player options.
