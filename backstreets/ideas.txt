@@ -1,8 +1,9 @@
 Todo:
-  Separate builders and admins.
+  Add map convolvers, to act as default when sections don't have them.
 
 Done:
   Make shift+s turn you around.
   Sort out sound for "You can't go that way".
   Look into the possibility of using Directory.watch for file discovery in realtime.
   Implement permissions in preparation for the building system.
+  Separate builders and admins.
