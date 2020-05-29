@@ -70,7 +70,31 @@ class CommandContext {
   /// The heading of the connected character.
   ///
   /// Set by [characterTheta].
-  double theta;
+  double _theta;
+
+  /// Get [_theta].
+  double get theta => _theta;
+
+  /// Set [_theta].
+  ///
+  /// Also set the listener orientation.
+  set theta(double value) {
+    _theta = value;
+    // Code modified from
+    // https://developer.mozilla.org/en-US/docs/Web/API/PannerNode/orientationX
+    //
+    // convert degrees to radians and offset the angle so 0 points towards the listener
+    final double radians = (value - 90) * (pi / 180);
+    // using cosine and sine here ensures the output values are always normalised
+    // i.e. they range between -1 and 1
+    final double x = cos(radians);
+    final double z = sin(radians);
+    // we hard-code the Y component to 0, as Y is the axis of rotation
+    sounds.listener
+      ..forwardX.value = x
+      ..forwardY.value = 0
+      ..forwardZ.value = z;
+  }
 
   /// The map the connected character is on.
   GameMap map;
