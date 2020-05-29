@@ -38,20 +38,15 @@ String headingToString(double angle) {
 ///
 /// If the coordinates `(0, 0)`, and `(1, 2)` were given, `"1 north, and 2
 RelativeDirections relativeDirections(Point<int> start, Point<int> end) {
-  int east, north;
-  final int differenceX = (max(start.x, end.x) - min(start.x, end.x)).toInt();
-  final int differenceY = (max(start.y, end.y) - min(start.y, end.y)).toInt();
+  int east = (max(start.x, end.x) - min(start.x, end.x)).toInt();
+  int north = (max(start.y, end.y) - min(start.y, end.y)).toInt();
   if (start.x > end.x) {
-    east = differenceX * -1;
-  } else {
-    east = differenceX;
+    east *= -1;
   }
   if (start.y > end.y) {
-    north = differenceY * -1;
-  } else {
-    north = differenceY;
+    north *= -1;
   }
-  return RelativeDirections(north, east);
+  return RelativeDirections(east, north);
 }
 
 /// Turn the player by [amount]..

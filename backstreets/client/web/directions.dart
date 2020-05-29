@@ -5,12 +5,12 @@ import 'package:game_utils/game_utils.dart';
 
 /// A set of directions.
 ///
-/// At the minute, only used when resizing a [MapSection].
+/// Used when resizing or moving a [MapSection] instance.
 enum Directions {
-  left,
-  right,
-  up,
-  down,
+  west,
+  east,
+  north,
+  south,
 }
 
 /// Used for adjusting coordinates.
@@ -18,16 +18,16 @@ class DirectionAdjustments {
   /// Create an instance.
   DirectionAdjustments(Directions direction) {
     switch(direction) {
-      case Directions.left:
+      case Directions.west:
         x = -1;
         break;
-      case Directions.right:
+      case Directions.east:
         x = 1;
         break;
-      case Directions.up:
+      case Directions.north:
         y = -1;
         break;
-      case Directions.down:
+      case Directions.south:
         y = 1;
         break;
       default:
@@ -45,22 +45,22 @@ class DirectionAdjustments {
 
 /// Describes the directions between 2 points.
 class RelativeDirections {
-  RelativeDirections(this.north, this.east);
-
-  /// The distance to the north.
-  int north;
+  RelativeDirections(this.east, this.north);
 
   /// The distance to the east.
   int east;
 
+  /// The distance to the north.
+  int north;
+
   @override
   String toString() {
     final List<String> directions = <String>[];
-    if (north != 0) {
-      directions.add('${north.abs()} ${north > 0 ? "north" : "south"}');
-    }
     if (east != 0) {
       directions.add('${east.abs()} ${east > 0 ? "east" : "west"}');
+    }
+    if (north != 0) {
+      directions.add('${north.abs()} ${north > 0 ? "south" : "north"}');
     }
     return englishList(directions, emptyString: 'Here');
   }

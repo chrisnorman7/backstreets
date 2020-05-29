@@ -82,16 +82,16 @@ void hotkeys() {
 void doArrowKey(Directions d) {
   if (validBook()) {
     switch(d) {
-      case Directions.left:
+      case Directions.west:
         commandContext.book.cancel();
         break;
-      case Directions.right:
+      case Directions.east:
         commandContext.book.activate();
         break;
-      case Directions.up:
+      case Directions.north:
         commandContext.book.moveUp();
         break;
-      case Directions.down:
+      case Directions.south:
         commandContext.book.moveDown();
         break;
       default:
@@ -108,13 +108,13 @@ void doArrowKey(Directions d) {
   }
 }
 
-void leftArrow() => doArrowKey(Directions.left);
+void leftArrow() => doArrowKey(Directions.west);
 
-void rightArrow() => doArrowKey(Directions.right);
+void rightArrow() => doArrowKey(Directions.east);
 
-void upArrow() => doArrowKey(Directions.up);
+void upArrow() => doArrowKey(Directions.north);
 
-void downArrow() => doArrowKey(Directions.down);
+void downArrow() => doArrowKey(Directions.south);
 
 void escapeKey() {
   if (validBook()) {
