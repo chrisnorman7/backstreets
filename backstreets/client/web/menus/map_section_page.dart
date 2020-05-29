@@ -37,7 +37,8 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
           },
         )
       );
-    }, titleFunc: () => 'DefaultTile (${s.tileName})'),
+    }, titleFunc: () => 'DefaultTile (${s.tileName})',
+    soundUrl: () => getFootstepSound(s.tileName)),
     Line(b, () {
       s
         ..startX = ctx.coordinates.x.floor()
