@@ -74,11 +74,10 @@ void mapData(CommandContext ctx) {
   mapName(ctx);
   ctx.args[0] = data['ambience'] as String;
   mapAmbience(ctx);
-  final Map<String, dynamic> convolverData = <String, dynamic>{
+  ctx.args[0] = <String, dynamic>{
     'url': data['convolverUrl'] as String,
     'volume': (data['convolverVolume'] as num).toDouble()
   };
-  ctx.args[0] = convolverData;
   mapConvolver(ctx);
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
     ctx.args[0] = sectionData as Map<String, dynamic>;
