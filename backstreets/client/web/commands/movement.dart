@@ -103,9 +103,7 @@ void characterSpeed(CommandContext ctx) {
 }
 
 /// Set the direction the character is facing in.
-void characterTheta(CommandContext ctx) {
-  ctx.theta = ctx.args[0] as double;
-}
+void characterTheta(CommandContext ctx) => ctx.theta = ctx.args[0] as double;
 
 /// A section of the map has been renamed.
 void renameSection(CommandContext ctx) {
