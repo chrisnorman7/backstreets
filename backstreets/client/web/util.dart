@@ -201,7 +201,7 @@ void resizeMapSection(Directions d) {
   Point<int> coordinates = commandContext.mapSectionResizer.coordinates;
   coordinates = Point<int>(coordinates.x + da.x, coordinates.y + da.y);
   commandContext.mapSectionResizer.updateCoordinates(coordinates);
-  showMessage('${commandContext.mapSectionResizer.section.textSize}: ${commandContext.mapSectionResizer.coordinates.x}, ${commandContext.mapSectionResizer.coordinates.y}.');
+  showMessage('${relativeDirections(commandContext.mapSectionResizer.defaultCoordinates, commandContext.mapSectionResizer.coordinates)}: ${commandContext.mapSectionResizer.section.textSize}.');
 }
 
 /// Moves a map section.
