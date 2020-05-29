@@ -33,6 +33,27 @@ String headingToString(double angle) {
   return directions[index];
 }
 
+/// Returns relative directions.
+///
+///
+/// If the coordinates `(0, 0)`, and `(1, 2)` were given, `"1 north, and 2
+RelativeDirections relativeDirections(Point<int> start, Point<int> end) {
+  int east, north;
+  final int differenceX = (max(start.x, end.x) - min(start.x, end.x)).toInt();
+  final int differenceY = (max(start.y, end.y) - min(start.y, end.y)).toInt();
+  if (start.x > end.x) {
+    east = differenceX * -1;
+  } else {
+    east = differenceX;
+  }
+  if (start.y > end.y) {
+    north = differenceY * -1;
+  } else {
+    north = differenceY;
+  }
+  return RelativeDirections(north, east);
+}
+
 /// Turn the player by [amount]..
 void turn(double amount) {
   commandContext.theta = normaliseTheta(commandContext.theta + amount);
@@ -181,6 +202,17 @@ void resizeMapSection(Directions d) {
   coordinates = Point<int>(coordinates.x + da.x, coordinates.y + da.y);
   commandContext.mapSectionResizer.updateCoordinates(coordinates);
   showMessage('${commandContext.mapSectionResizer.section.textSize}: ${commandContext.mapSectionResizer.coordinates.x}, ${commandContext.mapSectionResizer.coordinates.y}.');
+}
+
+/// Moves a map section.
+void moveMapSection(Directions d) {
+  final DirectionAdjustments da = DirectionAdjustments(d);
+  commandContext.mapSectionMover
+    ..section.startX += da.x
+    ..section.startY += da.y
+    ..section.endX += da.x
+    ..section.endY += da.y;
+  commandContext.message(relativeDirections(Point<int>(commandContext.mapSectionMover.startX, commandContext.mapSectionMover.startY), Point<int>(commandContext.mapSectionMover.section.startX, commandContext.mapSectionMover.section.startY)).toString());
 }
 
 /// Instantly move the character.

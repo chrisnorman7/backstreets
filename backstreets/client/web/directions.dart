@@ -1,6 +1,8 @@
 /// Provides the [Directions] enumeration, and the DirectionAdjustements class.
 library directions;
 
+import 'package:game_utils/game_utils.dart';
+
 /// A set of directions.
 ///
 /// At the minute, only used when resizing a [MapSection].
@@ -39,4 +41,27 @@ class DirectionAdjustments {
 
   /// The y adjustment.
   int y = 0;
+}
+
+/// Describes the directions between 2 points.
+class RelativeDirections {
+  RelativeDirections(this.north, this.east);
+
+  /// The distance to the north.
+  int north;
+
+  /// The distance to the east.
+  int east;
+
+  @override
+  String toString() {
+    final List<String> directions = <String>[];
+    if (north != 0) {
+      directions.add('${north.abs()} ${north > 0 ? "north" : "south"}');
+    }
+    if (east != 0) {
+      directions.add('${east.abs()} ${east > 0 ? "east" : "west"}');
+    }
+    return englishList(directions);
+  }
 }

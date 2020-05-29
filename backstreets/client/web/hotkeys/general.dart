@@ -78,82 +78,84 @@ void hotkeys() {
   commandContext.book.push(hotkeysPage);
 }
 
-
-void leftArrow() {
-  if (builderOnly()) {
-    if (commandContext.mapSectionResizer != null) {
-      resizeMapSection(Directions.left);
-    } else {
-      instantMove(Directions.left);
+/// What to do with the arrow keys.
+void doArrowKey(Directions d) {
+  if (validBook()) {
+    switch(d) {
+      case Directions.left:
+        commandContext.book.cancel();
+        break;
+      case Directions.right:
+        commandContext.book.activate();
+        break;
+      case Directions.up:
+        commandContext.book.moveUp();
+        break;
+      case Directions.down:
+        commandContext.book.moveDown();
+        break;
+      default:
+        throw 'Unhandled direction: $d.';
     }
-  } else if (validBook()) {
-    commandContext.book.cancel();
+  } else if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null) {
+      resizeMapSection(d);
+    } else if (commandContext.mapSectionMover != null) {
+      moveMapSection(d);
+    } else {
+      instantMove(d);
+    }
   }
 }
 
-void rightArrow() {
-  if (builderOnly()) {
-    if (commandContext.mapSectionResizer != null) {
-      resizeMapSection(Directions.right);
-    } else {
-      instantMove(Directions.right);
-    }
-  } else if (validBook()) {
-    commandContext.book.activate();
-  }
-}
+void leftArrow() => doArrowKey(Directions.left);
 
-void upArrow() {
-  if (builderOnly()) {
-    if (commandContext.mapSectionResizer != null) {
-      resizeMapSection(Directions.up);
-    } else {
-      instantMove(Directions.up);
-    }
-  } else if (validBook()) {
-    commandContext.book.moveUp();
-  }
-}
+void rightArrow() => doArrowKey(Directions.right);
 
-void downArrow() {
-  if (builderOnly()) {
-    if (commandContext.mapSectionResizer != null) {
-      resizeMapSection(Directions.down);
-    } else {
-      instantMove(Directions.down);
-    }
-  } else if (validBook()) {
-    commandContext.book.moveDown();
-  }
-}
+void upArrow() => doArrowKey(Directions.up);
+
+void downArrow() => doArrowKey(Directions.down);
 
 void escapeKey() {
-  if (builderOnly() && commandContext.mapSectionResizer != null) {
-    if (commandContext.mapSectionResizer.coordinates == commandContext.mapSectionResizer.defaultCoordinates) {
-      showMessage('Stop dragging ${commandContext.mapSectionResizer.section.name}.');
-      commandContext.mapSectionResizer = null;
-    } else {
-      commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
-      showMessage('Coordinates reset.');
-    }
-  } else if (validBook()) {
+  if (validBook()) {
     commandContext.book.cancel();
+  } else if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null) {
+      if (commandContext.mapSectionResizer.coordinates == commandContext.mapSectionResizer.defaultCoordinates) {
+        showMessage('Stop dragging ${commandContext.mapSectionResizer.section.name}.');
+        commandContext.mapSectionResizer = null;
+      } else {
+        commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
+        showMessage('Coordinates reset.');
+      }
+    } else if (commandContext.mapSectionMover!= null) {
+      if (commandContext.mapSectionMover.hasMoved) {
+        commandContext.mapSectionMover.restoreDefaults();
+        commandContext.message('Original location restored.');
+      } else {
+        commandContext.message('${commandContext.mapSectionMover.startX} -> ${commandContext.mapSectionMover.section.startX}.');
+        commandContext.message('Stop moving ${commandContext.mapSectionMover.section.name}.');
+        commandContext.mapSectionMover = null;
+      }
+    }
   }
 }
 
 void enterKey() {
-  if (builderOnly() && commandContext.mapSectionResizer != null) {
-    commandContext.book = Book(bookOptions)
-      ..push(mapSectionPage(commandContext.book, commandContext.mapSectionResizer.section, commandContext, onUpload: () {
-        commandContext.section = null;
-        clearBook();
-      }, onCancel: () {
-        showMessage('Cancelled.');
-        clearBook();
-      }));
-    commandContext.mapSectionResizer = null;
-    return;
-  } else if (validBook()) {
+  if (validBook()) {
     commandContext.book.activate();
+  } else if (builderOnly()) {
+    if (commandContext.mapSectionResizer != null || commandContext.mapSectionMover != null) {
+      commandContext.book = Book(bookOptions)
+        ..push(mapSectionPage(commandContext.book, commandContext.mapSectionResizer == null? commandContext.mapSectionMover.section : commandContext.mapSectionResizer.section, commandContext, onUpload: () {
+          commandContext.section = null;
+          clearBook();
+        }, onCancel: () {
+          showMessage('Cancelled.');
+          clearBook();
+        }));
+      commandContext.mapSectionResizer = null;
+      commandContext.mapSectionMover = null;
+    }
   }
 }

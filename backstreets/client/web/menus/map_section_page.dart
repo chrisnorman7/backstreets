@@ -25,7 +25,7 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
       }, showMessage, onCancel: resetFocus)
         ..addElement('name', validator: notEmptyValidator, value: s.name)
         ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-    }, titleFunc: () => 'Rename (${s.name})'),
+    }, titleFunc: () => 'Name (${s.name})'),
     Line(b, () {
       b.push(
         selectTilePage(
@@ -37,7 +37,7 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
           },
         )
       );
-    }, titleFunc: () => 'DefaultTile (${s.tileName})',
+    }, titleFunc: () => 'Footstep Sound (${s.tileName})',
     soundUrl: () => getFootstepSound(s.tileName)),
     Line(b, () {
       s
@@ -52,15 +52,32 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
       ctx.message('End coordinates set.');
     }, titleFunc: () => 'End Coordinates (${s.endCoordinates.x}, ${s.endCoordinates.y})'),
     Line(b, () {
-      commandContext.mapSectionResizer = MapSectionResizer(s, DragCoordinates.start);
-      clearBook();
-      ctx.message('Dragging the start coordinates for ${s.name}. Use your arrow keys to drag, and your enter key when done.');
+      if (commandContext.mapSectionMover == null) {
+        commandContext.mapSectionResizer = MapSectionResizer(s, DragCoordinates.start);
+        clearBook();
+        ctx.message('Dragging the start coordinates for ${s.name}. Use your arrow keys to drag, and your enter key when done.');
+      } else {
+        commandContext.message('Finish moving ${commandContext.mapSectionMover.section.name} first.');
+      }
     }, titleString: 'Drag Start Coordinates'),
     Line(b, () {
-      commandContext.mapSectionResizer = MapSectionResizer(s, DragCoordinates.end);
-      clearBook();
-      ctx.message('Dragging the end coordinates for ${s.name}. Use your arrow keys to drag, and your enter key when done.');
+      if (commandContext.mapSectionMover == null) {
+        commandContext.mapSectionResizer = MapSectionResizer(s, DragCoordinates.end);
+        clearBook();
+        ctx.message('Dragging the end coordinates for ${s.name}. Use your arrow keys to drag, and your enter key when done.');
+      } else {
+        commandContext.message('Finish moving ${commandContext.mapSectionMover.section.name} first.');
+      }
     }, titleString: 'Drag end Coordinates'),
+    Line(b, () {
+      if (commandContext.mapSectionResizer == null) {
+        commandContext.mapSectionMover = MapSectionMover(s);
+        clearBook();
+        commandContext.message('Use the arrow keys to move the section, and press enter when done.');
+      } else {
+        commandContext.message('Finish resizing ${commandContext.mapSectionResizer.section.name} first.');
+      }
+    }, titleString: 'Move Section'),
     Line(b, () {
       final NumberInputElement e = NumberInputElement()
         ..min = '0.01'
@@ -77,11 +94,11 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
     Line(b, () {
       clearBook();
       moveCharacter(Point<double>(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble()), mode: MoveModes.staff);
-    }, titleString: 'Move To Start Coordinates'),
+    }, titleString: 'Go to Start Coordinates'),
     Line(b, () {
       clearBook();
       moveCharacter(Point<double>(s.endCoordinates.x.toDouble(), s.endCoordinates.y.toDouble()), mode: MoveModes.staff);
-    }, titleString: 'Move To End Coordinates'),
+    }, titleString: 'Go to End Coordinates'),
     Line(b, () {
       if (s.name == null || s.name.isEmpty) {
         ctx.message('You must first set a name.');
@@ -110,7 +127,6 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
     lines.addAll(<Line>[
       Line(b, () {
         commandContext.send('resetMapSection', <int>[s.id]);
-        b.pop();
         showMessage('Resetting Section...');
         commandContext.sectionResetId = s.id;
       }, titleString: 'Reset'),

@@ -135,3 +135,40 @@ class MapSectionResizer {
     }
   }
 }
+
+/// Used when moving [MapSection] instances.
+class MapSectionMover {
+  MapSectionMover(this.section) {
+    startX = section.startX;
+    startY = section.startY;
+    endX = section.endX;
+    endY = section.endY;
+  }
+
+  /// The section that is being moved.
+  MapSection section;
+
+  /// The initial start x coordinate.
+  int startX;
+
+  /// The initial end x coordinate.
+  int endX;
+
+  /// The initial start y coordinate.
+  int startY;
+
+  /// The initial end y coordinate.
+  int endY;
+
+  /// A quick way to see if [section] has moved.
+  bool get hasMoved => section.startX != startX || section.endX != endX || section.startY != startY || section.endY != endY;
+
+  /// Move [section] back to its starting coordinates.
+  void restoreDefaults() {
+    section
+      ..startX = startX
+      ..endX = endX
+      ..startY = startY
+      ..endY = endY;
+  }
+}

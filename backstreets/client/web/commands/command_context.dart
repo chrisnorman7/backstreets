@@ -130,6 +130,9 @@ class CommandContext {
   /// Used when resizing a [MapSection].
   MapSectionResizer mapSectionResizer;
 
+  /// The section which is in the process of being moved.
+  MapSectionMover mapSectionMover;
+
   /// If `true`, any key that is not handled as a hotkey will be printed.
   bool helpMode = false;
 
