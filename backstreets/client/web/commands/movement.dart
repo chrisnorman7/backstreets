@@ -121,24 +121,41 @@ void sectionTileName(CommandContext ctx) {
 
 /// Map section data has been received.
 ///
-/// This command creates a new [MapSection] instance.
+/// If there is no section at the given coordinates, this function creates a new [MapSection] instance. Otherwise, the existing instance is modified.
 void mapSection(CommandContext ctx) {
   final Map<String, dynamic> sectionData = ctx.args[0] as Map<String, dynamic>;
   final int id = sectionData['id'] as int;
-  ctx.map.sections[id] = MapSection(
-    ctx.sounds, id,
-    sectionData['startX'] as int,
-    sectionData['startY'] as int,
-    sectionData['endX'] as int,
-    sectionData['endY'] as int,
-    sectionData['name'] as String,
-    sectionData['tileName'] as String,
-    sectionData['tileSize'] as double,
-    sectionData['convolverUrl'] as String,
-    (sectionData['convolverVolume'] as num).toDouble(),
-  );
+  final int startX = sectionData['startX'] as int;
+  final int startY = sectionData['startY'] as int;
+  final int endX = sectionData['endX'] as int;
+  final int endY = sectionData['endY'] as int;
+  final String name = sectionData['name'] as String;
+  final String tileName = sectionData['tileName'] as String;
+  final double tileSize = sectionData['tileSize'] as double;
+  final String convolverUrl = sectionData['convolverUrl'] as String;
+  final double convolverVolume = (sectionData['convolverVolume'] as num).toDouble();
+  if (ctx.map.sections.containsKey(id)) {
+    ctx.map.sections[id]
+      ..startX = startX
+      ..endX = endX
+      ..startY = startY
+      ..endY = endY
+      ..name = name
+      ..tileName = tileName
+      ..tileSize = tileSize;
+    ctx.map.sections[id].convolver
+      ..url = convolverUrl
+      ..volume.gain.value = convolverVolume
+      ..resetConvolver();
+  } else {
+    ctx.map.sections[id] = MapSection(
+      ctx.sounds, id, startX, startY, endX, endY, name, tileName, tileSize,
+      convolverUrl, convolverVolume
+    );
+  }
   if (id == ctx.sectionResetId) {
     ctx.message('Section reset.');
+    ctx.sectionResetId = null;
   }
 }
 
