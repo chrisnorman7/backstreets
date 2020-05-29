@@ -33,9 +33,9 @@ void mapName(CommandContext ctx) => ctx.map = GameMap(ctx.args[0] as String);
 void tile(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final int index = data['index'] as int;
-  final double x = data['x'] as double;
-  final double y = data['y'] as double;
-  ctx.map.tiles[Point<int>(x.toInt(), y.toInt())] = ctx.tileNames[index];
+  final int x = data['x'] as int;
+  final int y = data['y'] as int;
+  ctx.map.tiles[Point<int>(x, y)] = ctx.tileNames[index];
 }
 
 /// Save a list of all the possible tile names.
