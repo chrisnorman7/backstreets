@@ -138,7 +138,7 @@ class BackstreetsChannel extends ApplicationChannel {
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
       CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
-      ctx.sendMessage(motd);
+      ctx.message(motd);
       ctx.send('tileNames', tiles.keys.toList());
       tiles.forEach((String name, Tile t) {
         for (final Sound sound in t.footstepSounds) {

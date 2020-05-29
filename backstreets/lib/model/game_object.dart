@@ -91,7 +91,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
 
   /// Send a message to the socket which this object is connected to.
   void message(String text) {
-    return commandContext?.sendMessage(text);
+    return commandContext?.message(text);
   }
 
   /// Tell the connected player to play a sound.

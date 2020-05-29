@@ -32,7 +32,7 @@ Future<void> renameObject(CommandContext ctx) async {
     ..where((GameObject o) => o.id).equalTo(id);
   final GameObject o = await q.updateOne();
   o.commandContext?.send('characterName', <String>[o.name]);
-  ctx.sendMessage('Object rename.');
+  ctx.message('Object rename.');
 }
 
 Future<void> setObjectPermission(CommandContext ctx) async {
@@ -53,10 +53,10 @@ Future<void> setObjectPermission(CommandContext ctx) async {
   if (o == null) {
     return ctx.sendError('Invalid object.');
   }
-  ctx.sendMessage('Permissions updated.');
+  ctx.message('Permissions updated.');
   final CommandContext c = o.commandContext;
   if (c != null) {
     c.send(permission, <bool>[value]);
-    c.sendMessage('Permission $permission ${value ? "set" : "unset"}.');
+    c.message('Permission $permission ${value ? "set" : "unset"}.');
   }
 }

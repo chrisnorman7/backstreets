@@ -9,7 +9,7 @@ import 'command_context.dart';
 
 /// Shows the server time.
 /// Implemented more as a proof of concept before I'd written anything else than because it's actually useful.
-Future<void> serverTime(CommandContext ctx) async => ctx.sendMessage('Server time is ${DateTime.now()}.');
+Future<void> serverTime(CommandContext ctx) async => ctx.message('Server time is ${DateTime.now()}.');
 
 /// Set a single player option.
 ///

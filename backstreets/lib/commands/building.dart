@@ -21,11 +21,12 @@ Future<void> renameMap(CommandContext ctx) async {
     ..where((GameMap m) => m.id).equalTo(ctx.mapId);
   final GameMap m = await q.updateOne();
   await m.broadcastCommand(ctx.db, 'mapName', <String>[m.name]);
-  ctx.sendMessage('Map renamed.');
+  ctx.message('Map renamed.');
 }
 
 /// Adds a new [MapSection] instance from the given data.
 Future<void> addMapSection(CommandContext ctx) async {
+  final GameMap m = await ctx.getMap();
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final int startX = data['startX'] as int;
   final int startY = data['startY'] as int;
@@ -39,11 +40,10 @@ Future<void> addMapSection(CommandContext ctx) async {
     ..values.endX = max(endX, startX)
     ..values.endY = max(endY, startY)
     ..values.tileSize = data['tileSize'] as double
-    ..values.location.id = ctx.mapId;
+    ..values.location = m;
   final MapSection s = await q.insert();
-  final GameMap m = await ctx.getMap();
   await m.broadcastCommand(ctx.db, 'mapSection', <Map<String, dynamic>>[s.asMap()]);
-  ctx.sendMessage('Section added.');
+  ctx.message('Section added.');
 }
 
 /// Change the ambience for the map the connected object is on.
@@ -89,7 +89,7 @@ Future<void> editMapSection(CommandContext ctx) async {
   } else {
     final GameMap m = await ctx.getMap();
     await m.broadcastCommand(ctx.db, 'mapSection', <Map<String, dynamic>>[s.toJson()]);
-    ctx.sendMessage('Section edited.');
+    ctx.message('Section edited.');
   }
 }
 
@@ -105,7 +105,7 @@ Future<void> deleteMapSection(CommandContext ctx) async {
   } else {
     final GameMap m = await ctx.getMap();
     await m.broadcastCommand(ctx.db, 'deleteMapSection', <int>[id]);
-    ctx.sendMessage('Section Deleted.');
+    ctx.message('Section Deleted.');
   }
 }
 
@@ -122,7 +122,7 @@ Future<void> mapConvolver(CommandContext ctx) async {
     ctx.sendError('Invalid map ID.');
   } else {
     await m.broadcastCommand(ctx.db, 'mapConvolver', <Map<String, dynamic>>[<String, dynamic>{'url': url, 'volume': volume}]);
-    ctx.sendMessage('Convolver updated.');
+    ctx.message('Convolver updated.');
   }
 }
 
@@ -149,7 +149,7 @@ Future<void> buildWall(CommandContext ctx, WallTypes t) async {
   String s = t.toString();
   s = s.substring(s.indexOf('.') + 1);
   s = s[0].toUpperCase() + s.substring(1);
-  ctx.sendMessage('$s added at ${w.x}, ${w.y}.');
+  ctx.message('$s added at ${w.x}, ${w.y}.');
 }
 
 Future<void> addWall(CommandContext ctx) async => buildWall(ctx, WallTypes.wall);
@@ -167,5 +167,6 @@ Future<void> deleteWall(CommandContext ctx) async {
   } else {
     final GameMap m = await ctx.getMap();
     await m.broadcastCommand(ctx.db, 'deleteWall', <int>[id]);
+    ctx.message('Deleted.');
   }
 }

@@ -129,7 +129,7 @@ class CommandContext{
   /// Send a message to the player.
   ///
   /// If you are alerting the player to an error condition, use [sendError] instead.
-  void sendMessage(String text) {
+  void message(String text) {
     send('message', <String>[text]);
   }
 
