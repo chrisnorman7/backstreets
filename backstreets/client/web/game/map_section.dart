@@ -5,14 +5,16 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import 'ambience.dart';
 import 'convolver.dart';
 
 /// A section of a map.
 ///
-/// Basically rectangles, with a name, and a tile type.
+/// Basically rectangles, with game-specific information.
 class MapSection {
-  MapSection(SoundPool sounds, this.id, this.startX, this.startY, this.endX, this.endY, this.name, this.tileName, this.tileSize, String convolverUrl, double convolverVolume) {
+  MapSection(SoundPool sounds, this.id, this.startX, this.startY, this.endX, this.endY, this.name, this.tileName, this.tileSize, String convolverUrl, double convolverVolume, String ambienceUrl) {
     convolver = Convolver(sounds, convolverUrl, convolverVolume);
+    ambience = Ambience(sounds, ambienceUrl, x: startX.toDouble(), y: startY.toDouble());
   }
 
   /// The id of this section.
@@ -41,6 +43,9 @@ class MapSection {
 
   /// The convolver for this map section.
   Convolver convolver;
+
+  /// The ambience for this section.
+  Ambience ambience;
 
   /// The bounding coordinates.
   Rectangle<int> get rect => Rectangle<int>.fromPoints(startCoordinates, endCoordinates);

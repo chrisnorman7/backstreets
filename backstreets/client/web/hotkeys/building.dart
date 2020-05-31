@@ -28,7 +28,7 @@ void builderMenu() {
           commandContext.coordinates.x.floor(),
           commandContext.coordinates.y.floor(),
           'Untitled Section', commandContext.tileNames[0], 0.5,
-          null, 1.0
+          null, 1.0, null
         );
         commandContext.book.push(
           mapSectionPage(commandContext.book, commandContext.section, commandContext, onUpload: () {
@@ -62,9 +62,9 @@ void builderMenu() {
                   commandContext.book, commandContext.ambiences.keys.toList(), (String ambience) {
                     commandContext.send('mapAmbience', <String>[ambience]);
                     commandContext.book.pop();
-                  }, (String name) => commandContext.ambiences[name], currentSound: commandContext.map.ambienceUrl
+                  }, (String name) => commandContext.ambiences[name], currentSound: commandContext.map.ambience.url
                 )
-              ), titleFunc: () => 'Ambience (${commandContext.map.ambienceUrl})'),
+              ), titleFunc: () => 'Ambience (${commandContext.map.ambience.url})'),
               Line(
                 commandContext.book, () => commandContext.book.push(
                   editConvolverPage(

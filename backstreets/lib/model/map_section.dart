@@ -12,7 +12,7 @@ import 'mixins.dart';
 ///
 /// To work with map sections directly, use the [MapSection] class.
 @Table(name: 'map_sections')
-class _MapSection with PrimaryKeyMixin, NameMixin {
+class _MapSection with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// The start x coordinate.
   int startX;
 
@@ -60,6 +60,7 @@ class MapSection extends ManagedObject<_MapSection> implements _MapSection {
       'tileSize': tileSize,
       'convolverUrl': convolverUrl == null ? null : Sound(convolverUrl).url,
       'convolverVolume': convolverVolume,
+      'ambienceUrl': ambience,
     };
   }
 }

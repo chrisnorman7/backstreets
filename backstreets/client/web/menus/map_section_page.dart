@@ -90,6 +90,19 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
         ..addElement('tileSize', element: e, label: 'Tile size', value: s.tileSize.toString())
         ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
     }, titleFunc: () => 'Tile Size (${s.tileSize})'),
+    Line(commandContext.book, () => commandContext.book.push(
+      Page.soundsPage(
+        commandContext.book, commandContext.ambiences.keys.toList(), (String ambience) {
+          b.pop();
+          if (s.id == null) {
+            commandContext.message('You can only add an ambience once you have uploaded a section.');
+          } else {
+            commandContext.send('mapSectionAmbience', <dynamic>[s.id, ambience]);
+          }
+        }, (String name) => commandContext.ambiences[name], currentSound: commandContext.map.ambience.url
+      )
+    ), titleFunc: () => 'Ambience (${s.ambience.url})',
+    soundUrl: () => s.ambience.url == null ? null : commandContext.ambiences[s.ambience.url]),
     Line(b, () => b.push(editConvolverPage(b, s.convolver)), titleString: 'Convolver'),
     Line(b, () {
       clearBook();

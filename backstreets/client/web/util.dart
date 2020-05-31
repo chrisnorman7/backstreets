@@ -5,7 +5,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:web_audio';
 
-import 'package:game_utils/game_utils.dart' show randomElement;
+import 'package:game_utils/game_utils.dart' show randomElement, Sound;
 
 import 'directions.dart';
 
@@ -219,9 +219,9 @@ void instantMove(Directions d) {
 }
 
 /// Play a sound at a specific set of coordinates.
-void playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false}) {
+Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false}) {
   coordinates ??= commandContext.coordinates;
-  AudioNode output = commandContext.sounds.soundOutput;
+  output ??= commandContext.sounds.soundOutput;
   if (coordinates != commandContext.coordinates) {
     final PannerNode panner = commandContext.sounds.audioContext.createPanner()
       ..positionX.value = coordinates.x
@@ -247,7 +247,7 @@ void playSoundAtCoordinates(String url, {Point<double> coordinates, double volum
       gain.connectNode(convolver);
     }
   }
-  commandContext.sounds.playSound(url, output: gain);
+  return commandContext.sounds.playSound(url, output: gain, loop: loop);
 }
 
 /// Ping the objects nearby.

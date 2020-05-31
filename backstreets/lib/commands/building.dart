@@ -170,3 +170,19 @@ Future<void> deleteWall(CommandContext ctx) async {
     ctx.message('Deleted.');
   }
 }
+
+Future<void> mapSectionAmbience(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final String url = ctx.args[1] as String;
+  final Query<MapSection> q = Query<MapSection>(ctx.db)
+    ..values.ambience = url
+    ..where((MapSection s) => s.id).equalTo(id)
+    ..where((MapSection s) => s.location).identifiedBy(ctx.mapId);
+  final MapSection s = await q.updateOne();
+  if (s == null) {
+    return ctx.sendError('Invalid section ID.');
+  }
+  final GameMap m = await ctx.getMap();
+  await m.broadcastCommand(ctx.db, 'mapSectionAmbience', <Map<String, dynamic>>[<String, dynamic>{'id': s.id, 'url': s.ambience}]);
+  ctx.message('Ambience updated.');
+}

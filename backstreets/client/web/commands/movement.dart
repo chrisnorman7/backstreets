@@ -2,9 +2,9 @@
 library movement;
 
 import 'dart:math';
-
 import 'package:game_utils/game_utils.dart';
 
+import '../game/ambience.dart';
 import '../game/game_map.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
@@ -134,6 +134,10 @@ void mapSection(CommandContext ctx) {
   final double tileSize = sectionData['tileSize'] as double;
   final String convolverUrl = sectionData['convolverUrl'] as String;
   final double convolverVolume = (sectionData['convolverVolume'] as num).toDouble();
+  String ambienceUrl = sectionData['ambienceUrl'] as String;
+  if (ambienceUrl != null) {
+    ambienceUrl = ctx.ambiences[ambienceUrl];
+  }
   if (ctx.map.sections.containsKey(id)) {
     ctx.map.sections[id]
       ..startX = startX
@@ -142,7 +146,9 @@ void mapSection(CommandContext ctx) {
       ..endY = endY
       ..name = name
       ..tileName = tileName
-      ..tileSize = tileSize;
+      ..tileSize = tileSize
+      ..ambience.url = ambienceUrl
+      ..ambience.reset();
     ctx.map.sections[id].convolver
       ..url = convolverUrl
       ..volume.gain.value = convolverVolume
@@ -150,7 +156,7 @@ void mapSection(CommandContext ctx) {
   } else {
     ctx.map.sections[id] = MapSection(
       ctx.sounds, id, startX, startY, endX, endY, name, tileName, tileSize,
-      convolverUrl, convolverVolume
+      convolverUrl, convolverVolume, ambienceUrl
     );
   }
   if (id == ctx.sectionResetId) {
@@ -161,14 +167,12 @@ void mapSection(CommandContext ctx) {
 
 /// The ambience of this map has changed.
 void mapAmbience(CommandContext ctx) {
-  ctx.map.ambienceUrl = ctx.args[0] as String;
-  if (ctx.map.ambience != null) {
-    ctx.map.ambience.stop();
-  }
-  if (ctx.map.ambienceUrl == null) {
-    ctx.map.ambience = null;
+  final String url = ctx.args[0] as String;
+  if (ctx.map.ambience == null) {
+    ctx.map.ambience = Ambience(ctx.sounds, url);
   } else {
-    ctx.map.ambience = ctx.sounds.playSound(ctx.map.ambienceUrl, output: ctx.sounds.ambienceOutput, loop: true);
+    ctx.map.ambience.url = url;
+    ctx.map.ambience.reset();
   }
 }
 
@@ -178,6 +182,7 @@ void deleteMapSection(CommandContext ctx) {
   ctx.map.sections.remove(id);
 }
 
+/// A map has a new convolver.
 void mapConvolver(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   ctx.map.convolver.url = data['url'] as String;
@@ -185,6 +190,7 @@ void mapConvolver(CommandContext ctx) {
   ctx.map.convolver.resetConvolver();
 }
 
+/// A new wall has been created.
 void mapWall(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final int id = data['id'] as int;
@@ -204,7 +210,21 @@ void mapWall(CommandContext ctx) {
   }
 }
 
+/// A wall should be deleted from a map.
 void deleteWall(CommandContext ctx) {
   final int id = ctx.args[0] as int;
   ctx.map.walls.removeWhere((Point<int> coordinates, Wall w) => w.id == id);
+}
+
+/// Assign a new ambience to a map section.
+void mapSectionAmbience(CommandContext ctx) {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  String url = data['url'] as String;
+  if (url != null) {
+  url = ctx.ambiences[url];
+  }
+  ctx.map.sections[id].ambience
+    ..url = url
+    ..reset();
 }

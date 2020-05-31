@@ -3,14 +3,12 @@ library game_map;
 
 import 'dart:math';
 
-import 'package:game_utils/game_utils.dart';
-
-import '../game/wall.dart';
-
 import '../main.dart';
 
+import 'ambience.dart';
 import 'convolver.dart';
 import 'map_section.dart';
+import 'wall.dart';
 
 /// A map in the game.
 class GameMap {
@@ -22,10 +20,7 @@ class GameMap {
   String name;
 
   /// The ambience of this map.
-  String ambienceUrl;
-
-  /// The ambience to play.
-  Sound ambience;
+  Ambience ambience;
 
   /// The default convolver for this map.
   ///

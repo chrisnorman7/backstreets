@@ -39,6 +39,7 @@ List<Command> commandsList = <Command>[
   Command(addWall, authenticationType: AuthenticationTypes.builder),
   Command(addBarricade, authenticationType: AuthenticationTypes.builder),
   Command(deleteWall, authenticationType: AuthenticationTypes.builder),
+  Command(mapSectionAmbience, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   Command(serverTime, authenticationType: AuthenticationTypes.any),
