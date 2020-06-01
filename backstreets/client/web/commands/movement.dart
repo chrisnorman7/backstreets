@@ -224,7 +224,10 @@ void mapSectionAmbience(CommandContext ctx) {
   if (url != null) {
     url = ctx.ambiences[url];
   }
-  ctx.map.sections[id].ambience
+  final MapSection s = ctx.map.sections[id];
+  s.ambience
     ..url = url
+    ..x = s.startX.toDouble()
+    ..y = s.startY.toDouble()
     ..reset();
 }
