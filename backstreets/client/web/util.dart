@@ -220,21 +220,22 @@ void instantMove(Directions d) {
 
 /// Play a sound at a specific set of coordinates.
 Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false}) {
-  coordinates ??= commandContext.coordinates;
   output ??= commandContext.sounds.soundOutput;
-  if (coordinates != commandContext.coordinates) {
+  final GainNode gain = commandContext.sounds.audioContext.createGain()
+    ..gain.value = volume;
+  if (coordinates != null) {
     final PannerNode panner = commandContext.sounds.audioContext.createPanner()
       ..positionX.value = coordinates.x
       ..positionY.value = coordinates.y
       ..panningModel = 'HRTF'
       ..connectNode(output);
-    output = panner;
+    gain.connectNode(panner);
+  } else {
+  gain.connectNode(output);
   }
-  final GainNode gain = commandContext.sounds.audioContext.createGain()
-    ..gain.value = volume
-    ..connectNode(output);
   if (!dry) {
     ConvolverNode convolver;
+    coordinates ??= commandContext.coordinates;
     final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
     if (s?.convolver?.convolver == null) {
       if (commandContext.map.convolver.convolver != null) {

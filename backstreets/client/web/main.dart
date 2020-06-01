@@ -13,6 +13,8 @@ import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'commands/login.dart';
 
+import 'game/map_section.dart';
+
 import 'hotkeys/admin.dart';
 import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
@@ -189,6 +191,13 @@ void main() {
       setTitle(state: 'Disconnected');
       if (commandContext?.map?.ambience?.sound != null) {
         commandContext.map.ambience.sound.stop();
+      }
+      if (commandContext?.map?.sections != null) {
+        for (final MapSection s in commandContext.map.sections.values) {
+          if (s.ambience.sound != null) {
+            s.ambience.sound.stop();
+          }
+        }
       }
       commandContext = null;
       mainDiv.hidden = true;
