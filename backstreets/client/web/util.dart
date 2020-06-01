@@ -19,14 +19,14 @@ final Random random = Random();
 /// Convert a theta to a human readable string.
 String headingToString(double angle) {
   const List<String> directions = <String>[
+    'north',
+    'north-east',
     'east',
     'south-east',
     'south',
     'south-west',
     'west',
     'north-west',
-    'north',
-    'north-east',
   ];
   final int index =
       (((angle %= 360) < 0 ? angle + 360 : angle) ~/ 45 % 8).round();
@@ -99,9 +99,13 @@ String getFootstepSound(String tileName) {
   return randomElement(commandContext.footstepSounds[tileName]);
 }
 
+/// Return the coordinates in the given direction.
+/// 
+/// The distance can be set to allow the function to work in big or small steps.
 Point<double> coordinatesInDirection(Point<double> start, double direction, {double distance = 1.0}) {
-  final double x = start.x + (distance * cos((direction * pi) / 180));
-  final double y = start.y + (distance * sin((direction * pi) / 180));
+  final double rads = direction / 180.0 * pi;
+  final double x = start.x + (distance * sin(rads));
+  final double y = start.y + (distance * cos(rads));
   return Point<double>(x, y);
 }
 

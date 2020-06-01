@@ -14,7 +14,22 @@ import 'convolver.dart';
 class MapSection {
   MapSection(SoundPool sounds, this.id, this.startX, this.startY, this.endX, this.endY, this.name, this.tileName, this.tileSize, String convolverUrl, double convolverVolume, String ambienceUrl) {
     convolver = Convolver(sounds, convolverUrl, convolverVolume);
-    ambience = Ambience(sounds, ambienceUrl, x: startX.toDouble(), y: startY.toDouble());
+    final num x = max(startX, endX) - min(startX, endX);
+    final num y = max(startY, endY) - min(startY, endY);
+    double ambienceX, ambienceY;
+    if (x == 0) {
+      ambienceX = 0.5;
+    } else {
+      ambienceX = x / 2;
+    }
+    if (y == 0) {
+      ambienceY = 0.5;
+    } else {
+      ambienceY = y / 2;
+    }
+    ambienceX += startX;
+    ambienceY += startY;
+    ambience = Ambience(sounds, ambienceUrl, x: ambienceX, y: ambienceY);
   }
 
   /// The id of this section.
