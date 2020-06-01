@@ -167,6 +167,10 @@ void main() {
   startButton.onClick.listen((Event event) {
     final AudioContext audio = AudioContext();
     final SoundPool sounds = SoundPool(audio, showMessage: showMessage);
+    sounds.audioContext.listener
+      ..upX.value = 0
+      ..upY.value = 0
+      ..upZ.value = 1;
     sounds.playSound('sounds/general/start.wav');
     startDiv.hidden = true;
     mainDiv.hidden = false;
