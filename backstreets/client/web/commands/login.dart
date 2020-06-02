@@ -38,30 +38,30 @@ void account(CommandContext ctx) {
       commandContext.book, () {
         FormBuilder(
           'New Character', (Map<String, String> data) {
-            clearBook();
             ctx.book = Book(bookOptions)
-              ..push(mapReferencePage('Create Character', (MapReference m) {
-                clearBook();
-                ctx.message('Creating character...');
-                ctx.send('createCharacter', <dynamic>[m.id, data['name']]);
-              }));
+              ..push(
+                mapReferencePage('Create Character', (MapReference m) {
+                  clearBook();
+                  ctx.message('Creating character...');
+                  ctx.send('createCharacter', <dynamic>[m.id, data['name']]);
+                }, shouldInclude: (MapReference r) => r.playersCanCreate,
+                onCancel: () {
+                  ctx.args = <dynamic>[ctx.username, characterList];
+                  account(ctx);
+                })
+              );
           }, showMessage,
           subTitle: 'Enter the name for your new character',
           submitLabel: 'Create Character',
           cancellable: true, onCancel: resetFocus
         )
-          ..addElement('name', label: 'Character Name')
+          ..addElement('name', label: 'Character Name', validator: notEmptyValidator)
           ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
       }, titleString: 'New Character'
     )
   );
-  ctx.book.push(
-    Page(
-      titleString: 'Character Selection',
-      lines: lines,
-      dismissible: false
-    )
-  );
+  final Page page = Page(titleString: 'Character Selection', lines: lines, dismissible: false);
+  ctx.book.push(page);
 }
 
 /// Save the character name.

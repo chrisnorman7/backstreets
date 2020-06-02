@@ -6,14 +6,16 @@ import 'package:game_utils/game_utils.dart';
 import '../game/map_reference.dart';
 
 import '../main.dart';
-import '../util.dart';
 
-Page mapReferencePage(String title, void Function(MapReference) onOk) {
+Page mapReferencePage(String title, void Function(MapReference) onOk, {bool Function(MapReference) shouldInclude, void Function() onCancel}) {
   final List<Line> lines = <Line>[];
   commandContext.maps.forEach((int id, MapReference mr) {
+    if (shouldInclude != null && shouldInclude(mr) == false) {
+      return null;
+    }
     lines.add(
       Line(commandContext.book, () => onOk(mr), titleString: mr.name)
     );
   });
-  return Page(lines: lines, titleString: title, onCancel: clearBook);
+  return Page(lines: lines, titleString: title, onCancel: onCancel);
 }
