@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
 
@@ -18,6 +19,7 @@ import '../util.dart';
 
 
 void builderMenu() {
+  final MapReference m = commandContext.maps[commandContext.map.id];
   commandContext.book = Book(bookOptions);
   final Page page = Page(
     lines: <Line>[
@@ -92,6 +94,10 @@ void builderMenu() {
                   )
                   ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
               }, titleString: 'Rename Map'),
+              Line.checkboxLine(commandContext.book, () => '${m.playersCanCreate ? "Disable" : "Enable"} Player Creation', () => m.playersCanCreate, (bool value) {
+                clearBook();
+                commandContext.send('setPlayersCanCreate', <bool>[value]);
+              })
             ]
           )
         );

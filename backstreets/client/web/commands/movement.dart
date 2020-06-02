@@ -29,7 +29,6 @@ void characterCoordinates(CommandContext ctx) => moveCharacter(
 ///
 /// Used when the v key is pressed.
 void mapName(CommandContext ctx) {
-  ctx.message('Map name.');
   final int id = ctx.args[0] as int;
   final String name = ctx.args[1] as String;
   ctx.maps[id].name = name;
@@ -81,7 +80,6 @@ void footstepSound(CommandContext ctx) {
 /// The presence of multiple commands means we can send chunks as the map gets edited by a builder.
 void mapData(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
-  ctx.message('Map data.');
   ctx.args = <dynamic>[data['id'], data['name']];
   mapName(ctx);
   ctx.args[0] = data['ambience'] as String;
@@ -246,7 +244,6 @@ void mapSectionAmbience(CommandContext ctx) {
 
 /// A new game map has been added.
 void addGameMap(CommandContext ctx) {
-  ctx.message('Add game map.');
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final int id = data['id'] as int;
   final String name = data['name'] as String;
@@ -264,4 +261,10 @@ void resetMap(CommandContext ctx) {
 void deleteGameMap(CommandContext ctx) {
   final int id = ctx.args[0] as int;
   ctx.maps.remove(id);
+}
+
+void setPlayersCanCreate(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  final bool value = ctx.args[1] as bool;
+  ctx.maps[id].playersCanCreate = value;
 }

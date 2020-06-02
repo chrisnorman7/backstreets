@@ -186,3 +186,16 @@ Future<void> mapSectionAmbience(CommandContext ctx) async {
   await m.broadcastCommand(ctx.db, 'mapSectionAmbience', <Map<String, dynamic>>[<String, dynamic>{'id': s.id, 'url': s.ambience}]);
   ctx.message('Ambience updated.');
 }
+
+Future<void> setPlayersCanCreate(CommandContext ctx) async {
+  final bool value = ctx.args[0] as bool;
+  final Query<GameMap> q = Query<GameMap>(ctx.db)
+    ..values.playersCanCreate = value
+    ..where((GameMap m) => m.id).equalTo(ctx.mapId);
+  final GameMap m = await q.updateOne();
+  if (m == null) {
+    return ctx.message('Invalid map ID.');
+  }
+  CommandContext.broadcast('setPlayersCanCreate', <dynamic>[m.id, m.playersCanCreate]);
+  ctx.message('Value updated.');
+}
