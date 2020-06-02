@@ -8,7 +8,6 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:emote_utils/emote_utils.dart';
 import 'package:path/path.dart' as path;
 
-import 'commands/builder.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
@@ -57,7 +56,6 @@ class BackstreetsChannel extends ApplicationChannel {
     );
     databaseContext = ManagedContext(dataModel, psc);
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
-    buildCommands();
     logger.info('Commands: ${commands.length}.');
     logger.info('Gathering tile sounds.');
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {

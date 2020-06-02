@@ -44,11 +44,6 @@ class Command {
   /// If you want to change when this command will be available, pass the [authenticationType} argument.
   Command(this.func, {this.authenticationType = AuthenticationTypes.authenticated});
 
-  /// The name of this command.
-  ///
-  /// This string must be passed by the socket for this command to be matched.
-  String name;
-
   /// The function which will be called to handle this command.
   final CommandType func;
 

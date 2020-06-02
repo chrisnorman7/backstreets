@@ -1,18 +1,17 @@
 /// Used for storing commands.
 ///
-/// To create more commands, add them to [commandsList].
+/// To create more commands, add them to [commands] dictionary.
 ///
 /// ```
-/// commandsList.add(Command((CommandContext ctx) => ctx.sendMessage('The current time is ${DateTime.now()}.')));
-/// // OR:
-/// commandsList.add(Command(someFunction));
+/// commands['time'] = Command((CommandContext ctx) async => ctx.message('The current time is ${DateTime.now()}.'));
+/// // Or:
+/// commands['someFunction'] = Command(someFunction);
 /// ```
 ///
 /// The [buildCommands] function will handle setting command names (unless you do it yourself), and moving them into the [commands.commands] dictionary.
 library commands;
 
 import 'admin.dart';
-import 'builder.dart';
 import 'building.dart';
 import 'command.dart';
 import 'general.dart';
@@ -24,51 +23,46 @@ import 'staff.dart';
 /// The list of pre-processed commands.
 ///
 /// The [buildCommands] function migrates them to the [commands.commands] dictionary.
-List<Command> commandsList = <Command>[
+Map<String, Command> commands = <String, Command>{
   // Admin commands:
-  Command(adminPlayerList, authenticationType: AuthenticationTypes.admin),
-  Command(renameObject, authenticationType: AuthenticationTypes.admin),
-  Command(setObjectPermission, authenticationType: AuthenticationTypes.admin),
-  Command(addMap, authenticationType: AuthenticationTypes.admin),
-  Command(deleteGameMap, authenticationType: AuthenticationTypes.admin),
+  'adminPlayerList': Command(adminPlayerList, authenticationType: AuthenticationTypes.admin),
+  'renameObject': Command(renameObject, authenticationType: AuthenticationTypes.admin),
+  'setObjectPermission': Command(setObjectPermission, authenticationType: AuthenticationTypes.admin),
+  'addMap': Command(addMap, authenticationType: AuthenticationTypes.admin),
+  'deleteGameMap': Command(deleteGameMap, authenticationType: AuthenticationTypes.admin),
 
   // Building commands:
-  Command(renameMap, authenticationType: AuthenticationTypes.builder),
-  Command(addMapSection, authenticationType: AuthenticationTypes.builder),
-  Command(mapAmbience, authenticationType: AuthenticationTypes.builder),
-  Command(editMapSection, authenticationType: AuthenticationTypes.builder),
-  Command(deleteMapSection, authenticationType: AuthenticationTypes.builder),
-  Command(mapConvolver, authenticationType: AuthenticationTypes.builder),
-  Command(addWall, authenticationType: AuthenticationTypes.builder),
-  Command(addBarricade, authenticationType: AuthenticationTypes.builder),
-  Command(deleteWall, authenticationType: AuthenticationTypes.builder),
-  Command(mapSectionAmbience, authenticationType: AuthenticationTypes.builder),
-  Command(setPlayersCanCreate, authenticationType: AuthenticationTypes.builder),
-  Command(setPopCoordinates, authenticationType: AuthenticationTypes.builder),
+  'renameMap': Command(renameMap, authenticationType: AuthenticationTypes.builder),
+  'addMapSection': Command(addMapSection, authenticationType: AuthenticationTypes.builder),
+  'mapAmbience': Command(mapAmbience, authenticationType: AuthenticationTypes.builder),
+  'editMapSection': Command(editMapSection, authenticationType: AuthenticationTypes.builder),
+  'deleteMapSection': Command(deleteMapSection, authenticationType: AuthenticationTypes.builder),
+  'mapConvolver': Command(mapConvolver, authenticationType: AuthenticationTypes.builder),
+  'addWall': Command(addWall, authenticationType: AuthenticationTypes.builder),
+  'addBarricade': Command(addBarricade, authenticationType: AuthenticationTypes.builder),
+  'deleteWall': Command(deleteWall, authenticationType: AuthenticationTypes.builder),
+  'mapSectionAmbience': Command(mapSectionAmbience, authenticationType: AuthenticationTypes.builder),
+  'setPlayersCanCreate': Command(setPlayersCanCreate, authenticationType: AuthenticationTypes.builder),
+  'setPopCoordinates': Command(setPopCoordinates, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
-  Command(serverTime, authenticationType: AuthenticationTypes.any),
-  Command(playerOption),
+  'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),
+  'playerOption': Command(playerOption),
 
   // Login commands:
-  Command(createAccount, authenticationType: AuthenticationTypes.anonymous),
-  Command(login, authenticationType: AuthenticationTypes.anonymous),
-  Command(createCharacter, authenticationType: AuthenticationTypes.account),
-  Command(connectCharacter, authenticationType: AuthenticationTypes.account),
+  'createAccount': Command(createAccount, authenticationType: AuthenticationTypes.anonymous),
+  'login': Command(login, authenticationType: AuthenticationTypes.anonymous),
+  'createCharacter': Command(createCharacter, authenticationType: AuthenticationTypes.account),
+  'connectCharacter': Command(connectCharacter, authenticationType: AuthenticationTypes.account),
 
   // Movement commands:
-  Command(characterCoordinates),
-  Command(characterTheta),
-  Command(resetMapSection),
+  'characterCoordinates': Command(characterCoordinates),
+  'characterTheta': Command(characterTheta),
+  'resetMapSection': Command(resetMapSection),
 
   // Social commands:
-  Command(say),
+  'say': Command(say),
 
   // Staff only commands:
-  Command(teleport, authenticationType: AuthenticationTypes.staff),
-];
-
-/// The final dictionary of commands.
-///
-/// It is this dictionary (not [commandsList]) that websockets use to find the command they want.
-Map<String, Command> commands = <String, Command>{};
+  'teleport': Command(teleport, authenticationType: AuthenticationTypes.staff),
+};
