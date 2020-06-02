@@ -2,7 +2,7 @@
 library map_reference;
 
 class MapReference {
-  MapReference(this.id, this.name, this.playersCanCreate);
+  MapReference(this.id, this.name, this.playersCanCreate, this.popX, this.popY);
 
   /// The id of this map.
   int id;
@@ -12,4 +12,10 @@ class MapReference {
 
   /// Whether or not players can be created here.
   bool playersCanCreate;
+
+  /// The pop x coordinate.
+  int popX;
+
+  /// The pop y coordinate.
+  int popY;
 }

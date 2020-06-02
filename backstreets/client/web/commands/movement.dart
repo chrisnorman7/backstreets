@@ -248,7 +248,9 @@ void addGameMap(CommandContext ctx) {
   final int id = data['id'] as int;
   final String name = data['name'] as String;
   final bool playersCanCreate = data['playersCanCreate'] as bool;
-  ctx.maps[id] = MapReference(id, name, playersCanCreate);
+  final int popX = data['popX'] as int;
+  final int popY = data['popY'] as int;
+  ctx.maps[id] = MapReference(id, name, playersCanCreate, popX, popY);
 }
 
 void resetMap(CommandContext ctx) {

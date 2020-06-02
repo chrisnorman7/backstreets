@@ -112,6 +112,8 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
       'id': id,
       'name': name,
       'playersCanCreate': playersCanCreate,
+      'popX': popX,
+      'popY': popY,
     };
   }
 }
