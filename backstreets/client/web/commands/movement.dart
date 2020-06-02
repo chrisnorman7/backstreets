@@ -29,8 +29,19 @@ void characterCoordinates(CommandContext ctx) => moveCharacter(
 ///
 /// Used when the v key is pressed.
 void mapName(CommandContext ctx) {
-  ctx.map?.stop();
-  ctx.map = GameMap(ctx.args[0] as String);
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  if (ctx.maps.containsKey(id)) {
+    ctx.maps[id].name = name;
+  } else {
+    ctx.args = <dynamic>[id, name];
+    addGameMap(ctx);
+  }
+  if (ctx.map == null) {
+  ctx.map = GameMap(id, name);
+  } else {
+    ctx.map.name = name;
+  }
 }
 
 /// Used when a single tile is added to the map.
@@ -74,7 +85,7 @@ void footstepSound(CommandContext ctx) {
 /// The presence of multiple commands means we can send chunks as the map gets edited by a builder.
 void mapData(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
-  ctx.args[0] = data['name'];
+  ctx.args = <dynamic>[data['id'], data['name']];
   mapName(ctx);
   ctx.args[0] = data['ambience'] as String;
   mapAmbience(ctx);
@@ -238,5 +249,19 @@ void mapSectionAmbience(CommandContext ctx) {
 
 /// A new game map has been added.
 void addGameMap(CommandContext ctx) {
-  ctx.maps.add(MapReference(ctx.args[0] as int, ctx.args[1] as String));
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  ctx.maps[id] = MapReference(id, name);
+}
+
+void resetMap(CommandContext ctx) {
+  if (ctx.map != null) {
+    ctx.map.stop();
+  }
+  ctx.map = null;
+}
+
+void deleteGameMap(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  ctx.maps.remove(id);
 }

@@ -216,10 +216,12 @@ class CommandContext{
   Future<void> sendMap() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
     logger.info('Sending map data.');
+    send('resetMap', null);
     final Query<GameMap> mapQuery = Query<GameMap>(db)
       ..where((GameMap m) => m.id).equalTo(mapId);
     final GameMap m = await mapQuery.fetchOne();
     final Map<String, dynamic> mapData = <String, dynamic>{
+      'id': m.id,
       'name': m.name,
       'ambience': m.ambience == null ? null : ambiences[m.ambience].url,
       'convolverUrl': m.convolverUrl,

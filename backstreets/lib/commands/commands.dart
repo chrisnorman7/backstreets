@@ -30,6 +30,7 @@ List<Command> commandsList = <Command>[
   Command(renameObject, authenticationType: AuthenticationTypes.admin),
   Command(setObjectPermission, authenticationType: AuthenticationTypes.admin),
   Command(addMap, authenticationType: AuthenticationTypes.admin),
+  Command(deleteGameMap, authenticationType: AuthenticationTypes.admin),
 
   // Building commands:
   Command(renameMap, authenticationType: AuthenticationTypes.builder),

@@ -12,9 +12,12 @@ import 'wall.dart';
 
 /// A map in the game.
 class GameMap {
-  GameMap(this.name) {
+  GameMap(this.id, this.name) {
     convolver = Convolver(commandContext.sounds, null, 1.0);
   }
+
+  /// The id of this map.
+  int id;
 
   /// The name of this map.
   String name;
@@ -37,9 +40,9 @@ class GameMap {
   Map<Point<int>, String> tiles = <Point<int>, String>{};
 
   /// Stop all sounds on this map.
-  /// 
+  ///
   /// This function will run through [sections], and stop all ambiences, and disconnect all nodes.
-  /// 
+  ///
   /// It will also stop [ambience].
   void stop() {
     ambience.sound?.stop();

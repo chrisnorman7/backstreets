@@ -9,7 +9,7 @@ import '../game/map_reference.dart';
 
 import '../main.dart';
 
-import '../menus/map_reference_menu.dart';
+import '../menus/map_reference_page.dart';
 
 import '../util.dart';
 
@@ -27,7 +27,7 @@ void goto() {
 
 void teleport() {
   commandContext.book = Book(bookOptions);
-  commandContext.book.push(mapReferenceMenu('Teleport', (MapReference m) {
+  commandContext.book.push(mapReferencePage('Teleport', (MapReference m) {
     clearBook();
     commandContext.send('teleport', <int>[m.id, null, null]);
   }));

@@ -68,6 +68,8 @@ Future<void> addMap(CommandContext ctx) async {
   m = await ctx.db.insertObject(m);
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..values.location = m
+    ..values.x = m.popX.toDouble()
+    ..values.y = m.popY.toDouble()
     ..where((GameObject o) => o.id).equalTo(ctx.characterId);
   await q.updateOne();
   ctx.map = m;
@@ -75,4 +77,21 @@ Future<void> addMap(CommandContext ctx) async {
   ctx.send('characterCoordinates', <int>[m.popX, m.popY]);
   ctx.message('${m.name} created.');
   CommandContext.broadcast('addGameMap', <dynamic>[m.id, m.name]);
+}
+
+Future<void> deleteGameMap(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Query<GameMap> q = Query<GameMap>(ctx.db)
+    ..join(set: (GameMap m) => m.objects)
+    ..where((GameMap m) => m.id).equalTo(id);
+  final GameMap m = await q.fetchOne();
+  if (m.objects.isNotEmpty) {
+    return ctx.sendError('First remove all remaining objects. Objects: ${m.objects.length}.');
+  }
+  final int deleted = await q.delete();
+  if (deleted == 0) {
+    return ctx.sendError('Failed to delete the map.');
+  }
+  CommandContext.broadcast('deleteGameMap', <int>[id]);
+  ctx.message('Map deleted.');
 }

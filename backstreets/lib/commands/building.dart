@@ -20,7 +20,7 @@ Future<void> renameMap(CommandContext ctx) async {
     ..values.name = ctx.args[0] as String
     ..where((GameMap m) => m.id).equalTo(ctx.mapId);
   final GameMap m = await q.updateOne();
-  await m.broadcastCommand(ctx.db, 'mapName', <String>[m.name]);
+  CommandContext.broadcast('mapName', <dynamic>[m.id, m.name]);
   ctx.message('Map renamed.');
 }
 

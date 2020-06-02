@@ -92,7 +92,7 @@ class CommandContext {
   GameMap map;
 
   /// The maps that have been sent by the server.
-  List<MapReference> maps = <MapReference>[];
+  Map<int, MapReference> maps = <int, MapReference>{};
 
   /// All possible ambiences.
   Map<String, String> ambiences = <String, String>{};

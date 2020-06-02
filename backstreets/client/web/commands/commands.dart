@@ -43,6 +43,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   'deleteWall': deleteWall,
   'mapSectionAmbience': mapSectionAmbience,
   'addGameMap': addGameMap,
+  'resetMap': resetMap,
+  'deleteGameMap': deleteGameMap,
 
   // Sound commands:
   'interfaceSound': interfaceSound,

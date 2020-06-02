@@ -8,12 +8,12 @@ import '../game/map_reference.dart';
 import '../main.dart';
 import '../util.dart';
 
-Page mapReferenceMenu(String title, void Function(MapReference) onOk) {
+Page mapReferencePage(String title, void Function(MapReference) onOk) {
   final List<Line> lines = <Line>[];
-  for (final MapReference mr in commandContext.maps) {
+  commandContext.maps.forEach((int id, MapReference mr) {
     lines.add(
       Line(commandContext.book, () => onOk(mr), titleString: mr.name)
     );
-  }
+  });
   return Page(lines: lines, titleString: title, onCancel: clearBook);
 }
