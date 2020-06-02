@@ -4,10 +4,10 @@ library login;
 import 'package:game_utils/game_utils.dart';
 
 import '../authentication.dart';
+import '../game/map_reference.dart';
 import '../main.dart';
-
+import '../menus/map_reference_page.dart';
 import '../util.dart';
-
 import 'command_context.dart';
 
 /// Login was successful.
@@ -39,8 +39,12 @@ void account(CommandContext ctx) {
         FormBuilder(
           'New Character', (Map<String, String> data) {
             clearBook();
-            ctx.message('Creating character...');
-            ctx.send('createCharacter', <String>[data['name']]);
+            ctx.book = Book(bookOptions)
+              ..push(mapReferencePage('Create Character', (MapReference m) {
+                clearBook();
+                ctx.message('Creating character...');
+                ctx.send('createCharacter', <dynamic>[m.id, data['name']]);
+              }));
           }, showMessage,
           subTitle: 'Enter the name for your new character',
           submitLabel: 'Create Character',

@@ -152,7 +152,7 @@ class BackstreetsChannel extends ApplicationChannel {
       logger.info('Sent echo sounds.');
       final Query<GameMap> q = Query<GameMap>(ctx.db);
       for (final GameMap m in await q.fetch()) {
-        ctx.send('addGameMap', <dynamic>[m.id, m.name]);
+        ctx.send('addGameMap', <Map<String, dynamic>>[m.minimalData]);
       }
       logger.info('Sent maps.');
       socket.listen((dynamic payload) async {

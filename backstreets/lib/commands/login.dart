@@ -65,15 +65,21 @@ Future<void> login(CommandContext ctx) async {
 ///
 /// Should probably also ensure that only a finite number of characters per account can be created.
 Future<void> createCharacter(CommandContext ctx) async {
-  final String name = ctx.args[0] as String;
+  final int mapId = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..where((GameObject o) => o.name).equalTo(name)
     ..where((GameObject o) => o.account.id).isNotNull();
   if (await q.reduce.count() > 0) {
     return ctx.sendError('There is already a character named $name.');
   }
-  final Query<GameMap> mapQuery = Query<GameMap>(ctx.db);
+  final Query<GameMap> mapQuery = Query<GameMap>(ctx.db)
+    ..where((GameMap m) => m.id).equalTo(mapId)
+    ..where((GameMap m) => m.playersCanCreate).equalTo(true);
   final GameMap m = await mapQuery.fetchOne();
+  if (m == null) {
+    return ctx.sendError('Invalid map ID.');
+  }
   final Query<GameObject> adminQuery = Query<GameObject>(ctx.db)
     ..where((GameObject o) => o.admin).equalTo(true);
   GameObject character = GameObject()

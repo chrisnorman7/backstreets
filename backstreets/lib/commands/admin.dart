@@ -73,10 +73,10 @@ Future<void> addMap(CommandContext ctx) async {
     ..where((GameObject o) => o.id).equalTo(ctx.characterId);
   await q.updateOne();
   ctx.map = m;
-  await ctx.sendMap();
+  CommandContext.broadcast('addGameMap', <Map<String, dynamic>>[m.minimalData]);
   ctx.send('characterCoordinates', <int>[m.popX, m.popY]);
+  await ctx.sendMap();
   ctx.message('${m.name} created.');
-  CommandContext.broadcast('addGameMap', <dynamic>[m.id, m.name]);
 }
 
 Future<void> deleteGameMap(CommandContext ctx) async {

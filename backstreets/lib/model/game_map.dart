@@ -48,6 +48,10 @@ class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// The convolver volume for this map.
   @Column(defaultValue: '1.0')
   double convolverVolume;
+
+  /// Whether ot not players can create here.
+  @Column(defaultValue: 'false')
+  bool playersCanCreate;
 }
 
 /// A map.
@@ -91,7 +95,7 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
       obj.commandContext?.send(name, args);
     }
   }
-  
+
   Future<void> broadcastWall(ManagedContext db, MapWall w) async {
     return broadcastCommand(db, 'mapWall', <Map<String, dynamic>>[<String, dynamic>{
       'id': w.id,
@@ -100,5 +104,14 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
       'sound': w.sound,
       'type': w.type.index,
     }]);
+  }
+
+  /// Used to send as part of the 'addGameMap' command.
+  Map<String, dynamic> get minimalData {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'playersCanCreate': playersCanCreate,
+    };
   }
 }
