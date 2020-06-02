@@ -25,10 +25,10 @@ class DirectionAdjustments {
         x = 1;
         break;
       case Directions.north:
-        y = -1;
+        y = 1;
         break;
       case Directions.south:
-        y = 1;
+        y = -1;
         break;
       default:
         throw 'Unimplemented direction $direction.';
@@ -60,7 +60,7 @@ class RelativeDirections {
       directions.add('${east.abs()} ${east > 0 ? "east" : "west"}');
     }
     if (north != 0) {
-      directions.add('${north.abs()} ${north > 0 ? "south" : "north"}');
+      directions.add('${north.abs()} ${north > 0 ? "north" : "south"}');
     }
     return englishList(directions, emptyString: 'Here');
   }
