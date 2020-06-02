@@ -44,6 +44,7 @@ List<Command> commandsList = <Command>[
   Command(deleteWall, authenticationType: AuthenticationTypes.builder),
   Command(mapSectionAmbience, authenticationType: AuthenticationTypes.builder),
   Command(setPlayersCanCreate, authenticationType: AuthenticationTypes.builder),
+  Command(setPopCoordinates, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   Command(serverTime, authenticationType: AuthenticationTypes.any),

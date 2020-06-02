@@ -199,3 +199,18 @@ Future<void> setPlayersCanCreate(CommandContext ctx) async {
   CommandContext.broadcast('setPlayersCanCreate', <dynamic>[m.id, m.playersCanCreate]);
   ctx.message('Value updated.');
 }
+
+Future<void> setPopCoordinates(CommandContext ctx) async {
+  final int x = ctx.args[0] as int;
+  final int y = ctx.args[1] as int;
+  final Query<GameMap> q = Query<GameMap>(ctx.db)
+    ..values.popX = x
+    ..values.popY = y
+    ..where((GameMap m) => m.id).equalTo(ctx.mapId);
+  final GameMap m = await q.updateOne();
+  if (m == null) {
+      ctx.sendError('Invalid map ID.');
+  } else {
+    ctx.message('Pop coordinates updated.');
+  }
+}
