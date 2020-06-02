@@ -94,6 +94,7 @@ void builderMenu() {
                   )
                   ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
               }, titleString: 'Rename Map'),
+              Line(commandContext.book, () => commandContext.send('setPopCoordinates', <int>[commandContext.coordinates.x.round(), commandContext.coordinates.y.round()]), titleString: 'Set Pop Coordinates'),
               Line.checkboxLine(commandContext.book, () => '${m.playersCanCreate ? "Disable" : "Enable"} Player Creation', () => m.playersCanCreate, (bool value) {
                 clearBook();
                 commandContext.send('setPlayersCanCreate', <bool>[value]);
