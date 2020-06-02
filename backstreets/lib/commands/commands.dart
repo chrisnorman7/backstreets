@@ -19,6 +19,7 @@ import 'general.dart';
 import 'login.dart';
 import 'movement.dart';
 import 'socials.dart';
+import 'staff.dart';
 
 /// The list of pre-processed commands.
 ///
@@ -28,6 +29,7 @@ List<Command> commandsList = <Command>[
   Command(adminPlayerList, authenticationType: AuthenticationTypes.admin),
   Command(renameObject, authenticationType: AuthenticationTypes.admin),
   Command(setObjectPermission, authenticationType: AuthenticationTypes.admin),
+  Command(addMap, authenticationType: AuthenticationTypes.admin),
 
   // Building commands:
   Command(renameMap, authenticationType: AuthenticationTypes.builder),
@@ -58,6 +60,9 @@ List<Command> commandsList = <Command>[
 
   // Social commands:
   Command(say),
+
+  // Staff only commands:
+  Command(teleport, authenticationType: AuthenticationTypes.staff),
 ];
 
 /// The final dictionary of commands.

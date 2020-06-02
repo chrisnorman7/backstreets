@@ -172,15 +172,7 @@ class CommandContext{
         'name': obj.name,
       });
     }
-    final List<Map<String, dynamic>> maps = <Map<String, dynamic>>[];
-    final Query<GameMap> q = Query<GameMap>(db);
-    for (final GameMap m in await q.fetch()) {
-      maps.add(<String, dynamic>{
-        'id': m.id,
-        'name': m.name
-      });
-    }
-    send('account', <dynamic>[account.username, objects, maps]);
+    send('account', <dynamic>[account.username, objects]);
   }
 
   /// Tell the player about their connected character.
@@ -292,5 +284,12 @@ class CommandContext{
   Future<void> sendPlayerOptions() async {
     final PlayerOptions o = await getPlayerOptions();
     send('playerOptions', <Map<String, dynamic>>[o.asMap()]);
+  }
+
+  /// Broadcast a command to all command contexts, reguardless of state.
+  static void broadcast(String name, List<dynamic> args) {
+    for (final CommandContext ctx in instances) {
+      ctx.send(name, args);
+    }
   }
 }

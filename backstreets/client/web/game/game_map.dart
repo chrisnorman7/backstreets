@@ -35,4 +35,14 @@ class GameMap {
 
   /// Every tile on this map.
   Map<Point<int>, String> tiles = <Point<int>, String>{};
+
+  /// Stop all sounds on this map.
+  /// 
+  /// This function will run through [sections], and stop all ambiences, and disconnect all nodes.
+  /// 
+  /// It will also stop [ambience].
+  void stop() {
+    ambience.sound?.stop();
+    sections.forEach((int id, MapSection s) => s.ambience?.sound?.stop());
+  }
 }

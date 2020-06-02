@@ -6,6 +6,7 @@ import 'package:game_utils/game_utils.dart';
 
 import '../game/ambience.dart';
 import '../game/game_map.dart';
+import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
 
@@ -27,7 +28,10 @@ void characterCoordinates(CommandContext ctx) => moveCharacter(
 /// Store the name of the current map.
 ///
 /// Used when the v key is pressed.
-void mapName(CommandContext ctx) => ctx.map = GameMap(ctx.args[0] as String);
+void mapName(CommandContext ctx) {
+  ctx.map?.stop();
+  ctx.map = GameMap(ctx.args[0] as String);
+}
 
 /// Used when a single tile is added to the map.
 void tile(CommandContext ctx) {
@@ -230,4 +234,9 @@ void mapSectionAmbience(CommandContext ctx) {
     ..x = s.startX.toDouble()
     ..y = s.startY.toDouble()
     ..reset();
+}
+
+/// A new game map has been added.
+void addGameMap(CommandContext ctx) {
+  ctx.maps.add(MapReference(ctx.args[0] as int, ctx.args[1] as String));
 }

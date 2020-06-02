@@ -3,6 +3,7 @@ library admin;
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../model/game_map.dart';
 import '../model/game_object.dart';
 
 import 'command_context.dart';
@@ -59,4 +60,19 @@ Future<void> setObjectPermission(CommandContext ctx) async {
     c.send(permission, <bool>[value]);
     c.message('Permission $permission ${value ? "set" : "unset"}.');
   }
+}
+
+Future<void> addMap(CommandContext ctx) async {
+  GameMap m = GameMap()
+    ..name = 'Untitled Map';
+  m = await ctx.db.insertObject(m);
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.location = m
+    ..where((GameObject o) => o.id).equalTo(ctx.characterId);
+  await q.updateOne();
+  ctx.map = m;
+  await ctx.sendMap();
+  ctx.send('characterCoordinates', <int>[m.popX, m.popY]);
+  ctx.message('${m.name} created.');
+  CommandContext.broadcast('addGameMap', <dynamic>[m.id, m.name]);
 }

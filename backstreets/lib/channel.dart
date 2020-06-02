@@ -149,6 +149,12 @@ class BackstreetsChannel extends ApplicationChannel {
       ctx.send('impulses', <Map<String, dynamic>>[impulses]);
       logger.info('Sent impulses.');
       ctx.send('echoSounds', <Map<String, String>>[echoSounds]);
+      logger.info('Sent echo sounds.');
+      final Query<GameMap> q = Query<GameMap>(ctx.db);
+      for (final GameMap m in await q.fetch()) {
+        ctx.send('addGameMap', <dynamic>[m.id, m.name]);
+      }
+      logger.info('Sent maps.');
       socket.listen((dynamic payload) async {
         if (payload is! String) {
           await socket.close(400, 'Binary communication is not supported.');
@@ -190,6 +196,9 @@ class BackstreetsChannel extends ApplicationChannel {
             // When checking AuthenticationTypes.admin, check to see if they have no player, or their player's admin field isn't true.
             } else if (command.authenticationType == AuthenticationTypes.admin && character?.admin != true) {
               throw 'Attempting to call an admin command without being an administrator.';
+            // When checking AuthenticationTypes.staff, check to see if they have no player, or their player's admin and builder fields isn't true.
+            } else if (command.authenticationType == AuthenticationTypes.staff && (character?.admin != true || character?.builder != true)) {
+              throw 'Attempting to call a staff command without being a member of staff.';
             }
             ctx.args = arguments;
             await command.func(ctx);

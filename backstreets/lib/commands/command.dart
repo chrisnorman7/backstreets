@@ -25,6 +25,9 @@ enum AuthenticationTypes {
   /// Must be logged in, and connected to a [GameObject], whose admin field is true.
   admin,
 
+  /// Must be logged in, and connected to a [GameObject] instance, which must either be a builder or an admin.
+  staff,
+
   // Can be in any state.
   any,
 }

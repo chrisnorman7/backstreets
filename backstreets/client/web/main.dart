@@ -150,7 +150,8 @@ void main() {
       Hotkey(keyboard, 'p', echoSoundsMenu, shift: true, runWhen: validOptions, titleString: 'Change your echo sound'),
 
       // Staff only hotkeys:
-      Hotkey(keyboard, 'g', goto, runWhen:staffOnly, titleString: 'Jump to specific coordinates on the map'),
+      Hotkey(keyboard, 'g', goto, runWhen: staffOnly, titleString: 'Jump to specific coordinates on the map'),
+      Hotkey(keyboard, 't', teleport, runWhen: staffOnly, titleString: 'Teleport to another map'),
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {

@@ -11,6 +11,7 @@ import '../directory.dart';
 
 import '../game/game_map.dart';
 import '../game/game_object.dart';
+import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/options.dart';
 
@@ -89,6 +90,9 @@ class CommandContext {
 
   /// The map the connected character is on.
   GameMap map;
+
+  /// The maps that have been sent by the server.
+  List<MapReference> maps = <MapReference>[];
 
   /// All possible ambiences.
   Map<String, String> ambiences = <String, String>{};

@@ -15,6 +15,10 @@ void adminMenu() {
     ..push(
       Page(titleString: 'Admin Menu', lines: <Line>[
         Line(commandContext.book, () {
+          commandContext.send('addMap', <String>[]);
+          clearBook();
+        }, titleString: 'Add Map'),
+        Line(commandContext.book, () {
           showMessage('Loading players...');
           clearBook();
           commandContext.send('adminPlayerList', null);
