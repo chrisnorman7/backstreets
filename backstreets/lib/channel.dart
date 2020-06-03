@@ -8,6 +8,8 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:emote_utils/emote_utils.dart';
 import 'package:path/path.dart' as path;
 
+import 'actions/action.dart';
+import 'actions/actions.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
@@ -153,6 +155,7 @@ class BackstreetsChannel extends ApplicationChannel {
         ctx.send('addGameMap', <Map<String, dynamic>>[m.minimalData]);
       }
       logger.info('Sent maps.');
+      actions.forEach((String name, Action a) => ctx.send('addAction', <String>[name, a.description]));
       socket.listen((dynamic payload) async {
         if (payload is! String) {
           await socket.close(400, 'Binary communication is not supported.');
@@ -219,9 +222,8 @@ class BackstreetsChannel extends ApplicationChannel {
           final Query<ConnectionRecord> q = Query<ConnectionRecord>(ctx.db)
             ..values.disconnected = DateTime.now()
             ..where((ConnectionRecord c) => c.object).identifiedBy(ctx.characterId)
-            ..where((ConnectionRecord c) => c.disconnected).isNull()
-            ..sortBy((ConnectionRecord c) => c.connected, QuerySortOrder.descending);
-          await q.updateOne();
+            ..where((ConnectionRecord c) => c.disconnected).isNull();
+          await q.update();
         }
         socketLogger.info('Websocket closed.');
       });
