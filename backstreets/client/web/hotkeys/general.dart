@@ -4,10 +4,9 @@ library general;
 import 'package:game_utils/game_utils.dart';
 
 import '../directions.dart';
+import '../game/map_section.dart';
 import '../main.dart';
-
 import '../menus/map_section_page.dart';
-
 import '../run_conditions.dart';
 import '../util.dart';
 
@@ -144,6 +143,25 @@ void escapeKey() {
 void enterKey() {
   if (validBook()) {
     commandContext.book.activate();
+  } else if (commandContext.map != null && commandContext.getCurrentSection().actions.isNotEmpty) {
+    final MapSection s = commandContext.getCurrentSection();
+    if (s.actions.length == 1) {
+      commandContext.send('action', <dynamic>[s.id, s.actions[0]]);
+    } else {
+      commandContext.book = Book(bookOptions);
+      final List<Line> lines = <Line>[];
+      for (final String name in s.actions) {
+        lines.add(
+          Line(
+            commandContext.book, () {
+              commandContext.send('action', <dynamic>[s.id, name]);
+              clearBook();
+            }, titleString: commandContext.actions[name]
+          )
+        );
+      }
+      commandContext.book.push(Page(lines: lines, titleString: 'Actions', onCancel: clearBook));
+    }
   } else if (builderOnly()) {
     if (commandContext.mapSectionResizer != null || commandContext.mapSectionMover != null) {
       commandContext.book = Book(bookOptions)
@@ -157,5 +175,20 @@ void enterKey() {
       commandContext.mapSectionResizer = null;
       commandContext.mapSectionMover = null;
     }
+  }
+}
+
+void showActions() {
+  final MapSection s = commandContext.getCurrentSection();
+  if (s == null) {
+    showMessage('No current section.');
+  } else if (s.actions.isEmpty) {
+    showMessage('There is nothing special here.');
+  } else {
+    final List<String> actions = <String>[];
+    for (final String action in s.actions) {
+      actions.add(commandContext.actions[action]);
+    }
+    showMessage('Actions: ${englishList(actions)}.');
   }
 }

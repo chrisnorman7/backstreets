@@ -84,3 +84,9 @@ void listOfObjects(CommandContext ctx) {
     }
   }
 }
+
+void addAction(CommandContext ctx) {
+  final String name = ctx.args[0] as String;
+  final String description = ctx.args[1] as String;
+  ctx.actions[name] = description;
+}

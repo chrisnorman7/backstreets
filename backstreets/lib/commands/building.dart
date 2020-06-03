@@ -4,10 +4,11 @@ library building;
 import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
-
+import '../actions/actions.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
+import '../model/map_section_action.dart';
 import '../model/map_wall.dart';
 
 import '../sound.dart';
@@ -213,4 +214,38 @@ Future<void> setPopCoordinates(CommandContext ctx) async {
   } else {
     ctx.message('Pop coordinates updated.');
   }
+}
+
+Future<void> addMapSectionAction(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  if (!actions.containsKey(name)) {
+    return ctx.sendError('Invalid action name.');
+  }
+  final MapSection s = await ctx.db.fetchObjectWithID(id);
+  if (s == null) {
+    return ctx.sendError('Invalid map section ID.');
+  }
+  final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
+    ..values.section = s
+    ..values.name = name;
+  final MapSectionAction a = await q.insert();
+  final GameMap m = await ctx.getMap();
+  await m.broadcastCommand(ctx.db, 'addMapSectionAction', <dynamic>[a.section.id, a.name]);
+  ctx.message('Action added.');
+}
+
+Future<void> removeMapSectionAction(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
+    ..where((MapSectionAction a) => a.section).identifiedBy(id)
+    ..where((MapSectionAction a) => a.name).equalTo(name);
+  final int deleted = await q.delete();
+  if (deleted == 0) {
+    return ctx.sendError('No such action.');
+  }
+  final GameMap m = await ctx.getMap();
+  await m.broadcastCommand(ctx.db, 'removeMapSectionAction', <dynamic>[id, name]);
+  ctx.message('Actions removed: $deleted.');
 }

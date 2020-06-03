@@ -4,8 +4,8 @@ library map_section;
 import 'package:aqueduct/aqueduct.dart';
 
 import '../sound.dart';
-
 import 'game_map.dart';
+import 'map_section_action.dart';
 import 'mixins.dart';
 
 /// The sections table.
@@ -27,7 +27,7 @@ class _MapSection with PrimaryKeyMixin, NameMixin, AmbienceMixin {
 
   /// The tile type this section is filled with.
   String tileName;
-  
+
   /// The size of each tile.
   @Column(defaultValue: '0.5')
   double tileSize;
@@ -43,6 +43,9 @@ class _MapSection with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// The map this section is part of.
   @Relate(#sections, isRequired: true, onDelete: DeleteRule.cascade)
   GameMap location;
+
+  /// The actions associated with this section.
+  ManagedSet<MapSectionAction> actions;
 }
 
 /// A section of a map.

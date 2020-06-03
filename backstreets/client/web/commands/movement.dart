@@ -145,6 +145,7 @@ void mapSection(CommandContext ctx) {
   final String convolverUrl = sectionData['convolverUrl'] as String;
   final double convolverVolume = (sectionData['convolverVolume'] as num).toDouble();
   String ambienceUrl = sectionData['ambienceUrl'] as String;
+  final List<dynamic> actions = sectionData['actions'] as List<dynamic>;
   if (ctx.map.sections.containsKey(id)) {
     ctx.map.sections[id]
       ..startX = startX
@@ -168,6 +169,9 @@ void mapSection(CommandContext ctx) {
       ctx.sounds, id, startX, startY, endX, endY, name, tileName, tileSize,
       convolverUrl, convolverVolume, ambienceUrl
     );
+  }
+  for (final dynamic action in actions) {
+    ctx.map.sections[id].actions.add(action as String);
   }
   if (id == ctx.sectionResetId) {
     ctx.message('Section reset.');
@@ -269,4 +273,16 @@ void setPlayersCanCreate(CommandContext ctx) {
   final int id = ctx.args[0] as int;
   final bool value = ctx.args[1] as bool;
   ctx.maps[id].playersCanCreate = value;
+}
+
+void addMapSectionAction(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  ctx.map.sections[id].actions.add(name);
+}
+
+void removeMapSectionAction(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  ctx.map.sections[id].actions.removeWhere((String e) => e == name);
 }

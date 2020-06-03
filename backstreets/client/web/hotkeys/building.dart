@@ -17,7 +17,6 @@ import '../menus/map_section_page.dart';
 
 import '../util.dart';
 
-
 void builderMenu() {
   final MapReference m = commandContext.maps[commandContext.map.id];
   commandContext.book = Book(bookOptions);

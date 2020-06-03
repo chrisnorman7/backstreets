@@ -105,6 +105,34 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
     soundUrl: () => s.ambience.url == null ? null : commandContext.ambiences[s.ambience.url]),
     Line(b, () => b.push(editConvolverPage(b, s.convolver)), titleString: 'Convolver'),
     Line(b, () {
+      final List<Line> lines = <Line>[];
+      for (final String name in s.actions) {
+        lines.add(
+          Line(
+            b, () {
+              b.pop();
+              commandContext.send('removeMapSectionAction', <dynamic>[s.id, name]);
+            },
+            titleString: '${commandContext.actions[name]} (*)'
+          )
+        );
+      }
+      commandContext.actions.forEach((String name, String description) {
+        if (!s.actions.contains(name)) {
+          lines.add(
+            Line(
+              b, () {
+                b.pop();
+                commandContext.send('addMapSectionAction', <dynamic>[s.id, name]);
+              },
+              titleString: '$description ( )'
+            )
+          );
+        }
+      });
+      b.push(Page(lines: lines, titleString: 'Actions'));
+    }, titleFunc: () => 'Actions (${s.actions.length})'),
+    Line(b, () {
       clearBook();
       moveCharacter(Point<double>(s.startCoordinates.x.toDouble(), s.startCoordinates.y.toDouble()), mode: MoveModes.staff);
     }, titleString: 'Go to Start Coordinates'),

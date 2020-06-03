@@ -62,6 +62,9 @@ class MapSection {
   /// The ambience for this section.
   Ambience ambience;
 
+  /// The actions that this section can call.
+  List<String> actions = <String>[];
+
   /// The bounding coordinates.
   Rectangle<int> get rect => Rectangle<int>.fromPoints(startCoordinates, endCoordinates);
 

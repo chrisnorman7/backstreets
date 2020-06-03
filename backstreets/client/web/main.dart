@@ -114,6 +114,7 @@ void main() {
       Hotkey(keyboard, 'arrowdown', downArrow, titleString: 'down arrow'),
       Hotkey(keyboard, 'escape', escapeKey, titleString: 'Various escape / reset actions'),
       Hotkey(keyboard, 'enter', enterKey, titleString: 'Performs a multitude of actions'),
+      Hotkey(keyboard, 'z', showActions, titleString: 'Shows the possible actions for the current section of the map', runWhen: validMap),
 
       // Menu hotkeys:
       Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),

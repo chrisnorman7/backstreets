@@ -3,8 +3,11 @@ library general;
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../actions/action.dart';
+import '../actions/actions.dart';
+import '../model/game_object.dart';
+import '../model/map_section.dart';
 import '../model/player_options.dart';
-
 import 'command_context.dart';
 
 /// Shows the server time.
@@ -43,4 +46,27 @@ Future<void> playerOption(CommandContext ctx) async {
       break;
     }
   await q.updateOne();
+}
+
+Future<void> action(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final String name = ctx.args[1] as String;
+  final GameObject c = await ctx.getCharacter();
+  final int x = c.x.floor();
+  final int y = c.y.floor();
+  final Query<MapSection> mapSectionQuery = Query<MapSection>(ctx.db)
+    ..where((MapSection s) => s.id).equalTo(id)
+    ..where((MapSection s) => s.startX).greaterThanEqualTo(x)
+    ..where((MapSection s) => s.startY).greaterThanEqualTo(y)
+    ..where((MapSection s) => s.endX).lessThanEqualTo(x)
+    ..where((MapSection s) => s.endY).lessThanEqualTo(y);
+  final MapSection s = await mapSectionQuery.fetchOne();
+  if (s == null) {
+    return ctx.sendError('Invalid section ID.');
+  }
+  final Action a = actions[name];
+  if (a == null) {
+      return ctx.sendError('Invalid action name.');
+  }
+  await a.func(s, ctx);
 }

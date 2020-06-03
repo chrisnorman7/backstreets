@@ -44,10 +44,13 @@ Map<String, Command> commands = <String, Command>{
   'mapSectionAmbience': Command(mapSectionAmbience, authenticationType: AuthenticationTypes.builder),
   'setPlayersCanCreate': Command(setPlayersCanCreate, authenticationType: AuthenticationTypes.builder),
   'setPopCoordinates': Command(setPopCoordinates, authenticationType: AuthenticationTypes.builder),
+  'addMapSectionAction': Command(addMapSectionAction, authenticationType: AuthenticationTypes.builder),
+  'removeMapSectionAction': Command(removeMapSectionAction, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),
   'playerOption': Command(playerOption),
+  'action': Command(action),
 
   // Login commands:
   'createAccount': Command(createAccount, authenticationType: AuthenticationTypes.anonymous),

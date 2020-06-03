@@ -140,6 +140,9 @@ class CommandContext {
   /// The list of possible echo sounds.
   Map<String, String> echoSounds = <String, String>{};
 
+  /// All the actions that have been sent by the server.
+  Map<String, String> actions = <String, String>{};
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].

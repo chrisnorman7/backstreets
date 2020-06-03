@@ -17,6 +17,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'error': error,
   'playerOptions': playerOptions,
   'listOfObjects': listOfObjects,
+  'addAction': addAction,
 
   // Login commands:
   'account': account,
@@ -46,6 +47,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   'resetMap': resetMap,
   'deleteGameMap': deleteGameMap,
   'setPlayersCanCreate': setPlayersCanCreate,
+  'addMapSectionAction': addMapSectionAction,
+  'removeMapSectionAction': removeMapSectionAction,
 
   // Sound commands:
   'interfaceSound': interfaceSound,

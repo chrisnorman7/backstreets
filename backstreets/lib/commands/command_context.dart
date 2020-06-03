@@ -7,18 +7,16 @@ import 'dart:io';
 import 'package:aqueduct/aqueduct.dart';
 
 import '../game/tile.dart';
-
 import '../model/account.dart';
 import '../model/connection_record.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
+import '../model/map_section_action.dart';
 import '../model/map_tile.dart';
 import '../model/map_wall.dart';
 import '../model/player_options.dart';
-
 import '../sound.dart';
-
 import 'commands.dart';
 
 /// Used when calling commands.
@@ -233,7 +231,14 @@ class CommandContext{
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location).identifiedBy(mapId);
     for (final MapSection s in await sectionsQuery.fetch()) {
-      mapData['sections'].add(s.toJson());
+      final Map<String, dynamic> data = s.toJson();
+      data['actions'] = <String>[];
+      final Query<MapSectionAction> actionQuery = Query<MapSectionAction>(db)
+        ..where((MapSectionAction msa) => msa.section).identifiedBy(s.id);
+      for (final MapSectionAction msa in await actionQuery.fetch()) {
+        data['actions'].add(msa.name);
+      }
+      mapData['sections'].add(data);
     }
     final Query<MapTile> tilesQuery = Query<MapTile>(db)
       ..where((MapTile t) => t.location.id).equalTo(mapId);
