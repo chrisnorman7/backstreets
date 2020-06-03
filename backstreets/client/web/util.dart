@@ -100,7 +100,7 @@ String getFootstepSound(String tileName) {
 }
 
 /// Return the coordinates in the given direction.
-/// 
+///
 /// The distance can be set to allow the function to work in big or small steps.
 Point<double> coordinatesInDirection(Point<double> start, double direction, {double distance = 1.0}) {
   final double rads = direction / 180.0 * pi;
@@ -232,6 +232,7 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
       ..positionX.value = coordinates.x
       ..positionY.value = coordinates.y
       ..panningModel = 'HRTF'
+      ..refDistance = 5
       ..connectNode(output);
     gain.connectNode(panner);
   } else {
