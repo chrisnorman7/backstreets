@@ -143,7 +143,7 @@ void escapeKey() {
 void enterKey() {
   if (validBook()) {
     commandContext.book.activate();
-  } else if (commandContext.map != null && commandContext.getCurrentSection().actions.isNotEmpty) {
+  } else if (commandContext.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
     final MapSection s = commandContext.getCurrentSection();
     if (s.actions.length == 1) {
       commandContext.send('action', <dynamic>[s.id, s.actions[0]]);
