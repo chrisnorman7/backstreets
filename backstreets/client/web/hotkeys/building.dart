@@ -124,8 +124,14 @@ void wallMenu() {
   final List<Line> lines = <Line>[];
   if (currentWall == null) {
     lines.addAll(<Line>[
-      Line(commandContext.book, buildWall, titleString: 'Build a wall'),
-      Line(commandContext.book, buildBarricade, titleString: 'Build a barricade'),
+      Line(commandContext.book, () {
+        clearBook();
+        buildWall();
+      }, titleString: 'Build a wall'),
+      Line(commandContext.book, () {
+        clearBook();
+        buildBarricade();
+      }, titleString: 'Build a barricade'),
     ]);
   } else {
     lines.addAll(<Line>[
@@ -135,7 +141,6 @@ void wallMenu() {
       Line(commandContext.book, () {
         commandContext.send('deleteWall', <int>[currentWall.id]);
         clearBook();
-        commandContext.message('Wall deleted.');
       }, titleString: 'Delete')
     ]);
   }
