@@ -158,7 +158,7 @@ class BackstreetsChannel extends ApplicationChannel {
       actions.forEach((String name, Action a) => ctx.send('addAction', <String>[name, a.description]));
       socket.listen((dynamic payload) async {
         if (payload is! String) {
-          await socket.close(400, 'Binary communication is not supported.');
+          await socket.close(WebSocketStatus.unsupportedData, 'Binary communication is not supported.');
           return null;
         }
         List<dynamic> data;
@@ -167,7 +167,7 @@ class BackstreetsChannel extends ApplicationChannel {
         }
         on FormatException {
           socketLogger.severe('Invalid JSON received: $payload');
-          await socket.close(400, 'Invalid JSON: $payload.');
+          await socket.close(WebSocketStatus.protocolError, 'Invalid JSON: $payload.');
           return null;
         }
         try {
