@@ -29,6 +29,6 @@ void teleport() {
   commandContext.book = Book(bookOptions);
   commandContext.book.push(mapReferencePage('Teleport', (MapReference m) {
     clearBook();
-    commandContext.send('teleport', <int>[m.id, null, null]);
+    commandContext.send('teleport', <int>[m.id, m.popX, m.popY]);
   }, onCancel: clearBook));
 }

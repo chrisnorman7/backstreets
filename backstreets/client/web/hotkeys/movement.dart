@@ -3,6 +3,9 @@ library hotkeys;
 
 import 'dart:math';
 
+import 'package:game_utils/game_utils.dart';
+
+import '../game/exit.dart';
 import '../game/map_section.dart';
 
 import '../main.dart';
@@ -76,4 +79,18 @@ void mapSize() {
   });
   final Rectangle<int> rect = Rectangle<int>.fromPoints(Point<int>(startX, startY), Point<int>(endX, endY));
   showMessage('${rect.width + 1} x ${rect.height + 1}: $startX, $endX to $endX, $endY.');
+}
+
+void showExits() {
+  final List<String> exits = <String>[];
+  commandContext.map.exits.forEach((int id, Exit e) {
+    if (e.x == commandContext.coordinates.x.floor() && e.y == commandContext.coordinates.y.floor()) {
+      exits.add(e.name);
+    }
+  });
+  if (exits.isEmpty) {
+    showMessage('There are no exits here.');
+  } else {
+    showMessage('Exits: ${englishList(exits)}.');
+  }
 }

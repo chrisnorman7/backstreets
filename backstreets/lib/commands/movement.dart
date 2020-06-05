@@ -3,6 +3,7 @@ library movement;
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../model/exit.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
@@ -55,4 +56,21 @@ Future<void> resetMapSection(CommandContext ctx) async {
     ..where((MapSection s) => s.location).identifiedBy(ctx.mapId);
   final MapSection s = await q.fetchOne();
   return ctx.send('mapSection', <Map<String, dynamic>>[s.asMap()]);
+}
+
+Future<void> exit(CommandContext ctx) async{
+  final int id = ctx.args[0] as int;
+  final GameObject c = await ctx.getCharacter();
+  final Query<Exit> q = Query<Exit>(ctx.db)
+  ..join(object: (Exit e) => e.location)
+    ..join(object: (Exit e) => e.destination)
+    ..where((Exit e) => e.location).identifiedBy(ctx.mapId)
+    ..where((Exit e) => e.x).equalTo(c.x.floor())
+    ..where((Exit e) => e.y).equalTo(c.y.floor())
+    ..where((Exit e) => e.id).equalTo(id);
+  final Exit e = await q.fetchOne();
+  if (e == null) {
+    return ctx.sendError('Invalid exit ID.');
+  }
+  await e.use(ctx.db, await ctx.getCharacter());
 }

@@ -4,9 +4,11 @@ library general;
 import 'package:game_utils/game_utils.dart';
 
 import '../directions.dart';
+import '../game/exit.dart';
 import '../game/map_section.dart';
 import '../main.dart';
 import '../menus/map_section_page.dart';
+import '../menus/select_exit_page.dart';
 import '../run_conditions.dart';
 import '../util.dart';
 
@@ -141,6 +143,14 @@ void escapeKey() {
 }
 
 void enterKey() {
+  final List<Exit> exits = <Exit>[];
+  if (commandContext.map != null) {
+    commandContext.map.exits.forEach((int id, Exit e) {
+      if (e.x == commandContext.coordinates.x.floor() && e.y == commandContext.coordinates.y.floor()) {
+        exits.add(e);
+      }
+    });
+  }
   if (validBook()) {
     commandContext.book.activate();
   } else if (commandContext.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
@@ -162,6 +172,16 @@ void enterKey() {
       }
       commandContext.book.push(Page(lines: lines, titleString: 'Actions', onCancel: clearBook));
     }
+  } else if (exits.isNotEmpty) {
+    if (exits.length == 1) {
+      exits[0].use(commandContext);
+    } else {
+      commandContext.book = Book(bookOptions)
+        ..push(selectExitPage(commandContext.book, exits, (Exit e) {
+          clearBook();
+          e.use(commandContext);
+        }, onCancel: clearBook));
+    }
   } else if (builderOnly()) {
     if (commandContext.mapSectionResizer != null || commandContext.mapSectionMover != null) {
       commandContext.book = Book(bookOptions)
@@ -174,6 +194,17 @@ void enterKey() {
         }));
       commandContext.mapSectionResizer = null;
       commandContext.mapSectionMover = null;
+    } else if (commandContext.exit != null) {
+      commandContext.exit
+        ..destinationId = commandContext.map.id
+        ..destinationX = commandContext.coordinates.x.floor()..destinationY = commandContext.coordinates.y.floor()
+        ..destinationY = commandContext.coordinates.y.floor()..destinationY = commandContext.coordinates.y.floor();
+      if (commandContext.exit.id == null) {
+        commandContext.send('addExit', <Map<String, dynamic>>[commandContext.exit.toJson()]);
+      } else {
+        commandContext.exit.update();
+      }
+      commandContext.exit = null;
     }
   }
 }

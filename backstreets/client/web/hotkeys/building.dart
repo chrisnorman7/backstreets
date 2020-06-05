@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../game/exit.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
@@ -13,8 +14,10 @@ import '../main.dart';
 
 import '../menus/edit_convolver_page.dart';
 
+import '../menus/edit_exit_page.dart';
 import '../menus/map_section_page.dart';
 
+import '../menus/select_exit_page.dart';
 import '../util.dart';
 
 void builderMenu() {
@@ -54,6 +57,28 @@ void builderMenu() {
         ));
         commandContext.book.push(Page(titleString: 'Map Sections', lines: lines));
       }, titleString: 'Other Sections Menu'),
+      Line(commandContext.book, () {
+        clearBook();
+        FormBuilder('Build Exit', (Map<String, String> data) {
+          resetFocus();
+          commandContext.message('Move to the map and coordinates of the other side of the exit, then press enter.');
+          commandContext.exit = Exit(data['name'], commandContext.map.id, commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+        }, showMessage)
+          ..addElement('name', validator: notEmptyValidator, label: 'The name of the new exit')
+          ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+      }, titleString: 'Add Exit'),
+      Line(commandContext.book, () {
+        final List<Exit> exits = <Exit>[];
+        commandContext.map.exits.forEach((int id, Exit e) {
+          if (e.x == commandContext.coordinates.x.floor() && e.y == commandContext.coordinates.y.floor()) {
+            exits.add(e);
+          }
+        });
+        if (exits.isEmpty) {
+          return showMessage('There are no exits here.');
+        }
+        commandContext.book.push(selectExitPage(commandContext.book, exits, (Exit e) => commandContext.book.push(editExitPage(commandContext.book, e))));
+      }, titleString: 'Exit menu'),
       Line (commandContext.book, () {
         commandContext.book.push(
           Page(

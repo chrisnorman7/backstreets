@@ -54,6 +54,12 @@ final Directory echoSoundsDirectory = Directory(_path.join(soundsDirectory, 'ech
 /// All the loaded echo sounds.
 Map<String, String> echoSounds = <String, String>{};
 
+/// The directory where exit sounds are stored.
+final Directory exitSoundsDirectory = Directory(_path.join(soundsDirectory, 'exits'));
+
+/// All the defined exit sounds.
+final Map<String, Sound> exitSounds = <String, Sound>{};
+
 /// A sound object.
 ///
 /// Passed a path, it will give you a URL, with appropriate get params.

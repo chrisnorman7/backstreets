@@ -3,12 +3,14 @@ library command_arguments;
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
 
 import '../game/tile.dart';
 import '../model/account.dart';
 import '../model/connection_record.dart';
+import '../model/exit.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
@@ -233,6 +235,7 @@ class CommandContext{
       'sections': <Map<String, dynamic>>[],
       'tiles': <Map<String, dynamic>>[],
       'walls': <Map<String, dynamic>>[],
+      'exits': <Map<String, dynamic>>[],
     };
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location).identifiedBy(mapId);
@@ -266,6 +269,11 @@ class CommandContext{
         'sound': w.sound,
         'type': w.type.index,
       });
+    }
+    final Query<Exit> exitsQuery = Query<Exit>(db)
+      ..where((Exit e) => e.location).identifiedBy(m.id);
+    for (final Exit e in await exitsQuery.fetch()) {
+      mapData['exits'].add(e.toJson());
     }
     send('mapData', <Map<String, dynamic>>[mapData]);
     final int total = DateTime.now().millisecondsSinceEpoch - started;
@@ -304,5 +312,17 @@ class CommandContext{
     for (final CommandContext ctx in instances) {
       ctx.send(name, args);
     }
+  }
+
+  /// Make the player's web browser play a sound.
+  ///
+  /// This is a game sound, and as such coordinates must be supplied.
+  void sendSound(Sound s, Point<double> coordinates, double volume) {
+    send('sound', <Map<String, dynamic>>[<String, dynamic>{
+      'url': s.url,
+      'x': coordinates.x,
+      'y': coordinates.y,
+      'volume': volume
+    }]);
   }
 }

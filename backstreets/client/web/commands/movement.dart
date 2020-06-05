@@ -2,17 +2,17 @@
 library movement;
 
 import 'dart:math';
+
 import 'package:game_utils/game_utils.dart';
 
 import '../game/ambience.dart';
+import '../game/exit.dart';
 import '../game/game_map.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
-
 import '../main.dart';
 import '../util.dart';
-
 import 'command_context.dart';
 
 /// Save the character's coordinates.
@@ -100,6 +100,10 @@ void mapData(CommandContext ctx) {
   for (final dynamic wallData in data['walls'] as List<dynamic>) {
     ctx.args[0] = wallData as Map<String, dynamic>;
     mapWall(ctx);
+  }
+  for (final dynamic exitData in data['exits'] as List<dynamic>) {
+    ctx.args[0] = exitData;
+    addExit(ctx);
   }
 }
 
@@ -285,4 +289,30 @@ void removeMapSectionAction(CommandContext ctx) {
   final int id = ctx.args[0] as int;
   final String name = ctx.args[1] as String;
   ctx.map.sections[id].actions.removeWhere((String e) => e == name);
+}
+
+void addExit(CommandContext ctx) {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final String name = data['name'] as String;
+  final int x = data['x'] as int;
+  final int y = data['y'] as int;
+  final int destinationX = data['destinationX'] as int;
+  final int destinationY = data['destinationY'] as int;
+  final int destinationId = data['destinationId'] as int;
+  final String useSocial = data['useSocial'] as String;
+  final String useSound = data['useSound'] as String;
+  final Exit e = Exit(name, ctx.map.id, x, y)
+    ..destinationId = destinationId
+    ..destinationX = destinationX
+    ..destinationY = destinationY
+    ..id = id
+    ..useSocial = useSocial
+    ..useSound = useSound;
+  ctx.map.exits[id] = e;
+}
+
+void deleteExit(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  ctx.map.exits.remove(id);
 }

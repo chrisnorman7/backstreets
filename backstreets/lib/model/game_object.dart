@@ -4,6 +4,7 @@ library game_object;
 import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
+import 'package:emote_utils/emote_utils.dart';
 
 import '../commands/command_context.dart';
 
@@ -73,6 +74,9 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
 
 /// An object in a game. Contained by a [GameMap] instance.
 class GameObject extends ManagedObject<_GameObject> implements _GameObject {
+  /// Get the coordinates of this object.
+  Point<double> get coordinates => Point<double>(x, y);
+
   /// Get the staff status of this object.
   ///
   /// An object is considered a member of staff if it is either a builder or an admin.
@@ -100,12 +104,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   void sound(Sound s, {Point<double> coordinates, double volume}) {
     coordinates ??= Point<double>(x, y);
     volume ??= 1.0;
-    commandContext?.send('sound', <Map<String, dynamic>>[<String, dynamic>{
-      'url': s.url,
-      'x': coordinates.x,
-      'y': coordinates.y,
-      'volume': volume
-    }]);
+    commandContext?.sendSound(s, coordinates, volume);
   }
 
   /// Have this object perform a social.
@@ -122,15 +121,21 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       observers = await q.fetch();
       perspectives ??= observers.where((GameObject o) => o.id == id).toList();
     }
-    socials.getStrings(social, perspectives).dispatch(
-      observers,
-      (GameObject obj, String message) {
-        if (sound != null) {
-          obj.sound(sound, coordinates: Point<double>(x, y));
-        }
-        obj.message(message);
+    final Map<int, String> strings = <int, String>{};
+    final SocialContext<GameObject> sctx = socials.getStrings(social, perspectives);
+    sctx.targetedStrings.forEach((GameObject o, String s) {
+      strings[o.id] = s;
+    });
+    for (final GameObject obj in observers) {
+      if (sound != null) {
+        obj.sound(sound, coordinates: Point<double>(x, y));
       }
-    );
+      String m = sctx.defaultString;
+      if (strings.containsKey(obj.id)) {
+        m = strings[obj.id];
+      }
+      obj.message(m);
+  }
   }
 
   @override
@@ -153,5 +158,23 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       d += r.duration;
     }
     return d;
+  }
+
+  /// Teleport this object to another map.
+  ///
+  /// Used by both staff commands, and the more prosaic `exit` command.
+  Future<void> move(ManagedContext db, GameMap destination, double destinationX, double destinationY) async {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..values.location = destination
+      ..values.x = destinationX
+      ..values.y = destinationY
+      ..where((GameObject o) => o.id).equalTo(id);
+    final GameObject o = await q.updateOne();
+    final CommandContext ctx = o.commandContext;
+    if (ctx != null) {
+      ctx.map = destination;
+      await ctx.sendMap();
+      ctx.send('characterCoordinates', <double>[o.x, o.y]);
+    }
   }
 }

@@ -8,7 +8,7 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../directory.dart';
-
+import '../game/exit.dart';
 import '../game/game_map.dart';
 import '../game/game_object.dart';
 import '../game/map_reference.dart';
@@ -142,6 +142,12 @@ class CommandContext {
 
   /// All the actions that have been sent by the server.
   Map<String, String> actions = <String, String>{};
+
+  /// An exit which is in the process of being made.
+  Exit exit;
+
+  /// All the possible exit sounds.
+  Map<String, String> exitSounds = <String, String>{};
 
   /// Get the section spanned by the provided coordinates.
   ///

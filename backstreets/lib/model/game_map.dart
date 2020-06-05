@@ -1,8 +1,11 @@
 /// Provides the [GameMap] class.
 library game_map;
 
+import 'dart:math';
+
 import 'package:aqueduct/aqueduct.dart';
 
+import '../sound.dart';
 import 'exit.dart';
 import 'game_object.dart';
 import 'map_section.dart';
@@ -104,6 +107,15 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
       'sound': w.sound,
       'type': w.type.index,
     }]);
+  }
+
+  /// Tell all objects on this map to play a sound.
+  Future<void> broadcastSound(ManagedContext db, Sound s, Point<double> coordinates, double volume) async {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..where((GameObject o) => o.location).identifiedBy(id);
+    for (final GameObject o in await q.fetch()) {
+      o?.commandContext?.sendSound(s, coordinates, volume);
+    }
   }
 
   /// Used to send as part of the 'addGameMap' command.

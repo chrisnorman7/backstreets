@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
 import '../actions/actions.dart';
+import '../model/exit.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
@@ -248,4 +249,76 @@ Future<void> removeMapSectionAction(CommandContext ctx) async {
   final GameMap m = await ctx.getMap();
   await m.broadcastCommand(ctx.db, 'removeMapSectionAction', <dynamic>[id, name]);
   ctx.message('Actions removed: $deleted.');
+}
+
+Future<void> addExit(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final String name = data['name'] as String;
+  final GameMap location = await ctx.db.fetchObjectWithID<GameMap>(data['locationId'] as int);
+  final GameMap destination = await ctx.db.fetchObjectWithID<GameMap>(data['destinationId'] as int);
+  final int x = data['x'] as int;
+  final int y = data['y'] as int;
+  final int destinationX = data['destinationX'] as int;
+  final int destinationY = data['destinationY'] as int;
+  if (location == null || destination == null) {
+    return ctx.sendError('Invalid location or destination ID.');
+  }
+  final Query<Exit> q = Query<Exit>(ctx.db)
+    ..values.name = name
+    ..values.location = location
+    ..values.destination = destination
+    ..values.x = x
+    ..values.y = y
+    ..values.destinationX = destinationX
+    ..values.destinationY = destinationY;
+  final Exit first = await q.insert();
+  q
+    ..values.location = destination
+    ..values.destination = location
+    ..values.x = destinationX
+    ..values.y = destinationY
+    ..values.destinationX = x
+    ..values.destinationY = y;
+  final Exit second = await q.insert();
+  await location.broadcastCommand(ctx.db, 'addExit', <Map<String, dynamic>>[first.toJson()]);
+  await destination.broadcastCommand(ctx.db, 'addExit', <Map<String, dynamic>>[second.toJson()]);
+  ctx.message('Exit added.');
+}
+
+Future<void> editExit(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Map<String, dynamic> data = ctx.args[1] as Map<String, dynamic>;
+  final GameMap destination = await ctx.db.fetchObjectWithID<GameMap>(data['destinationId'] as int);
+  final Query<Exit> q = Query<Exit>(ctx.db)
+    ..values.name = data['name'] as String
+    ..values.destination = destination
+    ..values.x = data['x'] as int
+    ..values.y = data['y'] as int
+    ..values.destinationX = data['destinationX'] as int
+    ..values.destinationY = data['destinationY'] as int
+    ..values.useSocial = data['useSocial'] as String
+    ..values.useSound = data['useSound'] as String
+    ..where((Exit e) => e.location).identifiedBy(ctx.mapId)
+    ..where((Exit e) => e.id).equalTo(id);
+  final Exit e = await q.updateOne();
+  if (e == null) {
+    return ctx.message('Invalid exit ID.');
+  }
+  final GameMap m = await ctx.getMap();
+  await m.broadcastCommand(ctx.db, 'addExit', <Map<String, dynamic>>[e.toJson()]);
+  ctx.message('Exit updated.');
+}
+
+Future<void> deleteExit(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Query<Exit> q = Query<Exit>(ctx.db)
+    ..where((Exit e) => e.id).equalTo(id)
+    ..where((Exit e) => e.location).identifiedBy(ctx.mapId);
+  final int deleted = await q.delete();
+  if (deleted == 0) {
+    return ctx.sendError('Invalid exit ID.');
+  }
+  final GameMap m = await ctx.getMap();
+  await m.broadcastCommand(ctx.db, 'deleteExit', <int>[id]);
+  ctx.message('Exit deleted.');
 }

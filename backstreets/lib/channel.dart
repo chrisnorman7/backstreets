@@ -109,6 +109,12 @@ class BackstreetsChannel extends ApplicationChannel {
       final String echoSound = path.basenameWithoutExtension(entity.path);
       echoSounds[echoSound] = Sound(entity.path).url;
     }
+    for (final FileSystemEntity entity in exitSoundsDirectory.listSync()) {
+      if (entity is File) {
+        final String name = path.basenameWithoutExtension(entity.path);
+        exitSounds[name] = Sound(entity.path);
+      }
+    }
     final double duration = (DateTime.now().millisecondsSinceEpoch - started) / 1000;
     logger.info('Preparation completed in ${duration.toStringAsFixed(2)} seconds.');
   }
@@ -145,11 +151,14 @@ class BackstreetsChannel extends ApplicationChannel {
           ctx.send('footstepSound', <String>[t.name, sound.url]);
         }
       });
+      logger.info('Sent footstep sounds.');
       ctx.sendAmbiences();
       ctx.send('impulses', <Map<String, dynamic>>[impulses]);
       logger.info('Sent impulses.');
       ctx.send('echoSounds', <Map<String, String>>[echoSounds]);
       logger.info('Sent echo sounds.');
+      exitSounds.forEach((String name, Sound value) => ctx.send('exitSound', <String>[name, value.url]));
+      logger.info('Sent exit sounds.');
       final Query<GameMap> q = Query<GameMap>(ctx.db);
       for (final GameMap m in await q.fetch()) {
         ctx.send('addGameMap', <Map<String, dynamic>>[m.minimalData]);

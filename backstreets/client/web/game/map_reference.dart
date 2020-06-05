@@ -1,6 +1,7 @@
 /// Provides the [MapReference] class.
 library map_reference;
 
+/// A reference to a map on the server.
 class MapReference {
   MapReference(this.id, this.name, this.playersCanCreate, this.popX, this.popY);
 

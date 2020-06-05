@@ -43,3 +43,9 @@ void echoSounds(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   data.forEach((String name, dynamic value) => ctx.echoSounds[name] = value as String);
 }
+
+void exitSound(CommandContext ctx) {
+  final String name = ctx.args[0] as String;
+  final String url = ctx.args[1] as String;
+  ctx.exitSounds[name] = url;
+}

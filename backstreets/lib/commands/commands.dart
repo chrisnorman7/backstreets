@@ -46,6 +46,9 @@ Map<String, Command> commands = <String, Command>{
   'setPopCoordinates': Command(setPopCoordinates, authenticationType: AuthenticationTypes.builder),
   'addMapSectionAction': Command(addMapSectionAction, authenticationType: AuthenticationTypes.builder),
   'removeMapSectionAction': Command(removeMapSectionAction, authenticationType: AuthenticationTypes.builder),
+  'addExit': Command(addExit, authenticationType: AuthenticationTypes.builder),
+  'editExit': Command(editExit, authenticationType: AuthenticationTypes.builder),
+  'deleteExit': Command(deleteExit, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),
@@ -62,6 +65,7 @@ Map<String, Command> commands = <String, Command>{
   'characterCoordinates': Command(characterCoordinates),
   'characterTheta': Command(characterTheta),
   'resetMapSection': Command(resetMapSection),
+  'exit': Command(exit),
 
   // Social commands:
   'say': Command(say),

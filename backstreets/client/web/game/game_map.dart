@@ -4,9 +4,9 @@ library game_map;
 import 'dart:math';
 
 import '../main.dart';
-
 import 'ambience.dart';
 import 'convolver.dart';
+import 'exit.dart';
 import 'map_section.dart';
 import 'wall.dart';
 
@@ -38,6 +38,9 @@ class GameMap {
 
   /// Every tile on this map.
   Map<Point<int>, String> tiles = <Point<int>, String>{};
+
+  /// Every exit on this map.
+  Map<int, Exit> exits = <int, Exit>{};
 
   /// Stop all sounds on this map.
   ///

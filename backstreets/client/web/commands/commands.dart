@@ -49,6 +49,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   'setPlayersCanCreate': setPlayersCanCreate,
   'addMapSectionAction': addMapSectionAction,
   'removeMapSectionAction': removeMapSectionAction,
+  'addExit': addExit,
+  'deleteExit': deleteExit,
 
   // Sound commands:
   'interfaceSound': interfaceSound,
@@ -56,4 +58,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'ambiences': ambiences,
   'impulses': impulses,
   'echoSounds': echoSounds,
+  'exitSound': exitSound,
 };
