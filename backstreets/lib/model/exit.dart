@@ -12,7 +12,7 @@ import 'mixins.dart';
 
 /// The exits table. To deal with exits directly, use the [Exit] class instead.
 @Table(name: 'exits')
-class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin {
+class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin, PermissionsMixin {
   @Relate(#exits)
   GameMap location;
 
@@ -52,6 +52,8 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
       'destinationId': destination.id,
       'destinationX': destinationX,
       'destinationY': destinationY,
+      'builder': builder,
+      'admin': admin,
     };
   }
 
@@ -67,7 +69,11 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
         ..name = name
         ..x = x.toDouble()
         ..y = y.toDouble();
-      o.doSocial(db, useSocial, perspectives: <GameObject>[o, pretend]);
+      final Query<GameObject> q = Query<GameObject>(db)
+        ..where((GameObject obj) => obj.location).identifiedBy(o.location.id);
+      final List<GameObject> observers = await q.fetch();
+      o = observers.firstWhere((GameObject obj) => obj.id == o.id);
+      await o.doSocial(db, useSocial, perspectives: <GameObject>[o, pretend], observers: observers);
     }
     await o.move(db, destination, destinationX.toDouble(), destinationY.toDouble());
   }

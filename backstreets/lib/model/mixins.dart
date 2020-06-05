@@ -44,3 +44,14 @@ mixin AmbienceMixin {
   @Column(nullable: true)
   String ambience;
 }
+
+/// Add permissions flags to any object.
+mixin PermissionsMixin {
+  /// Whether or not this object is an admin.
+  @Column(defaultValue: 'false')
+  bool admin;
+
+  /// Whether or not this object is a builder.
+  @Column(defaultValue: 'false')
+  bool builder;
+}

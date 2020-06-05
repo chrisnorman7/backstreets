@@ -62,7 +62,7 @@ Future<void> exit(CommandContext ctx) async{
   final int id = ctx.args[0] as int;
   final GameObject c = await ctx.getCharacter();
   final Query<Exit> q = Query<Exit>(ctx.db)
-  ..join(object: (Exit e) => e.location)
+    ..join(object: (Exit e) => e.location)
     ..join(object: (Exit e) => e.destination)
     ..where((Exit e) => e.location).identifiedBy(ctx.mapId)
     ..where((Exit e) => e.x).equalTo(c.x.floor())
@@ -70,7 +70,12 @@ Future<void> exit(CommandContext ctx) async{
     ..where((Exit e) => e.id).equalTo(id);
   final Exit e = await q.fetchOne();
   if (e == null) {
-    return ctx.sendError('Invalid exit ID.');
+    ctx.sendError('Invalid exit ID.');
+  } else if (e.admin && ! c.admin) {
+    ctx.message('Only admins are allowed past this point.');
+  } else if (e.builder && !c.builder) {
+    ctx.message('Only builders are allowed past this point.');
+  } else {
+    await e.use(ctx.db, c);
   }
-  await e.use(ctx.db, await ctx.getCharacter());
 }

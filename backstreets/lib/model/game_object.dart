@@ -4,7 +4,6 @@ library game_object;
 import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
-import 'package:emote_utils/emote_utils.dart';
 
 import '../commands/command_context.dart';
 
@@ -22,7 +21,7 @@ import 'player_options.dart';
 ///
 /// To deal with game objects directly, use the [GameObject] class instead.
 @Table(name: 'game_objects')
-class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, AmbienceMixin {
+class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, AmbienceMixin, PermissionsMixin {
   /// The options for this object.
   PlayerOptions options;
 
@@ -54,14 +53,6 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   /// The minimum number of milliseconds between moves.
   @Column(defaultValue: '400')
   int speed;
-
-  /// Whether or not this object is an admin.
-  @Column(defaultValue: 'false')
-  bool admin;
-
-  /// Whether or not this object is a builder.
-  @Column(defaultValue: 'false')
-  bool builder;
 
   /// When this object was first created.
   @Column(defaultValue: "'2020-01-01'")
@@ -121,21 +112,12 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       observers = await q.fetch();
       perspectives ??= observers.where((GameObject o) => o.id == id).toList();
     }
-    final Map<int, String> strings = <int, String>{};
-    final SocialContext<GameObject> sctx = socials.getStrings(social, perspectives);
-    sctx.targetedStrings.forEach((GameObject o, String s) {
-      strings[o.id] = s;
-    });
-    for (final GameObject obj in observers) {
+    socials.getStrings(social, perspectives).dispatch(observers, (GameObject obj, String s) {
       if (sound != null) {
         obj.sound(sound, coordinates: Point<double>(x, y));
       }
-      String m = sctx.defaultString;
-      if (strings.containsKey(obj.id)) {
-        m = strings[obj.id];
-      }
-      obj.message(m);
-  }
+      obj.message(s);
+    } );
   }
 
   @override
