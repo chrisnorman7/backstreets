@@ -298,6 +298,8 @@ Future<void> editExit(CommandContext ctx) async {
     ..values.destinationY = data['destinationY'] as int
     ..values.useSocial = data['useSocial'] as String
     ..values.useSound = data['useSound'] as String
+    ..values.admin = data['admin'] as bool
+    ..values.builder = data['builder'] as bool
     ..where((Exit e) => e.location).identifiedBy(ctx.mapId)
     ..where((Exit e) => e.id).equalTo(id);
   final Exit e = await q.updateOne();

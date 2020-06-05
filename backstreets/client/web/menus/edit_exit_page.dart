@@ -65,6 +65,14 @@ Page editExitPage(Book b, Exit e) {
       commandContext.exit = e;
       clearBook();
     }, titleFunc: () => 'Move destination (${e.destinationX}, ${e.destinationY})'),
+    Line.checkboxLine(b, () => '${e.permissions.builder ? "Unset" : "Set"} Builder', () => e.permissions.builder, (bool value) {
+      e.permissions.builder = value;
+      e.update();
+    }),
+    Line.checkboxLine(b, () => '${e.permissions.admin ? "Unset" : "Set"} Admin', () => e.permissions.admin, (bool value) {
+      e.permissions.admin = value;
+      e.update();
+    }),
     Line(b, () {
       b.push(Page.confirmPage(b, () {
         clearBook();

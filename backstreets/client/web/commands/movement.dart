@@ -309,6 +309,9 @@ void addExit(CommandContext ctx) {
     ..id = id
     ..useSocial = useSocial
     ..useSound = useSound;
+  e.permissions
+    ..admin = data['admin'] as bool
+    ..builder = data['builder'] as bool;
   ctx.map.exits[id] = e;
 }
 

@@ -3,6 +3,7 @@ library exit;
 
 import '../commands/command_context.dart';
 import '../main.dart';
+import 'game_object.dart';
 
 class Exit {
   Exit(this.name, this.locationId, this.x, this.y);
@@ -37,6 +38,9 @@ class Exit {
   /// The sound that is played when using this exit.
   String useSound;
 
+  /// Add permissions.
+  Permissions permissions = Permissions();
+
   /// Return this object as a map.
   ///
   /// Used with the `addExit` command.
@@ -51,6 +55,8 @@ class Exit {
       'destinationY': destinationY,
       'useSocial': useSocial,
       'useSound': useSound,
+      'admin': permissions.admin,
+      'builder': permissions.builder,
     };
   }
 
