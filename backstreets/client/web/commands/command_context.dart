@@ -185,4 +185,18 @@ class CommandContext {
   void sendTheta() {
     send('characterTheta', <double>[theta]);
   }
+
+  /// Returns true if we are good to move again.
+  bool get canMove => (timestamp() - (lastMoved ?? 0)) >= speed;
+
+  /// Set [lastMoved] to the current timestamp.
+  void updateLastMoved() => lastMoved = timestamp();
+
+  /// Used to call a map action to the server.
+  void sendAction(MapSection s, String action) {
+    if (canMove) {
+      send('action', <dynamic>[s.id, action]);
+      updateLastMoved();
+    }
+  }
 }

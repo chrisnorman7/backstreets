@@ -61,7 +61,12 @@ class Exit {
   }
 
   /// Use this exit.
-  void use(CommandContext ctx) => ctx.send('exit', <int>[id]);
+  void use(CommandContext ctx) {
+    if (ctx.canMove){
+      ctx.updateLastMoved();
+      ctx.send('exit', <int>[id]);
+    }
+  }
 
   /// Update this exit on the server.
   void update() => commandContext.send('editExit', <dynamic>[id, toJson()]);

@@ -156,7 +156,7 @@ void enterKey() {
   } else if (commandContext.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
     final MapSection s = commandContext.getCurrentSection();
     if (s.actions.length == 1) {
-      commandContext.send('action', <dynamic>[s.id, s.actions[0]]);
+      commandContext.sendAction(s, s.actions[0]);
     } else {
       commandContext.book = Book(bookOptions);
       final List<Line> lines = <Line>[];
@@ -164,7 +164,7 @@ void enterKey() {
         lines.add(
           Line(
             commandContext.book, () {
-              commandContext.send('action', <dynamic>[s.id, name]);
+              commandContext.sendAction(s, name);
               clearBook();
             }, titleString: commandContext.actions[name]
           )

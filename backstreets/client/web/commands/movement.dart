@@ -111,8 +111,9 @@ void mapData(CommandContext ctx) {
 ///
 /// This command sets the interval property on both [walkForwardsHotkey] and [walkBackwardsHotkey].
 void characterSpeed(CommandContext ctx) {
+  ctx.speed = ctx.args[0] as int;
   for (final Hotkey hk in <Hotkey>[walkForwardsHotkey, walkBackwardsHotkey]) {
-    hk.interval = ctx.args[0] as int;
+    hk.interval = ctx.speed;
   }
 }
 
