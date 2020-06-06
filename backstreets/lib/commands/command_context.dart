@@ -220,7 +220,6 @@ class CommandContext{
   Future<void> sendMap() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
     logger.info('Sending map data.');
-    send('resetMap', null);
     final Query<GameMap> mapQuery = Query<GameMap>(db)
       ..where((GameMap m) => m.id).equalTo(mapId);
     final GameMap m = await mapQuery.fetchOne();

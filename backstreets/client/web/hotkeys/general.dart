@@ -1,6 +1,8 @@
 /// Provides general hotkeys.
 library general;
 
+import 'dart:html';
+
 import 'package:game_utils/game_utils.dart';
 
 import '../directions.dart';
@@ -13,18 +15,18 @@ import '../run_conditions.dart';
 import '../util.dart';
 
 void previousMessage() {
-  String message;
-  commandContext.messageIndex ??= commandContext.messages.length - 1;
+  Element message;
+  commandContext.messageIndex ??= messagesDiv.children.length - 1;
   commandContext.messageIndex--;
   if (commandContext.messageIndex < 0) {
     commandContext.messageIndex = 0;
   }
   if (commandContext.messageIndex == null) {
-    message = commandContext.messages.last;
+    message = messagesDiv.children.last;
   } else {
-    message = commandContext.messages[commandContext.messageIndex];
+    message = messagesDiv.children[commandContext.messageIndex];
   }
-  showMessage(message);
+  showMessage(message.innerText, important: false);
 }
 
 void firstMessage() {
@@ -33,19 +35,19 @@ void firstMessage() {
 }
 
 void nextMessage() {
-  String message;
+  Element message;
   if (commandContext.messageIndex != null) {
     commandContext.messageIndex++;
-    if (commandContext.messageIndex == commandContext.messages.length) {
+    if (commandContext.messageIndex == messagesDiv.children.length) {
       commandContext.messageIndex = null;
     }
   }
   if (commandContext.messageIndex == null) {
-    message = commandContext.messages.last;
+    message = messagesDiv.children.last;
   } else {
-    message = commandContext.messages[commandContext.messageIndex];
+    message = messagesDiv.children[commandContext.messageIndex];
   }
-  showMessage(message);
+  showMessage(message.innerText, important: false);
 }
 
 void lastMessage() {
@@ -55,10 +57,10 @@ void lastMessage() {
 
 void messages() {
   final List<Line> lines = <Line>[];
-  for (final String message in commandContext.messages.reversed) {
+  for (final Element e in messagesDiv.children.reversed) {
     lines.add(
       Line(
-        commandContext.book, clearBook, titleString: message
+        commandContext.book, clearBook, titleString: e.innerText
       )
     );
   }

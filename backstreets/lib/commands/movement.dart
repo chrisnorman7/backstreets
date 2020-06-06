@@ -55,7 +55,7 @@ Future<void> resetMapSection(CommandContext ctx) async {
     ..where((MapSection s) => s.id).equalTo(ctx.args[0] as int)
     ..where((MapSection s) => s.location).identifiedBy(ctx.mapId);
   final MapSection s = await q.fetchOne();
-  return ctx.send('mapSection', <Map<String, dynamic>>[s.asMap()]);
+  return ctx.send('mapSection', <Map<String, dynamic>>[s.toJson()]);
 }
 
 Future<void> exit(CommandContext ctx) async{

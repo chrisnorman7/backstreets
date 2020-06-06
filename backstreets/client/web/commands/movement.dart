@@ -71,8 +71,17 @@ void footstepSound(CommandContext ctx) {
 /// The presence of multiple commands means we can send chunks as the map gets edited by a builder.
 void mapData(CommandContext ctx) {
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
-  ctx.args = <dynamic>[data['id'], data['name']];
-  mapName(ctx);
+  final int id = data['id'] as int;
+  final String name = data['name'] as String;
+  if (ctx.map?.id != id) {
+    if (ctx.map != null) {
+      ctx.map.stop();
+    }
+    ctx.map = GameMap(id, name);
+  } else {
+    ctx.args = <dynamic>[id, name];
+    mapName(ctx);
+  }
   ctx.args[0] = data['ambience'] as String;
   mapAmbience(ctx);
   ctx.args[0] = <String, dynamic>{
@@ -125,19 +134,19 @@ void sectionTileName(CommandContext ctx) {
 ///
 /// If there is no section at the given coordinates, this function creates a new [MapSection] instance. Otherwise, the existing instance is modified.
 void mapSection(CommandContext ctx) {
-  final Map<String, dynamic> sectionData = ctx.args[0] as Map<String, dynamic>;
-  final int id = sectionData['id'] as int;
-  final int startX = sectionData['startX'] as int;
-  final int startY = sectionData['startY'] as int;
-  final int endX = sectionData['endX'] as int;
-  final int endY = sectionData['endY'] as int;
-  final String name = sectionData['name'] as String;
-  final String tileName = sectionData['tileName'] as String;
-  final double tileSize = sectionData['tileSize'] as double;
-  final String convolverUrl = sectionData['convolverUrl'] as String;
-  final double convolverVolume = (sectionData['convolverVolume'] as num).toDouble();
-  String ambienceUrl = sectionData['ambienceUrl'] as String;
-  final List<dynamic> actions = sectionData['actions'] as List<dynamic>;
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final int startX = data['startX'] as int;
+  final int startY = data['startY'] as int;
+  final int endX = data['endX'] as int;
+  final int endY = data['endY'] as int;
+  final String name = data['name'] as String;
+  final String tileName = data['tileName'] as String;
+  final double tileSize = data['tileSize'] as double;
+  final String convolverUrl = data['convolverUrl'] as String;
+  final double convolverVolume = (data['convolverVolume'] as num).toDouble();
+  String ambienceUrl = data['ambienceUrl'] as String;
+  final List<dynamic> actions = data['actions'] as List<dynamic>;
   if (ctx.map.sections.containsKey(id)) {
     ctx.map.sections[id]
       ..startX = startX
@@ -162,8 +171,10 @@ void mapSection(CommandContext ctx) {
       convolverUrl, convolverVolume, ambienceUrl
     );
   }
-  for (final dynamic action in actions) {
-    ctx.map.sections[id].actions.add(action as String);
+  if (actions != null) {
+    for (final dynamic action in actions) {
+      ctx.map.sections[id].actions.add(action as String);
+    }
   }
   if (id == ctx.sectionResetId) {
     ctx.message('Section reset.');
@@ -176,7 +187,7 @@ void mapAmbience(CommandContext ctx) {
   final String url = ctx.args[0] as String;
   if (ctx.map.ambience == null) {
     ctx.map.ambience = Ambience(ctx.sounds, url);
-  } else {
+  } else if (ctx.map.ambience.url != url) {
     ctx.map.ambience.url = url;
     ctx.map.ambience.reset();
   }
@@ -233,8 +244,7 @@ void mapSectionAmbience(CommandContext ctx) {
   final MapSection s = ctx.map.sections[id];
   s.ambience
     ..url = url
-    ..x = s.startX.toDouble()
-    ..y = s.startY.toDouble()
+    ..coordinates = s.ambienceCoordinates
     ..reset();
 }
 
@@ -247,13 +257,6 @@ void addGameMap(CommandContext ctx) {
   final int popX = data['popX'] as int;
   final int popY = data['popY'] as int;
   ctx.maps[id] = MapReference(id, name, playersCanCreate, popX, popY);
-}
-
-void resetMap(CommandContext ctx) {
-  if (ctx.map != null) {
-    ctx.map.stop();
-  }
-  ctx.map = null;
 }
 
 void deleteGameMap(CommandContext ctx) {

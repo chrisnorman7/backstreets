@@ -236,16 +236,8 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
   gain.connectNode(output);
   }
   if (!dry) {
-    ConvolverNode convolver;
     coordinates ??= commandContext.coordinates;
-    final MapSection s = commandContext.getCurrentSection(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
-    if (s?.convolver?.convolver == null) {
-      if (commandContext.map.convolver.convolver != null) {
-        convolver = commandContext.map.convolver.convolver;
-      }
-    } else {
-      convolver = s.convolver.convolver;
-    }
+    final ConvolverNode convolver = commandContext.getCurrentConvolver(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
     if (convolver != null) {
       gain.connectNode(convolver);
     }

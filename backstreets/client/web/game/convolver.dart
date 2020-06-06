@@ -6,6 +6,8 @@ import 'dart:web_audio';
 import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
+import '../main.dart';
+import 'map_section.dart';
 
 /// Provides convolvers for maps and map sections.
 class Convolver {
@@ -56,9 +58,19 @@ class Convolver {
         // only do something if convolver is still null.
         //
         // Otherwise, the convolver might have changed since this function was called, and we don't want to change it again.
-        convolver ??= sounds.audioContext.createConvolver()
+        if (convolver != null) {
+          return;
+        }
+        convolver = sounds.audioContext.createConvolver()
           ..buffer = buffer
           ..connectNode(volume);
+        if (commandContext.map != null) {
+          commandContext.map.sections.forEach((int id, MapSection s) {
+            if (s.ambience.sound != null) {
+              s.ambience.sound.source.connectNode(convolver);
+            }
+          });
+        }
       });
     }
   }

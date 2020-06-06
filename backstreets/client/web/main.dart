@@ -8,13 +8,9 @@ import 'dart:web_audio';
 import 'package:game_utils/game_utils.dart';
 
 import 'authentication.dart';
-
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'commands/login.dart';
-
-import 'game/map_section.dart';
-
 import 'hotkeys/admin.dart';
 import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
@@ -23,9 +19,7 @@ import 'hotkeys/movement.dart';
 import 'hotkeys/socials.dart';
 import 'hotkeys/sound.dart';
 import 'hotkeys/staff.dart';
-
 import 'menus/main_menu.dart';
-
 import 'run_conditions.dart';
 import 'util.dart';
 
@@ -194,10 +188,7 @@ void main() {
     socket.onOpen.listen((Event e) {
       authenticationStage = AuthenticationStages.anonymous;
       keyboardArea.focus();
-      commandContext = CommandContext(socket, (String message) {
-        commandContext.messages.add(message);
-        showMessage(message);
-      }, sounds);
+      commandContext = CommandContext(socket, showMessage, sounds);
       bookOptions = BookOptions(sounds, (String text) => showMessage(text, important: false));
       commandContext.book = Book(bookOptions)
         ..push(mainMenu());
@@ -208,15 +199,8 @@ void main() {
       showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
       authenticationStage = null;
       setTitle(state: 'Disconnected');
-      if (commandContext?.map?.ambience?.sound != null) {
-        commandContext.map.ambience.sound.stop();
-      }
-      if (commandContext?.map?.sections != null) {
-        for (final MapSection s in commandContext.map.sections.values) {
-          if (s.ambience.sound != null) {
-            s.ambience.sound.stop();
-          }
-        }
+      if (commandContext.map != null) {
+        commandContext.map.stop();
       }
       commandContext = null;
       mainDiv.hidden = true;

@@ -11,7 +11,7 @@ import '../game/map_section.dart';
 import '../main.dart';
 import '../util.dart';
 
-void coordinates() => showMessage('${commandContext.coordinates.x.floor()}, ${commandContext.coordinates.y.floor()}.');
+void coordinates() => showMessage('${commandContext.coordinates.x.floor()}, ${commandContext.coordinates.y.floor()}.', important: false);
 
 void mapName() {
   String result = commandContext.map.name;
@@ -50,7 +50,7 @@ void sectionSize() {
   if (s == null) {
     return showMessage('You are not currently on a section.');
   }
-  showMessage('${s.textSize}.');
+  showMessage('${s.textSize}.', important: false);
 }
 
 void mapSize() {
@@ -78,7 +78,7 @@ void mapSize() {
     }
   });
   final Rectangle<int> rect = Rectangle<int>.fromPoints(Point<int>(startX, startY), Point<int>(endX, endY));
-  showMessage('${rect.width + 1} x ${rect.height + 1}: $startX, $endX to $endX, $endY.');
+  showMessage('${rect.width + 1} x ${rect.height + 1}: $startX, $endX to $endX, $endY.', important: false);
 }
 
 void showExits() {
@@ -89,8 +89,8 @@ void showExits() {
     }
   });
   if (exits.isEmpty) {
-    showMessage('There are no exits here.');
+    showMessage('There are no exits here.', important: false);
   } else {
-    showMessage('Exits: ${englishList(exits)}.');
+    showMessage('Exits: ${englishList(exits)}.', important: false);
   }
 }

@@ -4,6 +4,7 @@ library command_context;
 import 'dart:convert';
 import 'dart:html';
 import 'dart:math';
+import 'dart:web_audio';
 
 import 'package:game_utils/game_utils.dart';
 
@@ -31,9 +32,6 @@ class CommandContext {
 
   /// The command arguments. Retrieved from JSON.
   List<dynamic> args;
-
-  /// Every message that is sent from the server.
-  List<String> messages = <String>[];
 
   /// A book for menus.
   Book book;
@@ -173,6 +171,20 @@ class CommandContext {
       }
     });
     return matchingSections.first;
+  }
+
+  /// Get the current convolver.
+  ///
+  /// This is either the convolver for the current [MapSection], or the overall map convolver.
+  ConvolverNode getCurrentConvolver(Point<int> coordinates) {
+  final MapSection s = getCurrentSection(coordinates);
+  if (s?.convolver?.convolver == null) {
+    if (map.convolver.convolver != null) {
+      return map.convolver.convolver;
+    }
+    return null;
+  }
+  return s.convolver.convolver;
   }
 
   /// Send arbitrary commands to the server.

@@ -9,7 +9,7 @@ import 'package:game_utils/game_utils.dart';
 import '../util.dart';
 
 class Ambience {
-  Ambience(this.sounds, this.url, {this.output, this.x, this.y}) {
+  Ambience(this.sounds, this.url, {this.output, this.coordinates}) {
     output ??= sounds.ambienceOutput;
     reset();
   }
@@ -17,11 +17,8 @@ class Ambience {
   /// The sound pool to use for getting sounds.
   SoundPool sounds;
 
-  /// The x coordinate of this ambience.
-  double x;
-
-  /// The y coordinate of this ambience.
-  double y;
+  /// The coordinates the ambience should play at.
+  Point<double> coordinates;
 
   /// The URL to load.
   String url;
@@ -32,20 +29,10 @@ class Ambience {
   /// The actual sound that has been loaded from [url].
   Sound sound;
 
-  /// Returns the coordinates of this ambience.
-  /// 
-  /// If [x] or [y] are null, null is returned.
-  Point<double> get coordinates {
-    if (x == null || y == null) {
-      return null;
-    } else {
-      return Point<double>(x, y);
-    }
-  }
-
   void reset() {
     if (sound != null) {
       sound.stop();
+      sound = null;
     }
     if (url == null) {
       sound = null;
