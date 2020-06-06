@@ -61,8 +61,20 @@ void setTitle({String state}) {
 /// The message aread.
 final Element messageArea = querySelector('#message');
 
+/// The div that holds all past messages.
+final Element messagesDiv = querySelector('#messages');
+
+/// Remember whether or not the last message was important.
+bool rememberLastMessage;
+
 /// Show a message.
-void showMessage(String text) {
+void showMessage(String text, {bool important = true}) {
+  if (rememberLastMessage == true && messageArea.innerText != text) {
+    final ParagraphElement p = ParagraphElement()
+      ..innerText = messageArea.innerText;
+    messagesDiv.append(p);
+  }
+  rememberLastMessage = important;
   messageArea.innerText = text;
 }
 
@@ -186,7 +198,7 @@ void main() {
         commandContext.messages.add(message);
         showMessage(message);
       }, sounds);
-      bookOptions = BookOptions(sounds, showMessage);
+      bookOptions = BookOptions(sounds, (String text) => showMessage(text, important: false));
       commandContext.book = Book(bookOptions)
         ..push(mainMenu());
       setTitle(state: 'Connected');
@@ -239,8 +251,6 @@ void main() {
         keyboard.heldKeys.add(hk.state);
       }
       hk.startTimer();
-    } else {
-      showMessage('Mouse ${e.button}.');
     }
   });
   document.onMouseUp.listen((MouseEvent e) {
