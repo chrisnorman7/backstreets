@@ -28,7 +28,6 @@ Map<String, CommandType> commands = <String, CommandType>{
   // Movement commands:
   'characterCoordinates': characterCoordinates,
   'mapName': mapName,
-  'tile': tile,
   'tileNames': tileNames,
   'footstepSound': footstepSound,
   'mapData': mapData,

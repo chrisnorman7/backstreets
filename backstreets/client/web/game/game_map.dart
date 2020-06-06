@@ -36,9 +36,6 @@ class GameMap {
   /// Every wall on this map.
   Map<Point<int>, Wall> walls = <Point<int>, Wall>{};
 
-  /// Every tile on this map.
-  Map<Point<int>, String> tiles = <Point<int>, String>{};
-
   /// Every exit on this map.
   Map<int, Exit> exits = <int, Exit>{};
 

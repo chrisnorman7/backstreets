@@ -9,7 +9,6 @@ import '../sound.dart';
 import 'exit.dart';
 import 'game_object.dart';
 import 'map_section.dart';
-import 'map_tile.dart';
 import 'map_wall.dart';
 import 'mixins.dart';
 
@@ -23,9 +22,6 @@ class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
 
   /// All the [MapWall] instances on this map.
   ManagedSet<MapWall> walls;
-
-  /// All the [MapTile] instances contained by this map.
-  ManagedSet<MapTile> tiles;
 
   /// All the exits from this map.
   ManagedSet<Exit> exits;
@@ -72,12 +68,6 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
         ..where((MapSection s) => s.endX).greaterThanEqualTo(x)
         ..where((MapSection s) => s.endY).greaterThanEqualTo(y);
       if (await sectionQuery.reduce.count() > 0) {
-        return true;
-      }
-      final Query<MapTile> tileQuery = Query<MapTile>(t)
-        ..where((MapTile t) => t.x).equalTo(x)
-        ..where((MapTile t) => t.y).equalTo(y);
-      if (await tileQuery.reduce.count() > 0) {
         return true;
       }
       return false;

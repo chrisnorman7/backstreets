@@ -39,15 +39,6 @@ void mapName(CommandContext ctx) {
   }
 }
 
-/// Used when a single tile is added to the map.
-void tile(CommandContext ctx) {
-  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
-  final int index = data['index'] as int;
-  final int x = data['x'] as int;
-  final int y = data['y'] as int;
-  ctx.map.tiles[Point<int>(x, y)] = ctx.tileNames[index];
-}
-
 /// Save a list of all the possible tile names.
 ///
 /// This list is used extensively by the builder menu (Hotkey b).
@@ -92,10 +83,6 @@ void mapData(CommandContext ctx) {
   for (final dynamic sectionData in data['sections'] as List<dynamic>) {
     ctx.args[0] = sectionData as Map<String, dynamic>;
     mapSection(ctx);
-  }
-  for (final dynamic tileData in data['tiles'] as List<dynamic>) {
-    ctx.args[0] = tileData;
-    tile(ctx);
   }
   for (final dynamic wallData in data['walls'] as List<dynamic>) {
     ctx.args[0] = wallData as Map<String, dynamic>;

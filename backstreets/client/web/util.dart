@@ -170,8 +170,7 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
     ..positionX.value = coordinates.x
     ..positionY.value = coordinates.y;
   if (mode != MoveModes.silent) {
-    String tileName = commandContext.map.tiles[tileCoordinates];
-    tileName ??= newSection?.tileName;
+    final String tileName = newSection?.tileName;
     if (tileName != null) {
       final String url = getFootstepSound(tileName);
       playSoundAtCoordinates(url);

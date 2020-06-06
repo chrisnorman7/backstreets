@@ -7,7 +7,6 @@ import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
 
-import '../game/tile.dart';
 import '../model/account.dart';
 import '../model/connection_record.dart';
 import '../model/exit.dart';
@@ -15,7 +14,6 @@ import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/map_section_action.dart';
-import '../model/map_tile.dart';
 import '../model/map_wall.dart';
 import '../model/player_options.dart';
 import '../sound.dart';
@@ -233,7 +231,6 @@ class CommandContext{
       'convolverUrl': m.convolverUrl,
       'convolverVolume': m.convolverVolume,
       'sections': <Map<String, dynamic>>[],
-      'tiles': <Map<String, dynamic>>[],
       'walls': <Map<String, dynamic>>[],
       'exits': <Map<String, dynamic>>[],
     };
@@ -248,16 +245,6 @@ class CommandContext{
         data['actions'].add(msa.name);
       }
       mapData['sections'].add(data);
-    }
-    final Query<MapTile> tilesQuery = Query<MapTile>(db)
-      ..where((MapTile t) => t.location.id).equalTo(mapId);
-    final List<String> tileNames = tiles.keys.toList();
-    for (final MapTile t in await tilesQuery.fetch()) {
-      mapData['tiles'].add(<String, dynamic>{
-        'index': tileNames.indexOf(t.tileName),
-        'x': t.x,
-        'y': t.y
-      });
     }
     final Query<MapWall> wallsQuery = Query<MapWall>(db)
       ..where((MapWall w) => w.location).identifiedBy(mapId);
