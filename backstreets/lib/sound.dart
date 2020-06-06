@@ -32,7 +32,7 @@ Map<String, dynamic> loadImpulses([Directory start]) {
   const String directoriesKey = 'directories';
   const String filesKey = 'files';
   final Map<String, dynamic> impulses = <String, dynamic>{
-    'name': start.path,
+    'name': start.path.replaceAll('\\', '/'),
     directoriesKey: <Map<String, dynamic>>[],
     filesKey: <String>[],
   };
@@ -41,7 +41,7 @@ Map<String, dynamic> loadImpulses([Directory start]) {
       impulses[directoriesKey].add(loadImpulses(entity));
     } else {
       if (allowedExtensions.contains(_path.extension(entity.path))) {
-        impulses[filesKey].add(_path.relative(entity.path, from: Directory(soundsDirectory).parent.path));
+        impulses[filesKey].add(_path.relative(entity.path, from: Directory(soundsDirectory).parent.path).replaceAll('\\', '/'));
       }
     }
   }
@@ -92,6 +92,7 @@ class Sound {
       throw 'No such file: $filename';
     }
     final FileStat stat = file.statSync();
-    return 'sounds/$path?${stat.modified.millisecondsSinceEpoch}';
+    final String url = path.replaceAll('\\', '/');
+    return 'sounds/$url?${stat.modified.millisecondsSinceEpoch}';
   }
 }

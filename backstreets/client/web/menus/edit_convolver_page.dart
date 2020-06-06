@@ -2,6 +2,7 @@
 library edit_convolver_page;
 
 import 'dart:html';
+import 'dart:web_audio';
 
 import 'package:game_utils/game_utils.dart';
 
@@ -30,6 +31,17 @@ Page editConvolverPage(Book b, Convolver convolver, {void Function() onChange}) 
           if (onChange != null) {
             onChange();
           }
+        }, soundUrl: (String filename) {
+          commandContext.sounds.loadBuffer(filename, (AudioBuffer buffer) {
+            final GainNode g = commandContext.sounds.audioContext.createGain()
+              ..gain.value = convolver.volume.gain.value
+              ..connectNode(commandContext.sounds.soundOutput);
+            final ConvolverNode c = commandContext.sounds.audioContext.createConvolver()
+              ..buffer = buffer
+              ..connectNode(g);
+            commandContext.sounds.playSound(commandContext.echoSounds[commandContext.options.echoSound]).source.connectNode(c);
+          });
+          return null;
         }
       )
     ), titleFunc: () => 'URL (${convolver.url == null ? "<Not set>" : convolver.compactUrl})'),

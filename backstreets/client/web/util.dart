@@ -8,10 +8,8 @@ import 'dart:web_audio';
 import 'package:game_utils/game_utils.dart' show randomElement, Sound;
 
 import 'directions.dart';
-
 import 'game/map_section.dart';
 import 'game/wall.dart';
-
 import 'main.dart';
 
 final Random random = Random();

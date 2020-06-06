@@ -10,7 +10,8 @@ import '../main.dart';
 Page fileChooserPage(
   Book b, String Function() titleFunc, Directory directory,
   String Function() getFile, void Function(String) setFile, {
-    bool fileOnly = true, String Function() onCancel, bool allowNull = true
+    bool fileOnly = true, String Function() onCancel, bool allowNull = true,
+    String Function(String) soundUrl
   }
 ) {
   final String currentFile = getFile();
@@ -27,7 +28,7 @@ Page fileChooserPage(
     final String directoryName = path.basename(subdirectory.name);
     lines.add(
       Line(b, () => b.push(
-        fileChooserPage(b, () => subdirectory.name, subdirectory, getFile, setFile, fileOnly: fileOnly, onCancel: onCancel, allowNull: false)
+        fileChooserPage(b, () => subdirectory.name, subdirectory, getFile, setFile, fileOnly: fileOnly, onCancel: onCancel, allowNull: false, soundUrl: soundUrl)
       ), titleFunc : () => '${currentFile != null && currentFile.contains(directoryName) ? "* " : ""}$directoryName (Directory)')
     );
   }
@@ -36,9 +37,10 @@ Page fileChooserPage(
     lines.add(
       Line(
         b, () => setFile(filename),
-        titleFunc: () => '${currentFile != null && friendlyCurrentFile == friendlyFilename ? "* " : ""}$friendlyFilename} (File)'
+        titleFunc: () => '${currentFile != null && friendlyCurrentFile == friendlyFilename ? "* " : ""}$friendlyFilename} (File)',
+        soundUrl: soundUrl == null ? null : () => soundUrl(filename)
       )
     );
   }
-  return Page(lines: lines, titleFunc: titleFunc, onCancel: onCancel);
+  return Page(lines: lines, titleFunc: titleFunc, onCancel: onCancel, playDefaultSounds: false);
 }
