@@ -54,6 +54,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   @Column(defaultValue: '400')
   int speed;
 
+  /// The maximum time between NPC moves.
+  @Column(nullable: true)
+  int maxMoveTime;
+
   /// When this object was first created.
   @Column(defaultValue: "'2020-01-01'")
   DateTime createdAt;
