@@ -16,6 +16,7 @@ import 'commands/commands.dart';
 
 import 'config.dart';
 
+import 'game/npc.dart';
 import 'game/tile.dart';
 
 import 'model/account.dart';
@@ -59,6 +60,7 @@ class BackstreetsChannel extends ApplicationChannel {
     databaseContext = ManagedContext(dataModel, psc);
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
     logger.info('Commands: ${commands.length}.');
+    await npcMoveAll(databaseContext);
     logger.info('Gathering tile sounds.');
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
       if (entity is Directory) {
@@ -207,7 +209,7 @@ class BackstreetsChannel extends ApplicationChannel {
             } else if (command.authenticationType == AuthenticationTypes.admin && character?.admin != true) {
               throw 'Attempting to call an admin command without being an administrator.';
             // When checking AuthenticationTypes.staff, check to see if they have no player, or their player's admin and builder fields isn't true.
-            } else if (command.authenticationType == AuthenticationTypes.staff && (character?.admin != true || character?.builder != true)) {
+            } else if (command.authenticationType == AuthenticationTypes.staff && character?.staff != true) {
               throw 'Attempting to call a staff command without being a member of staff.';
             }
             ctx.args = arguments;
