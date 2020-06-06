@@ -146,6 +146,7 @@ void mapSection(CommandContext ctx) {
   final String convolverUrl = data['convolverUrl'] as String;
   final double convolverVolume = (data['convolverVolume'] as num).toDouble();
   String ambienceUrl = data['ambienceUrl'] as String;
+  final int ambienceDistance = data['ambienceDistance'] as int;
   final List<dynamic> actions = data['actions'] as List<dynamic>;
   if (ctx.map.sections.containsKey(id)) {
     ctx.map.sections[id]
@@ -160,7 +161,7 @@ void mapSection(CommandContext ctx) {
       ..url = convolverUrl
       ..volume.gain.value = convolverVolume
       ..resetConvolver();
-    ctx.args[0] = <String, dynamic>{'id': id, 'url': ambienceUrl};
+    ctx.args[0] = <String, dynamic>{'id': id, 'url': ambienceUrl, 'distance': ambienceDistance};
     mapSectionAmbience(ctx);
   } else {
     if (ambienceUrl != null) {
@@ -168,7 +169,7 @@ void mapSection(CommandContext ctx) {
     }
     ctx.map.sections[id] = MapSection(
       ctx.sounds, id, startX, startY, endX, endY, name, tileName, tileSize,
-      convolverUrl, convolverVolume, ambienceUrl
+      convolverUrl, convolverVolume, ambienceUrl, ambienceDistance
     );
   }
   if (actions != null) {

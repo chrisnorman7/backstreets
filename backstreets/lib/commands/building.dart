@@ -83,6 +83,7 @@ Future<void> editMapSection(CommandContext ctx) async {
     ..values.tileSize = (data['tileSize'] as num).toDouble()
     ..values.convolverUrl = data['convolverUrl'] as String
     ..values.convolverVolume = (data['convolverVolume'] as num).toDouble()
+    ..values.ambienceDistance = data['ambienceDistance'] as int
     ..where((MapSection s) => s.location).identifiedBy(ctx.mapId)
     ..where((MapSection s) => s.id).equalTo(id);
   final MapSection s = await q.updateOne();
@@ -185,7 +186,7 @@ Future<void> mapSectionAmbience(CommandContext ctx) async {
     return ctx.sendError('Invalid section ID.');
   }
   final GameMap m = await ctx.getMap();
-  await m.broadcastCommand(ctx.db, 'mapSectionAmbience', <Map<String, dynamic>>[<String, dynamic>{'id': s.id, 'url': s.ambience}]);
+  await m.broadcastCommand(ctx.db, 'mapSectionAmbience', <Map<String, dynamic>>[<String, dynamic>{'id': s.id, 'url': s.ambience, 'distance': s.ambienceDistance}]);
   ctx.message('Ambience updated.');
 }
 

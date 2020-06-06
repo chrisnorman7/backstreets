@@ -45,6 +45,15 @@ mixin AmbienceMixin {
   String ambience;
 }
 
+/// Give the ambience of this object a distance it can travel.
+///
+/// On the web end, sets panner.refDistance.
+mixin AmbienceDistanceMixin {
+  /// How far this object's ambience travels.
+  @Column(nullable: true)
+  int ambienceDistance;
+}
+
 /// Add permissions flags to any object.
 mixin PermissionsMixin {
   /// Whether or not this object is an admin.

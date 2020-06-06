@@ -12,9 +12,9 @@ import 'convolver.dart';
 ///
 /// Basically rectangles, with game-specific information.
 class MapSection {
-  MapSection(SoundPool sounds, this.id, this.startX, this.startY, this.endX, this.endY, this.name, this.tileName, this.tileSize, String convolverUrl, double convolverVolume, String ambienceUrl) {
+  MapSection(SoundPool sounds, this.id, this.startX, this.startY, this.endX, this.endY, this.name, this.tileName, this.tileSize, String convolverUrl, double convolverVolume, String ambienceUrl, int ambienceDistance) {
     convolver = Convolver(sounds, convolverUrl, convolverVolume);
-    ambience = Ambience(sounds, ambienceUrl, coordinates: ambienceCoordinates);
+    ambience = Ambience(sounds, ambienceUrl, coordinates: ambienceCoordinates, distance: ambienceDistance);
   }
 
   /// The id of this section.
@@ -94,6 +94,8 @@ class MapSection {
       'tileSize': tileSize,
       'convolverUrl': convolver.compactUrl,
       'convolverVolume': convolver.volume.gain.value,
+      // We don't inclue ambience.url, because that gets sent with the mapSectionAmbience command.
+      'ambienceDistance': ambience.distance,
     };
   }
 

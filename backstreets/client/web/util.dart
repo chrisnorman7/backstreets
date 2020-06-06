@@ -220,7 +220,7 @@ void instantMove(Directions d) {
 }
 
 /// Play a sound at a specific set of coordinates.
-Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false}) {
+Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size}) {
   output ??= commandContext.sounds.soundOutput;
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume;
@@ -229,9 +229,11 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
       ..positionX.value = coordinates.x
       ..positionY.value = coordinates.y
       ..panningModel = 'HRTF'
-      ..refDistance = 5
       ..connectNode(output);
     gain.connectNode(panner);
+    if (size != null) {
+      panner.refDistance = size;
+    }
   } else {
   gain.connectNode(output);
   }

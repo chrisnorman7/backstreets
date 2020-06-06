@@ -9,7 +9,7 @@ import 'package:game_utils/game_utils.dart';
 import '../util.dart';
 
 class Ambience {
-  Ambience(this.sounds, this.url, {this.output, this.coordinates}) {
+  Ambience(this.sounds, this.url, {this.output, this.coordinates, this.distance}) {
     output ??= sounds.ambienceOutput;
     reset();
   }
@@ -26,6 +26,11 @@ class Ambience {
   /// The output that [sound] will be piped through.
   AudioNode output;
 
+  /// The distance modifier for this sound.
+  ///
+  /// Used as the panner's refDistance property.
+  int distance;
+
   /// The actual sound that has been loaded from [url].
   Sound sound;
 
@@ -37,7 +42,7 @@ class Ambience {
     if (url == null) {
       sound = null;
     } else if (coordinates != null) {
-      sound = playSoundAtCoordinates(url, coordinates: coordinates, output: output, loop: true);
+      sound = playSoundAtCoordinates(url, coordinates: coordinates, output: output, loop: true, size: distance);
     } else {
       sound = sounds.playSound(url, output: output, loop: true);
     }

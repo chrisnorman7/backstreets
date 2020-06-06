@@ -32,7 +32,7 @@ void builderMenu() {
           commandContext.coordinates.x.floor(),
           commandContext.coordinates.y.floor(),
           'Untitled Section', commandContext.tileNames[0], 0.5,
-          null, 1.0, null
+          null, 1.0, null, null
         );
         commandContext.book.push(
           mapSectionPage(commandContext.book, commandContext.section, commandContext, onUpload: () {
