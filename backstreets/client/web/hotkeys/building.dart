@@ -63,7 +63,7 @@ void builderMenu() {
           resetFocus();
           commandContext.message('Move to the map and coordinates of the other side of the exit, then press enter.');
           commandContext.exit = Exit(data['name'], commandContext.map.id, commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
-        }, showMessage)
+        }, showMessage, onCancel: resetFocus)
           ..addElement('name', validator: notEmptyValidator, label: 'The name of the new exit')
           ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
       }, titleString: 'Add Exit'),
