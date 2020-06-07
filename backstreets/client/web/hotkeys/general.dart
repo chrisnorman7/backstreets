@@ -146,7 +146,7 @@ void escapeKey() {
 
 void enterKey() {
   final List<Exit> exits = <Exit>[];
-  if (commandContext.map != null) {
+  if (commandContext?.map != null) {
     commandContext.map.exits.forEach((int id, Exit e) {
       if (e.x == commandContext.coordinates.x.floor() && e.y == commandContext.coordinates.y.floor()) {
         exits.add(e);
@@ -155,7 +155,7 @@ void enterKey() {
   }
   if (validBook()) {
     commandContext.book.activate();
-  } else if (commandContext.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
+  } else if (commandContext?.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
     final MapSection s = commandContext.getCurrentSection();
     if (s.actions.length == 1) {
       commandContext.sendAction(s, s.actions[0]);

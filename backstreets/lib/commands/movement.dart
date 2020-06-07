@@ -1,6 +1,8 @@
 /// Provides movement-related commands.
 library movement;
 
+import 'dart:math';
+
 import 'package:aqueduct/aqueduct.dart';
 
 import '../model/exit.dart';
@@ -21,7 +23,7 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   final GameObject c = await ctx.getCharacter();
   if (!c.staff) {
     final GameMap m = await ctx.getMap();
-    if (!(await m.validCoordinates(ctx.db, x.floor(), y.floor()))) {
+    if (!(await m.validCoordinates(ctx.db, Point<int>(x.floor(), y.floor())))) {
       ctx.logger.warning('Tried to move to $x, $y.');
       return ctx.send('characterCoordinates', <double>[c.x, c.y]);
     }

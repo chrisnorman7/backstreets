@@ -199,7 +199,7 @@ void main() {
       showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
       authenticationStage = null;
       setTitle(state: 'Disconnected');
-      if (commandContext.map != null) {
+      if (commandContext?.map != null) {
         commandContext.map.stop();
       }
       commandContext = null;

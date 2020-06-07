@@ -49,6 +49,8 @@ Map<String, Command> commands = <String, Command>{
   'addExit': Command(addExit, authenticationType: AuthenticationTypes.builder),
   'editExit': Command(editExit, authenticationType: AuthenticationTypes.builder),
   'deleteExit': Command(deleteExit, authenticationType: AuthenticationTypes.builder),
+  'getObjects': Command(getObjects, authenticationType: AuthenticationTypes.builder),
+  'addObject': Command(addObject, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),

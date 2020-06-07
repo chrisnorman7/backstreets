@@ -13,16 +13,7 @@ Future<void> adminPlayerList(CommandContext ctx) async {
     ..join(object: (GameObject o) => o.account)
     ..join(object: (GameObject o) => o.location)
     ..where((GameObject o) => o.account).isNotNull();
-  final List<Map<String, dynamic>> players = <Map<String, dynamic>>[];
-  for (final GameObject o in await q.fetch()) {
-    final Map<String, dynamic> data = <String, dynamic>{
-      'id': o.id, 'name': o.name, 'x': o.x, 'y': o.y,
-      'locationId': o.location.id, 'locationName': o.location.name, 'builder': o.builder, 'admin': o.admin,
-      'accountId': o.account.id, 'username': o.account.username
-    };
-    players.add(data);
-  }
-  ctx.send('listOfObjects', <dynamic>[players]);
+  ctx.sendObjects(await q.fetch());
 }
 
 Future<void> renameObject(CommandContext ctx) async {

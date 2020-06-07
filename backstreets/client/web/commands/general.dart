@@ -77,11 +77,11 @@ void listOfObjects(CommandContext ctx) {
         data['locationId'] as int, data['locationName'] as String, permissions, account
       )
     );
-    if (ctx.onListOfObjects == null) {
-      ctx.message('Unsolicited list of objects received.');
-    } else {
-      ctx.onListOfObjects();
-    }
+  }
+  if (ctx.onListOfObjects == null) {
+    ctx.message('Unsolicited list of objects received.');
+  } else {
+    ctx.onListOfObjects();
   }
 }
 

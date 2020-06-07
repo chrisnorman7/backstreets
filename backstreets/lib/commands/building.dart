@@ -4,6 +4,7 @@ library building;
 import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
+import 'package:backstreets/game/npc.dart';
 import '../actions/actions.dart';
 import '../model/exit.dart';
 import '../model/game_map.dart';
@@ -324,4 +325,23 @@ Future<void> deleteExit(CommandContext ctx) async {
   final GameMap m = await ctx.getMap();
   await m.broadcastCommand(ctx.db, 'deleteExit', <int>[id]);
   ctx.message('Exit deleted.');
+}
+
+Future<void> getObjects(CommandContext ctx) async {
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.account).isNull();
+  ctx.sendObjects(await q.fetch());
+}
+
+Future<void> addObject(CommandContext ctx) async {
+  final GameMap m = await ctx.getMap();
+  GameObject o = GameObject()
+    ..name = 'Unnamed Object'
+    ..location = m
+    ..x = m.popX.toDouble()
+    ..y = m.popY.toDouble()
+    ..maxMoveTime = 4000;
+  o = await ctx.db.insertObject(o);
+  ctx.message('Created object ${o.name}.');
+  npcMove(ctx.db, o.id);
 }

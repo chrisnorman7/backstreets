@@ -1,6 +1,8 @@
 /// Provides the [MapSection] class.
 library map_section;
 
+import 'dart:math';
+
 import 'package:aqueduct/aqueduct.dart';
 
 import '../sound.dart';
@@ -50,6 +52,18 @@ class _MapSection with PrimaryKeyMixin, NameMixin, AmbienceMixin, AmbienceDistan
 
 /// A section of a map.
 class MapSection extends ManagedObject<_MapSection> implements _MapSection {
+  /// The start coordinates.
+  Point<int> get startCoordinates => Point<int>(startX, startY);
+
+  /// The end coordinates.
+  Point<int> get endCoordinates => Point<int>(endX, endY);
+
+  /// The rectangle that this section covers.
+  Rectangle<int> get rect => Rectangle<int>.fromPoints(startCoordinates, endCoordinates);
+
+  /// Returns the area of [rect].
+  int get area => rect.width * rect.height;
+
   /// Convert this object to a map.
   Map<String, dynamic> toJson() {
     return <String, dynamic>{

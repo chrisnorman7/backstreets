@@ -163,4 +163,32 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       ctx.send('characterCoordinates', <double>[o.x, o.y]);
     }
   }
+
+  /// Return the coordinates in the direction this object is currently facing.
+  ///
+  /// The distance argument should probably be gotten from the tile size of the current section.
+  Point<double> coordinatesInDirection(double distance) {
+    final double rads = theta / 180.0 * pi;
+    return Point<double>(x + (distance * sin(rads)), y + (distance * cos(rads)));
+  }
+
+  /// Convert this object to json.
+  ///
+  /// Used for sending to a connection.
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'x': x,
+      'y': y,
+      'locationId': location.id,
+      'locationName': location.name,
+      'speed': speed,
+      'maxMoveTime': maxMoveTime,
+      'builder': builder,
+      'admin': admin,
+      'accountId': account?.id,
+      'username': account?.username
+    };
+  }
 }

@@ -60,19 +60,17 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   /// Returns true if the passed coordinates are valid for this Map.
   ///
   /// Valid coordinates means either there is a [MapSection] encompassing the coordinates, or there is a [MapTile] there.
-  Future<bool> validCoordinates(ManagedContext db, int x, int y) async {
-    final bool result = await db.transaction((ManagedContext t) async {
-      final Query<MapSection> sectionQuery = Query<MapSection>(t)
-        ..where((MapSection s) => s.startX).lessThanEqualTo(x)
-        ..where((MapSection s) => s.startY).lessThanEqualTo(y)
-        ..where((MapSection s) => s.endX).greaterThanEqualTo(x)
-        ..where((MapSection s) => s.endY).greaterThanEqualTo(y);
-      if (await sectionQuery.reduce.count() > 0) {
-        return true;
-      }
-      return false;
-    });
-    return result;
+  Future<bool> validCoordinates(ManagedContext db, Point<int> coordinates) async {
+    final Query<MapSection> q = Query<MapSection>(db)
+      ..where((MapSection s) => s.startX).lessThanEqualTo(coordinates.x)
+      ..where((MapSection s) => s.startY).lessThanEqualTo(coordinates.y)
+      ..where((MapSection s) => s.endX).greaterThanEqualTo(coordinates.x)
+      ..where((MapSection s) => s.endY).greaterThanEqualTo(coordinates.y)
+      ..where((MapSection s) => s.location).identifiedBy(id);
+    if (await q.reduce.count() > 0) {
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -117,5 +115,29 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
       'popX': popX,
       'popY': popY,
     };
+  }
+
+  /// Get the section spanned by the provided coordinates.
+  Future<MapSection> getCurrentSection(ManagedContext db, Point<int> coordinates) async {
+    final Query<MapSection> q = Query<MapSection>(db)
+      ..where((MapSection s) => s.startX).lessThanEqualTo(coordinates.x)
+      ..where((MapSection s) => s.startY).lessThanEqualTo(coordinates.y)
+      ..where((MapSection s) => s.endX).greaterThanEqualTo(coordinates.x)
+      ..where((MapSection s) => s.endY).greaterThanEqualTo(coordinates.y)
+      ..where((MapSection s) => s.location).identifiedBy(id);
+    final List<MapSection> sections = await q.fetch();
+    if (sections.isEmpty) {
+      return null;
+    }
+    sections.sort((MapSection a, MapSection b) {
+      if (a.rect.containsRectangle(b.rect)) {
+        return 1;
+      } else if (a.rect.intersects(b.rect)) {
+        return a.area.compareTo(b.area);
+      } else {
+        return -1;
+      }
+    });
+    return sections.first;
   }
 }

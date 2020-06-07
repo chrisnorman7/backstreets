@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../game/exit.dart';
+import '../game/game_object.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
@@ -56,7 +57,7 @@ void builderMenu() {
           ), titleFunc: () => '${s.name} (${s.startX}, ${s.startY} -> ${s.endX}, ${s.endY})', soundUrl: () => getFootstepSound(s.tileName))
         ));
         commandContext.book.push(Page(titleString: 'Map Sections', lines: lines));
-      }, titleString: 'Other Sections Menu'),
+      }, titleString: 'Sections Menu'),
       Line(commandContext.book, () {
         clearBook();
         FormBuilder('Build Exit', (Map<String, String> data) {
@@ -131,6 +132,22 @@ void builderMenu() {
           )
         );
       }, titleString: 'Map Menu'),
+      Line(commandContext.book, () {
+        clearBook();
+        commandContext.getObjectList(() {
+          commandContext.book = Book(bookOptions);
+          final List<Line> lines = <Line>[
+            Line(commandContext.book, () {
+              clearBook();
+              commandContext.send('addObject', null);
+            }, titleString: 'Add Object')
+          ];
+          for (final GameObject obj in commandContext.objects) {
+            lines.add(Line(commandContext.book, () => null, titleString: obj.toString()));
+          }
+          commandContext.book.push(Page(lines: lines, titleString: 'Objects Menu'));
+        }, 'getObjects');
+      }, titleString: 'Objects')
     ], titleString: 'Building', onCancel: () {
       showMessage('Done.');
       clearBook();

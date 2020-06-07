@@ -211,4 +211,11 @@ class CommandContext {
       updateLastMoved();
     }
   }
+
+  /// Request a list of objects, and set [onListOfObjects] to receive them.
+  void getObjectList(void Function() cb, String commandName, {List<dynamic> args, String loadingMessage = 'Loading...'}) {
+    onListOfObjects = cb;
+    send(commandName, args);
+    message(loadingMessage);
+  }
 }

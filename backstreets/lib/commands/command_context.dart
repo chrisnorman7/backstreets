@@ -311,4 +311,13 @@ class CommandContext{
       'volume': volume
     }]);
   }
+
+  /// Send a list of objects to the player.
+  void sendObjects(List<GameObject> objects) {
+    final List<Map<String, dynamic>> data = <Map<String, dynamic>>[];
+    for (final GameObject o in objects) {
+     data.add(o.toJson());
+    }
+    send('listOfObjects', <List<Map<String, dynamic>>>[data]);
+  }
 }

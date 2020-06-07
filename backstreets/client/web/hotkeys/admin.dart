@@ -22,19 +22,17 @@ void adminMenu() {
           clearBook();
         }, titleString: 'Add Map'),
         Line(commandContext.book, () {
-          showMessage('Loading players...');
           clearBook();
-          commandContext.send('adminPlayerList', null);
-          commandContext.onListOfObjects = () {
+          commandContext.getObjectList(() {
             final List<Line> lines = <Line>[];
-              for (final GameObject o in commandContext.objects) {
-                lines.add(
-                  Line(commandContext.book, () => commandContext.book.push(editObjectPage(commandContext.book, o)), titleString: o.name)
-                );
-              }
+            for (final GameObject o in commandContext.objects) {
+              lines.add(
+                Line(commandContext.book, () => commandContext.book.push(editObjectPage(commandContext.book, o)), titleString: o.name)
+              );
+            }
             commandContext.book = Book(bookOptions)
               ..push(Page(lines: lines, titleFunc: () => 'Players (${commandContext.objects.length})', onCancel: clearBook));
-          };
+          }, 'adminPlayerList');
         }, titleString: 'Edit Player'),
         Line(commandContext.book, () {
           commandContext.book.push(
