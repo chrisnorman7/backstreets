@@ -27,15 +27,13 @@ Future<void> npcMove(ManagedContext db, int id) async {
     if (o == null) {
       throw 'Object does not exist.';
     }
+    logger = Logger(o.toString());
     if (o.location == null) {
       throw 'This object has no location.';
     }
-    logger = Logger(o.toString());
     final MapSection s = await o.location.getCurrentSection(db, Point<int>(o.x.round(), o.y.round()));
-    logger.info('Starting at ${o.x.toStringAsFixed(2)}, ${o.y.toStringAsFixed(2)}, facing ${o.theta} degrees ${headingToString(o.theta)}. Section: ${s?.name}.');
     final Point<double> c = o.coordinatesInDirection(s.tileSize);
     if (await o.location.validCoordinates(db, Point<int>(c.x.round(), c.y.round()))) {
-      logger.info('Moved to ${c.x.toStringAsFixed(2)}, ${c.y.toStringAsFixed(2)}.');
       q = Query<GameObject>(db)
         ..values.x = c.x
         ..values.y = c.y
@@ -49,7 +47,6 @@ Future<void> npcMove(ManagedContext db, int id) async {
         ..values.theta = randInt(360).toDouble()
         ..where((GameObject obj) => obj.id).equalTo(id);
       o = await q.updateOne();
-      logger.info('Invalid target coordinates ${c.x.toStringAsFixed(2)}, ${c.y.toStringAsFixed(2)}. Now facing ${o.theta} degrees ${headingToString(o.theta)}.');
     }
     nextRun = randInt(o.maxMoveTime, start: o.speed);
   }
