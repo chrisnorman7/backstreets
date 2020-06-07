@@ -52,6 +52,9 @@ Map<String, Command> commands = <String, Command>{
   'addObject': Command(addObject, authenticationType: AuthenticationTypes.builder),
   'objectSpeed': Command(objectSpeed, authenticationType: AuthenticationTypes.builder),
   'objectMaxMoveTime': Command(objectMaxMoveTime, authenticationType: AuthenticationTypes.builder),
+  'objectPhrase': Command(objectPhrase, authenticationType: AuthenticationTypes.builder),
+  'objectMinPhraseTime': Command(objectMinPhraseTime, authenticationType: AuthenticationTypes.builder),
+  'objectMaxPhraseTime': Command(objectMaxPhraseTime, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),

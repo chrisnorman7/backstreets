@@ -1,8 +1,6 @@
 /// Provides the [editObjectPage] function.
 library edit_object_page;
 
-import 'dart:html';
-
 import 'package:game_utils/game_utils.dart';
 
 import '../game/game_object.dart';
@@ -42,33 +40,37 @@ Page editObjectPage(Book b, GameObject o) {
       })
     ]);
   }
-  lines.add(Line(b, () {
-    final NumberInputElement e = NumberInputElement()
-      ..min = '1'
-      ..step = '1';
-    FormBuilder('Object Speed', (Map<String, String> data) {
-      resetFocus();
-      o.speed = int.tryParse(data['speed']);
-      commandContext.send('objectSpeed', <int>[o.id, o.speed]);
-    }, showMessage, onCancel: resetFocus)
-      ..addElement('speed', element: e, value: o.speed.toString())
-      ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-  }, titleFunc: () => 'Speed (${o.speed})'));
-  lines.add(Line(b, () {
-    final NumberInputElement e = NumberInputElement()
-      ..min = '0'
-      ..step = '1';
-    FormBuilder('Max Move Interval', (Map<String, String> data) {
-      resetFocus();
-      o.maxMoveTime = int.tryParse(data['speed']);
-      if (o.maxMoveTime == 0) {
-        o.maxMoveTime = null;
-      }
-      commandContext.send('objectMaxMoveTime', <int>[o.id, o.maxMoveTime]);
-    }, showMessage, onCancel: resetFocus)
-      ..addElement('speed', element: e, value: o.maxMoveTime == null ? '0' : o.maxMoveTime.toString(), label: 'Max move time')
-      ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-  }, titleFunc: () => 'Max Move Time (${o.maxMoveTime})'));
+  lines.addAll(
+    <Line>[
+      Line(b, () {
+        getInt('Object Speed', () => o.speed, (int value) => o.speed = value, 'objectSpeed', id: o.id, min: 1, allowNull: false);
+      }, titleFunc: () => 'Speed (${o.speed})'),
+      Line(b, () {
+        getInt('Maximum Move Time', () => o.maxMoveTime, (int value)=> o.maxMoveTime = value, 'objectMaxMoveTime', id: o.id);
+      }, titleFunc: () => 'Max Move Time (${o.maxMoveTime})'),
+      Line(b, () {
+        final List<Line> lines = <Line>[
+          Line(b, () {
+            b.pop();
+            commandContext.sendPhrase(o, null);
+          }, titleFunc: () => '${o.phrase == null ? "* " : ""}Clear')
+        ];
+        for (final String phrase in commandContext.phrases) {
+          lines.add(Line(b, () {
+            b.pop();
+            commandContext.sendPhrase(o, phrase);
+          }, titleFunc: () => '${o.phrase == phrase ? "* " : ""}$phrase'));
+        }
+        b.push(Page(lines: lines, titleString: 'Phrases', onCancel: doCancel));
+      }, titleFunc: () => 'Phrase (${o.phrase})'),
+      Line(b, () {
+        getInt('Minimum time between phrases', () => o.minPhraseTime, (int value) => o.minPhraseTime = value, 'objectMinPhraseTime', id: o.id, min: 1000, step: 100, allowNull: false);
+      }, titleFunc: () => 'Minimum time between phrases (${o.minPhraseTime})'),
+      Line(b, () {
+        getInt('Maximum time between phrases', () => o.maxPhraseTime, (int value) => o.maxPhraseTime = value, 'objectMaxPhraseTime', id: o.id, min: 1000, step: 100, allowNull: false);
+      }, titleFunc: () => 'Maximum time between phrases (${o.maxPhraseTime})')
+    ]
+  );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');
 }
 
@@ -87,5 +89,5 @@ void editObjects({bool allowAddObject = false}) {
     );
   }
   commandContext.book = Book(bookOptions)
-    ..push(Page(lines: lines, titleFunc: () => 'Players (${commandContext.objects.length})', onCancel: doCancel));
+    ..push(Page(lines: lines, titleFunc: () => 'Objects (${commandContext.objects.length})', onCancel: doCancel));
 }

@@ -65,6 +65,20 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   /// The social which is used when this object connects to the game.
   @Column(defaultValue: "'%1N %1has connected.'")
   String connectSocial;
+
+  /// The phrase directory used by this object.
+  ///
+  /// Set to null for no phrase.
+  @Column(nullable: true)
+  String phrase;
+
+  /// The minimum time (in milliseconds) between phrases.
+  @Column(defaultValue: '15000')
+  int minPhraseTime;
+
+  /// The maximum amount of time (in milliseconds) between phrases.
+  @Column(defaultValue: '60000')
+  int maxPhraseTime;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
@@ -185,6 +199,9 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'locationName': location.name,
       'speed': speed,
       'maxMoveTime': maxMoveTime,
+      'phrase': phrase,
+      'minPhraseTime': minPhraseTime,
+      'maxPhraseTime': maxPhraseTime,
       'builder': builder,
       'admin': admin,
       'accountId': account?.id,

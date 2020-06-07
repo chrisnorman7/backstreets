@@ -56,6 +56,15 @@ class GameObject {
   /// The maximum time between object moves.
   int maxMoveTime;
 
+  /// The phrase directory used by this object.
+  String phrase;
+
+  /// The minimum phrase time.
+  int minPhraseTime;
+
+  /// The maximum phrase time.
+  int maxPhraseTime;
+
   /// A list of [Player] objects who are also connected to this account.
   List<GameObject> get relatedObjects => commandContext.objects.where((GameObject o) => o.account?.id == account?.id && o.id != id).toList();
 

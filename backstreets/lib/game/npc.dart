@@ -12,8 +12,11 @@ import '../model/map_section.dart';
 import '../sound.dart';
 import 'util.dart';
 
-/// Keep a record of all the timers that have been started.
-Map<int, Timer> timers = <int, Timer>{};
+/// Keep a record of all the move timers that have been started.
+Map<int, Timer> moveTimers = <int, Timer>{};
+
+/// Keep a record of all the phrase timers that have been started.
+Map<int, Timer> phraseTimers = <int, Timer>{};
 
 /// Move an NPC around.
 Future<void> npcMove(ManagedContext db, int id) async {
@@ -55,28 +58,67 @@ Future<void> npcMove(ManagedContext db, int id) async {
     logger.severe(s.toString());
   }
   finally {
-    timers[id] = Timer(Duration(milliseconds: nextRun), () => npcMove(db, id));
+    moveTimers[id] = Timer(Duration(milliseconds: nextRun), () => npcMove(db, id));
   }
 }
 
 /// Find all the NPC's and move them.Object
 /// An NPC is defined as a [GameObject] instance with a maxMoveTime that is not null.
-Future<void> npcMoveAll(ManagedContext db) async {
+Future<void> npcStartTasks(ManagedContext db) async {
   final Logger logger = Logger('NPC')
     ..info('Moving NPCs...');
-  final Query<GameObject> q = Query<GameObject>(db)
+  Query<GameObject> q = Query<GameObject>(db)
     ..where((GameObject o) => o.account).isNull()
     ..where((GameObject o) => o.maxMoveTime).isNotNull();
   for (final GameObject o in await q.fetch()) {
     logger.info('Moving $o.');
     await npcMove(db, o.id);
   }
-  logger.info('Objects moved: ${timers.length}.');
+  logger
+    ..info('Objects moved: ${moveTimers.length}.')
+    ..info('Running NPC phrases...');
+  q = Query<GameObject>(db)
+    ..where((GameObject o) => o.phrase).isNotNull();
+  for (final GameObject o in await q.fetch()) {
+    await npcPhrase(db, o.id);
+  }
+  logger.info('Phrased objects: ${phraseTimers.length}.');
 }
 
 /// Start an NPC moving if it's not already moving.Number
 Future<void> npcMaybeMove(ManagedContext db, int id) async {
-  if (!timers.containsKey(id)) {
+  if (!moveTimers.containsKey(id)) {
     await npcMove(db, id);
+  }
+}
+
+/// Make an object emit a phrase from its collection.
+Future<void> npcPhrase(ManagedContext db, int id) async {
+  Logger logger = Logger('Object #$id');
+  int nextRun = 20000;
+  try {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..join(object: (GameObject o) => o.location)
+      ..where((GameObject o) => o.phrase).isNotNull()
+      ..where((GameObject o) => o.id).equalTo(id);
+    final GameObject o = await q.fetchOne();
+    if (o == null) {
+      throw 'There is no phrased object with this ID.';
+    }
+    logger = Logger(o.toString());
+    if (o.location == null) {
+      throw 'This object has no location.';
+    }
+    nextRun = randInt(o.maxPhraseTime, start: o.minPhraseTime);
+    final List<Sound> phrase = phrases[o.phrase];
+    final Sound s = randomElement(phrase);
+    o.location.broadcastSound(db, s, o.coordinates, 1.0);
+  }
+  catch (e, s) {
+    logger.severe(e.toString());
+    logger.severe(s.toString());
+  }
+  finally {
+    phraseTimers[id] = Timer(Duration(milliseconds: nextRun), () => npcPhrase(db, id));
   }
 }

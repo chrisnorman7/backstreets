@@ -57,4 +57,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'impulses': impulses,
   'echoSounds': echoSounds,
   'exitSound': exitSound,
+  'phrases': phrases,
 };

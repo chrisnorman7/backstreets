@@ -147,6 +147,9 @@ class CommandContext {
   /// All the possible exit sounds.
   Map<String, String> exitSounds = <String, String>{};
 
+  /// The phrase directories on the server.
+  List<String> phrases = <String>[];
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].
@@ -177,14 +180,14 @@ class CommandContext {
   ///
   /// This is either the convolver for the current [MapSection], or the overall map convolver.
   ConvolverNode getCurrentConvolver(Point<int> coordinates) {
-  final MapSection s = getCurrentSection(coordinates);
-  if (s?.convolver?.convolver == null) {
-    if (map.convolver.convolver != null) {
-      return map.convolver.convolver;
+    final MapSection s = getCurrentSection(coordinates);
+    if (s?.convolver?.convolver == null) {
+      if (map.convolver.convolver != null) {
+        return map.convolver.convolver;
+      }
+      return null;
     }
-    return null;
-  }
-  return s.convolver.convolver;
+    return s.convolver.convolver;
   }
 
   /// Send arbitrary commands to the server.
@@ -217,5 +220,13 @@ class CommandContext {
     onListOfObjects = cb;
     send(commandName, args);
     message(loadingMessage);
+  }
+
+  /// Send an object's phrase to the server.
+  ///
+  /// For brevity, this function also sets the phrase with the [phrase] argument.
+  void sendPhrase(GameObject o, String phrase) {
+    o.phrase = phrase;
+    send('objectPhrase', <dynamic>[o.id, o.phrase]);
   }
 }

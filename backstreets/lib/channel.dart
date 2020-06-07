@@ -64,7 +64,7 @@ class BackstreetsChannel extends ApplicationChannel {
       await q.insert();
       logger.info('Created initial map.');
     } else {
-      await npcMoveAll(databaseContext);
+      await npcStartTasks(databaseContext);
     }
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
       if (entity is Directory) {
@@ -98,6 +98,14 @@ class BackstreetsChannel extends ApplicationChannel {
       if (entity is File) {
         final String name = path.basenameWithoutExtension(entity.path);
         exitSounds[name] = Sound(entity.path);
+      }
+    }
+    for (final FileSystemEntity entity in phrasesDirectory.listSync(recursive: true)) {
+      final String name = path.basenameWithoutExtension(entity.path);
+      if (entity is Directory) {
+        phrases[name] = <Sound>[];
+      } else {
+        phrases[path.basename(path.dirname(entity.path))].add(Sound(entity.path));
       }
     }
     final double duration = (DateTime.now().millisecondsSinceEpoch - started) / 1000;
@@ -136,20 +144,16 @@ class BackstreetsChannel extends ApplicationChannel {
           ctx.send('footstepSound', <String>[t.name, sound.url]);
         }
       });
-      logger.info('Sent footstep sounds.');
       ctx.sendAmbiences();
       ctx.send('impulses', <Map<String, dynamic>>[impulses]);
-      logger.info('Sent impulses.');
       ctx.send('echoSounds', <Map<String, String>>[echoSounds]);
-      logger.info('Sent echo sounds.');
       exitSounds.forEach((String name, Sound value) => ctx.send('exitSound', <String>[name, value.url]));
-      logger.info('Sent exit sounds.');
       final Query<GameMap> q = Query<GameMap>(ctx.db);
       for (final GameMap m in await q.fetch()) {
         ctx.send('addGameMap', <Map<String, dynamic>>[m.minimalData]);
       }
-      logger.info('Sent maps.');
       actions.forEach((String name, Action a) => ctx.send('addAction', <String>[name, a.description]));
+      ctx.send('phrases', <List<String>>[phrases.keys.toList()]);
       socket.listen((dynamic payload) async {
         if (payload is! String) {
           await socket.close(WebSocketStatus.unsupportedData, 'Binary communication is not supported.');

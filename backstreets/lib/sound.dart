@@ -60,6 +60,12 @@ final Directory exitSoundsDirectory = Directory(_path.join(soundsDirectory, 'exi
 /// All the defined exit sounds.
 final Map<String, Sound> exitSounds = <String, Sound>{};
 
+/// The directory where phrase folders are stored.
+final Directory phrasesDirectory = Directory(_path.join(soundsDirectory, 'phrases'));
+
+/// All the loaded phrase sounds.
+Map<String, List<Sound>> phrases = <String, List<Sound>>{};
+
 /// A sound object.
 ///
 /// Passed a path, it will give you a URL, with appropriate get params.

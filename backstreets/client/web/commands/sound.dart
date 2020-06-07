@@ -49,3 +49,10 @@ void exitSound(CommandContext ctx) {
   final String url = ctx.args[1] as String;
   ctx.exitSounds[name] = url;
 }
+
+void phrases(CommandContext ctx) {
+  final List<dynamic> phrases = ctx.args[0] as List<dynamic>;
+  for (final dynamic phrase in phrases) {
+    ctx.phrases.add(phrase as String);
+  }
+}

@@ -81,6 +81,9 @@ void listOfObjects(CommandContext ctx) {
       )
         ..speed = data['speed'] as int
         ..maxMoveTime = data['maxMoveTime'] as int
+        ..phrase = data['phrase'] as String
+        ..minPhraseTime = data['minPhraseTime'] as int
+        ..maxPhraseTime = data['maxPhraseTime'] as int
     );
   }
   if (ctx.onListOfObjects == null) {

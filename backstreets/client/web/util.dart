@@ -2,10 +2,11 @@
 library util;
 
 import 'dart:async';
+import 'dart:html';
 import 'dart:math';
 import 'dart:web_audio';
 
-import 'package:game_utils/game_utils.dart' show randomElement, Sound;
+import 'package:game_utils/game_utils.dart' show randomElement, Sound, FormBuilder;
 
 import 'directions.dart';
 import 'game/map_section.dart';
@@ -263,4 +264,37 @@ void echoLocate([String url]) {
       Timer(Duration(milliseconds: (distance * commandContext.options.echoLocationDistanceMultiplier).round()), () => playSoundAtCoordinates(url, coordinates: Point<double>(coordinates.x.toDouble(), coordinates.y.toDouble()), dry: true));
     }
   });
+}
+
+/// Get an integer from the user, and send it with a command.
+void getInt(
+  String title, int Function() getValue, void Function(int) setValue, String command, {
+    int id, int min = 0, int max, int step = 1, bool allowNull = true
+  }
+) {
+  final NumberInputElement e = NumberInputElement();
+  if (min != null) {
+    e.min = min.toString();
+  }
+  if (max != null) {
+    e.max = max.toString();
+  }
+  if (step != null) {
+  e.step = step.toString();
+  }
+  FormBuilder(title, (Map<String, String> data) {
+    int value = int.tryParse(data['value']);
+    if (value == 0 && allowNull) {
+      value = null;
+    }
+    setValue(value);
+    final List<int> args = <int>[];
+    if (id != null) {
+      args.add(id);
+    }
+    args.add(value);
+    commandContext.send(command, args);
+  }, showMessage, onCancel: resetFocus)
+    ..addElement('value', element: e, value: getValue().toString(), label: title)
+    ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
 }
