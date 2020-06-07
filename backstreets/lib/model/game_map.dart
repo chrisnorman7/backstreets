@@ -103,11 +103,11 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   }
 
   /// Tell all objects on this map to play a sound.
-  Future<void> broadcastSound(ManagedContext db, Sound s, Point<double> coordinates, double volume) async {
+  Future<void> broadcastSound(ManagedContext db, Sound s, Point<double> coordinates, {double volume = 1.0, bool airborn = false}) async {
     final Query<GameObject> q = Query<GameObject>(db)
       ..where((GameObject o) => o.location).identifiedBy(id);
     for (final GameObject o in await q.fetch()) {
-      o?.commandContext?.sendSound(s, coordinates, volume);
+      o?.commandContext?.sendSound(s, coordinates, volume: volume, airborn: airborn);
     }
   }
 

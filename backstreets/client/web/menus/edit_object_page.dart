@@ -68,7 +68,11 @@ Page editObjectPage(Book b, GameObject o) {
       }, titleFunc: () => 'Minimum time between phrases (${o.minPhraseTime})'),
       Line(b, () {
         getInt('Maximum time between phrases', () => o.maxPhraseTime, (int value) => o.maxPhraseTime = value, 'objectMaxPhraseTime', id: o.id, min: 1000, step: 100, allowNull: false);
-      }, titleFunc: () => 'Maximum time between phrases (${o.maxPhraseTime})')
+      }, titleFunc: () => 'Maximum time between phrases (${o.maxPhraseTime})'),
+      Line.checkboxLine(b, () => '${o.flying ? "Unset" : "Set"} Object Flying', () => o.flying, (bool value) {
+        o.flying = value;
+        commandContext.send('objectFlying', <dynamic>[o.id, o.flying]);
+      })
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');

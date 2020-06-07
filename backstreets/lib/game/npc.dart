@@ -42,8 +42,10 @@ Future<void> npcMove(ManagedContext db, int id) async {
         ..values.y = c.y
         ..where((GameObject obj) => obj.id).equalTo(id);
       o = await q.updateOne();
-      final Tile t = tiles[s.tileName];
-      o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, 1.0);
+      if (!o.flying) {
+        final Tile t = tiles[s.tileName];
+        o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates);
+      }
     } else {
       // Turn a random amount.
       q = Query<GameObject>(db)
@@ -112,7 +114,7 @@ Future<void> npcPhrase(ManagedContext db, int id) async {
     nextRun = randInt(o.maxPhraseTime, start: o.minPhraseTime);
     final List<Sound> phrase = phrases[o.phrase];
     final Sound s = randomElement(phrase);
-    o.location.broadcastSound(db, s, o.coordinates, 1.0);
+    o.location.broadcastSound(db, s, o.coordinates, airborn: o.flying);
   }
   catch (e, s) {
     logger.severe(e.toString());

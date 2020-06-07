@@ -79,6 +79,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   /// The maximum amount of time (in milliseconds) between phrases.
   @Column(defaultValue: '60000')
   int maxPhraseTime;
+
+  /// Whether or not this object is airborn.
+  @Column(defaultValue: 'false')
+  bool flying;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
@@ -113,7 +117,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   void sound(Sound s, {Point<double> coordinates, double volume}) {
     coordinates ??= Point<double>(x, y);
     volume ??= 1.0;
-    commandContext?.sendSound(s, coordinates, volume);
+    commandContext?.sendSound(s, coordinates, volume: volume);
   }
 
   /// Have this object perform a social.
@@ -202,6 +206,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'phrase': phrase,
       'minPhraseTime': minPhraseTime,
       'maxPhraseTime': maxPhraseTime,
+      'flying': flying,
       'builder': builder,
       'admin': admin,
       'accountId': account?.id,

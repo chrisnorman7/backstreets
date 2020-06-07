@@ -425,3 +425,16 @@ Future<void> objectMaxPhraseTime(CommandContext ctx) async {
   }
   ctx.message('Max phrase time updated.');
 }
+
+Future<void> objectFlying(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final bool flying = ctx.args[1] as bool;
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.flying = flying
+    ..where((GameObject o) => o.id).equalTo(id);
+  final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  ctx.message('Object is ${o.flying ? "now" : "no longer"} flying.');
+}
