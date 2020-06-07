@@ -73,3 +73,10 @@ Future<void> npcMoveAll(ManagedContext db) async {
   }
   logger.info('Objects moved: ${timers.length}.');
 }
+
+/// Start an NPC moving if it's not already moving.Number
+Future<void> npcMaybeMove(ManagedContext db, int id) async {
+  if (!timers.containsKey(id)) {
+    await npcMove(db, id);
+  }
+}

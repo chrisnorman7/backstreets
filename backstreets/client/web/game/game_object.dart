@@ -50,6 +50,12 @@ class GameObject {
   /// The account this object is connected to.
   Account account;
 
+  /// The minimum time between object moves.
+  int speed;
+
+  /// The maximum time between object moves.
+  int maxMoveTime;
+
   /// A list of [Player] objects who are also connected to this account.
   List<GameObject> get relatedObjects => commandContext.objects.where((GameObject o) => o.account?.id == account?.id && o.id != id).toList();
 
@@ -58,4 +64,8 @@ class GameObject {
 
   /// The name of this map this object is on.
   String locationName;
+
+  /// Return a name and an object number.
+  @override
+  String toString() => '$name (#$id)';
 }

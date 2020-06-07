@@ -345,3 +345,39 @@ Future<void> addObject(CommandContext ctx) async {
   ctx.message('Created object ${o.name}.');
   npcMove(ctx.db, o.id);
 }
+
+Future<void> objectSpeed(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final int speed = ctx.args[1] as int;
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.speed = speed
+    ..where((GameObject o) => o.account).isNull()
+    ..where((GameObject o) => o.id).equalTo(id);
+  final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  await npcMaybeMove(ctx.db, o.id);
+  ctx.message('Speed updated.');
+}
+
+Future<void> objectMaxMoveTime(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final int maxMoveTime = ctx.args[1] as int;
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.maxMoveTime = maxMoveTime
+    ..where((GameObject o) => o.account).isNull()
+    ..where((GameObject o) => o.id).equalTo(id);
+  final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  if (o.maxMoveTime == null) {
+    if (timers.containsKey(o.id)) {
+      timers[o.id].cancel();
+    }
+  } else {
+    await npcMaybeMove(ctx.db, o.id);
+}
+  ctx.message('Max move time updated.');
+}

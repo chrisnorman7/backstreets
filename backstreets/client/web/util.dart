@@ -184,6 +184,12 @@ void clearBook() {
   keyboardArea.focus();
 }
 
+/// Clear the book, and show a cancel message.
+void doCancel() {
+  clearBook();
+  showMessage('Cancelled.');
+}
+
 void resetFocus() {
   keyboardArea.focus();
   if (commandContext != null && commandContext.book != null) {

@@ -26,7 +26,6 @@ import 'staff.dart';
 Map<String, Command> commands = <String, Command>{
   // Admin commands:
   'adminPlayerList': Command(adminPlayerList, authenticationType: AuthenticationTypes.admin),
-  'renameObject': Command(renameObject, authenticationType: AuthenticationTypes.admin),
   'setObjectPermission': Command(setObjectPermission, authenticationType: AuthenticationTypes.admin),
   'addMap': Command(addMap, authenticationType: AuthenticationTypes.admin),
   'deleteGameMap': Command(deleteGameMap, authenticationType: AuthenticationTypes.admin),
@@ -51,6 +50,8 @@ Map<String, Command> commands = <String, Command>{
   'deleteExit': Command(deleteExit, authenticationType: AuthenticationTypes.builder),
   'getObjects': Command(getObjects, authenticationType: AuthenticationTypes.builder),
   'addObject': Command(addObject, authenticationType: AuthenticationTypes.builder),
+  'objectSpeed': Command(objectSpeed, authenticationType: AuthenticationTypes.builder),
+  'objectMaxMoveTime': Command(objectMaxMoveTime, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),
@@ -74,4 +75,5 @@ Map<String, Command> commands = <String, Command>{
 
   // Staff only commands:
   'teleport': Command(teleport, authenticationType: AuthenticationTypes.staff),
+  'renameObject': Command(renameObject, authenticationType: AuthenticationTypes.staff),
 };

@@ -6,7 +6,6 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../game/exit.dart';
-import '../game/game_object.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
@@ -16,6 +15,7 @@ import '../main.dart';
 import '../menus/edit_convolver_page.dart';
 
 import '../menus/edit_exit_page.dart';
+import '../menus/edit_object_page.dart';
 import '../menus/map_section_page.dart';
 
 import '../menus/select_exit_page.dart';
@@ -133,20 +133,7 @@ void builderMenu() {
         );
       }, titleString: 'Map Menu'),
       Line(commandContext.book, () {
-        clearBook();
-        commandContext.getObjectList(() {
-          commandContext.book = Book(bookOptions);
-          final List<Line> lines = <Line>[
-            Line(commandContext.book, () {
-              clearBook();
-              commandContext.send('addObject', null);
-            }, titleString: 'Add Object')
-          ];
-          for (final GameObject obj in commandContext.objects) {
-            lines.add(Line(commandContext.book, () => null, titleString: obj.toString()));
-          }
-          commandContext.book.push(Page(lines: lines, titleString: 'Objects Menu'));
-        }, 'getObjects');
+        commandContext.getObjectList(() => editObjects(allowAddObject: true), 'getObjects');
       }, titleString: 'Objects')
     ], titleString: 'Building', onCancel: () {
       showMessage('Done.');

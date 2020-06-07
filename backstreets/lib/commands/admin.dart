@@ -16,17 +16,6 @@ Future<void> adminPlayerList(CommandContext ctx) async {
   ctx.sendObjects(await q.fetch());
 }
 
-Future<void> renameObject(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final String name = ctx.args[1] as String;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.name = name
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  o.commandContext?.send('characterName', <String>[o.name]);
-  ctx.message('Object rename.');
-}
-
 Future<void> setObjectPermission(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final String permission = ctx.args[1] as String;

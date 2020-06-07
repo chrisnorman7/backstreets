@@ -61,10 +61,13 @@ void listOfObjects(CommandContext ctx) {
   ctx.objects = <GameObject>[];
   final Map<int, Account> accounts = <int, Account>{};
   for (final dynamic data in ctx.args[0] as List<dynamic>) {
-    final Permissions permissions = Permissions(builder: data['builder'] as bool, admin: data['admin'] as bool);
+    final bool builder = data['builder'] as bool;
+    final bool admin = data['admin'] as bool;
     final int accountId = data['accountId'] as int;
+    Permissions permissions;
     Account account;
     if (accountId != null) {
+      permissions = Permissions(builder: builder, admin: admin);
       if (!accounts.containsKey(accountId)) {
         accounts[accountId] = Account(accountId, data['username'] as String);
       }
@@ -76,6 +79,8 @@ void listOfObjects(CommandContext ctx) {
         data['id'] as int, data['name'] as String, coordinates,
         data['locationId'] as int, data['locationName'] as String, permissions, account
       )
+        ..speed = data['speed'] as int
+        ..maxMoveTime = data['maxMoveTime'] as int
     );
   }
   if (ctx.onListOfObjects == null) {

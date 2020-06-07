@@ -3,7 +3,6 @@ library admin;
 
 import 'package:game_utils/game_utils.dart';
 
-import '../game/game_object.dart';
 import '../game/map_reference.dart';
 
 import '../main.dart';
@@ -23,16 +22,7 @@ void adminMenu() {
         }, titleString: 'Add Map'),
         Line(commandContext.book, () {
           clearBook();
-          commandContext.getObjectList(() {
-            final List<Line> lines = <Line>[];
-            for (final GameObject o in commandContext.objects) {
-              lines.add(
-                Line(commandContext.book, () => commandContext.book.push(editObjectPage(commandContext.book, o)), titleString: o.name)
-              );
-            }
-            commandContext.book = Book(bookOptions)
-              ..push(Page(lines: lines, titleFunc: () => 'Players (${commandContext.objects.length})', onCancel: clearBook));
-          }, 'adminPlayerList');
+          commandContext.getObjectList(editObjects, 'adminPlayerList');
         }, titleString: 'Edit Player'),
         Line(commandContext.book, () {
           commandContext.book.push(
