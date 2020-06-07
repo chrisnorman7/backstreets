@@ -3,13 +3,10 @@ library admin;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/map_reference.dart';
-
-import '../main.dart';
-
 import '../menus/edit_object_page.dart';
 import '../menus/map_reference_page.dart';
-
 import '../util.dart';
 
 void adminMenu() {

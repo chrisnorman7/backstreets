@@ -4,6 +4,7 @@ library login;
 import 'package:game_utils/game_utils.dart';
 
 import '../authentication.dart';
+import '../constants.dart';
 import '../game/map_reference.dart';
 import '../main.dart';
 import '../menus/map_reference_page.dart';
@@ -78,9 +79,15 @@ void characterName(CommandContext ctx) {
 /// Says whether or not this character is a builder.
 void builder(CommandContext ctx) {
   ctx.permissions.builder= ctx.args[0] as bool;
+  if (ctx.permissions.builder) {
+    builderControls.hidden = false;
+  }
 }
 
 /// Says whether or not this character is an admin.
 void admin(CommandContext ctx) {
   ctx.permissions.admin = ctx.args[0] as bool;
+  if (ctx.permissions.admin) {
+    adminControls.hidden = false;
+  }
 }

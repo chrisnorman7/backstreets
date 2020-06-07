@@ -3,6 +3,7 @@ library edit_exit_page;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/exit.dart';
 import '../game/map_reference.dart';
 import '../main.dart';

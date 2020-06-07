@@ -1,6 +1,6 @@
 /// Provides menu-related hotkeys.
 library menu;
 
-import '../main.dart';
+import '../constants.dart';
 
 void activateSpace() => commandContext.book.activate();

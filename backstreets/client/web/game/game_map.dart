@@ -3,7 +3,7 @@ library game_map;
 
 import 'dart:math';
 
-import '../main.dart';
+import '../constants.dart';
 import 'ambience.dart';
 import 'convolver.dart';
 import 'exit.dart';

@@ -5,12 +5,10 @@ import 'dart:html';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/map_reference.dart';
-
 import '../main.dart';
-
 import '../menus/map_reference_page.dart';
-
 import '../util.dart';
 
 void goto() {

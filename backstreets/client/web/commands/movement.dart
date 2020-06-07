@@ -5,13 +5,13 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/ambience.dart';
 import '../game/exit.dart';
 import '../game/game_map.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
-import '../main.dart';
 import '../util.dart';
 import 'command_context.dart';
 

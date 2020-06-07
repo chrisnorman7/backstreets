@@ -8,6 +8,7 @@ import 'dart:web_audio';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../directory.dart';
 import '../game/exit.dart';
 import '../game/game_map.dart';
@@ -34,7 +35,31 @@ class CommandContext {
   List<dynamic> args;
 
   /// A book for menus.
-  Book book;
+  Book _book;
+
+  /// Get [_book].
+  Book get book {
+    return _book;
+  }
+
+  /// Set [_book].
+  set book(Book b) {
+    _book = b;
+    bookControls.hidden = b == null;
+    standardControls.hidden = !bookControls.hidden;
+    if (b != null) {
+      for (final Element e in <Element>[builderControls, adminControls]) {
+        e.hidden = true;
+      }
+    } else {
+      if (permissions.builder) {
+        builderControls.hidden = false;
+      }
+      if (permissions.admin) {
+        adminControls.hidden = false;
+      }
+    }
+  }
 
   /// The current position in the messages list.
   int messageIndex;

@@ -3,6 +3,7 @@ library socials;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../main.dart';
 import '../util.dart';
 

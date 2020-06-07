@@ -3,9 +3,8 @@ library map_reference_menu;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/map_reference.dart';
-
-import '../main.dart';
 
 Page mapReferencePage(String title, void Function(MapReference) onOk, {bool Function(MapReference) shouldInclude, void Function() onCancel}) {
   final List<Line> lines = <Line>[];

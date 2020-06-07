@@ -2,7 +2,7 @@
 library exit;
 
 import '../commands/command_context.dart';
-import '../main.dart';
+import '../constants.dart';
 import 'game_object.dart';
 
 class Exit {

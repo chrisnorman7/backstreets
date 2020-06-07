@@ -1,7 +1,7 @@
 /// Provides various utility functions to be passed as the runWhen argument when creating [Hotkey] instances.
 library run_condigiont;
 
-import 'main.dart';
+import 'constants.dart';
 
 /// Returns true if the player is connected to a builder character.
 bool builderOnly() => commandContext != null && commandContext.book == null && commandContext.permissions.builder == true;

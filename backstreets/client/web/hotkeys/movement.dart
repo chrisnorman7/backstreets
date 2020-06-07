@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/exit.dart';
 import '../game/map_section.dart';
 

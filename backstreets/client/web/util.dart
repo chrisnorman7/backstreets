@@ -8,6 +8,7 @@ import 'dart:web_audio';
 
 import 'package:game_utils/game_utils.dart' show randomElement, Sound, FormBuilder;
 
+import 'constants.dart';
 import 'directions.dart';
 import 'game/map_section.dart';
 import 'game/wall.dart';

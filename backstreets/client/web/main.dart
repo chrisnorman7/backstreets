@@ -10,7 +10,7 @@ import 'package:game_utils/game_utils.dart';
 import 'authentication.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
-import 'commands/login.dart';
+import 'constants.dart';
 import 'hotkeys/admin.dart';
 import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
@@ -23,27 +23,6 @@ import 'menus/main_menu.dart';
 import 'run_conditions.dart';
 import 'util.dart';
 
-/// Character data, as sent to the [account] command.
-List<dynamic> characterList;
-
-/// Where to put new [FormBuilder]s, when calling [FormBuilder.render].
-final Element formBuilderDiv = querySelector('#formBuilderDiv');
-
-/// The context to call commands with.
-CommandContext commandContext;
-
-/// The current stage in the authentication process.
-AuthenticationStages authenticationStage;
-
-/// The hotkey for forward movement.
-final Hotkey walkForwardsHotkey = Hotkey(keyboard, 'w', walkForwards, interval: 50, runWhen: validMap, titleString: 'Move forward');
-
-/// The hotkey for moving backwards;
-final Hotkey walkBackwardsHotkey = Hotkey(keyboard, 's', walkBackwards, shift: true, interval: 50, runWhen: validMap, titleString: 'Move backwards');
-
-/// The options for any books that get created.
-BookOptions bookOptions;
-
 /// Set the document title. [state] will be shown in square brackets.
 void setTitle({String state}) {
   document.title = 'Backstreets';
@@ -51,12 +30,6 @@ void setTitle({String state}) {
     document.title += ' [$state]';
   }
 }
-
-/// The message aread.
-final Element messageArea = querySelector('#message');
-
-/// The div that holds all past messages.
-final Element messagesDiv = querySelector('#messages');
 
 /// Remember whether or not the last message was important.
 bool rememberLastMessage;
@@ -72,29 +45,19 @@ void showMessage(String text, {bool important = true}) {
   messageArea.innerText = text;
 }
 
-/// The keyboard area. This is a paragraph element that can be focussed.
-final Element keyboardArea = querySelector('#keyboardArea');
-
-/// The interface to [Hotkey] processing.
-final Keyboard keyboard = Keyboard((dynamic e, StackTrace s) {
-  showMessage('$e\n$s');
-  throw e;
-}, unhandledKey: (KeyState ks) {
-  if (commandContext?.helpMode == true) {
-    commandContext?.message(ks.toString());
-  }
-  if (commandContext.book != null && !ks.shift && !ks.control && !ks.alt) {
-    commandContext.book.handleSearch(ks.key);
-  }
-});
-
-/// What each of the mouse keys do.
-final Map<int, Hotkey> mouseButtons = <int, Hotkey>{
-  2: walkForwardsHotkey,
-};
-
 /// Main entry point.
 void main() {
+  keyboard = Keyboard((dynamic e, StackTrace s) {
+    showMessage('$e\n$s');
+    throw e;
+  }, unhandledKey: (KeyState ks) {
+    if (commandContext?.helpMode == true) {
+      commandContext?.message(ks.toString());
+    }
+    if (commandContext.book != null && !ks.shift && !ks.control && !ks.alt) {
+      commandContext.book.handleSearch(ks.key);
+    }
+  });
   setTitle();
   keyboard.addHotkeys(
     <Hotkey>[
@@ -174,6 +137,9 @@ void main() {
   final Element mainDiv = querySelector('#main');
   startDiv.hidden = false;
   startButton.onClick.listen((Event event) {
+    for (final Element e in querySelectorAll('.controls')) {
+      e.hidden = true;
+    }
     final AudioContext audio = AudioContext();
     final SoundPool sounds = SoundPool(audio, showMessage: showMessage);
     sounds.audioContext.listener

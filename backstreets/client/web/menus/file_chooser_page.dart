@@ -4,8 +4,8 @@ library file_chooser_page;
 import 'package:game_utils/game_utils.dart';
 import 'package:path/path.dart' as path;
 
+import '../constants.dart';
 import '../directory.dart';
-import '../main.dart';
 
 Page fileChooserPage(
   Book b, String Function() titleFunc, Directory directory,

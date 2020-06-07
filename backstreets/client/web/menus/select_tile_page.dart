@@ -3,8 +3,7 @@ library select_tile_page;
 
 import 'package:game_utils/game_utils.dart';
 
-import '../main.dart';
-
+import '../constants.dart';
 import '../util.dart';
 
 /// Create a page for selecting a tile name.

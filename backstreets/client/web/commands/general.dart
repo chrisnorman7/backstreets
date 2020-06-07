@@ -6,13 +6,9 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../authentication.dart';
-
+import '../constants.dart';
 import '../game/game_object.dart';
-
-import '../main.dart';
-
 import '../menus/main_menu.dart';
-
 import 'command_context.dart';
 import 'login.dart';
 

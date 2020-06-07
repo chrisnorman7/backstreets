@@ -3,6 +3,7 @@ library edit_object_page;
 
 import 'package:game_utils/game_utils.dart';
 
+import '../constants.dart';
 import '../game/game_object.dart';
 
 import '../main.dart';
