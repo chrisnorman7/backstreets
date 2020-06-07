@@ -3,7 +3,6 @@ library tile;
 
 import 'dart:io';
 
-import 'package:aqueduct/aqueduct.dart';
 import 'package:path/path.dart' as path;
 
 import '../channel.dart';
@@ -25,13 +24,11 @@ class Tile {
   ///
   /// final Tile t = Tile('wood');
   Tile(this.name) {
-    logger = Logger(name);
     soundsDirectory = path.join(tileSoundsDirectory.path, name);
     final Directory footstepSoundsDirectory = Directory(path.join(soundsDirectory, 'footsteps'));
     for (final FileSystemEntity entity in footstepSoundsDirectory.listSync(recursive: true)) {
       if (entity is File) {
         footstepSounds.add(sound.Sound(entity.path));
-        logger.info('Added footstep sound ${footstepSounds.last.url} to $name tile.');
       }
     }
   }
@@ -48,9 +45,6 @@ class Tile {
   ///
   /// This will be set automatically by [BackstreetsChannel.prepare].
   List<sound.Sound> footstepSounds = <sound.Sound>[];
-
-  /// The logger to use when adding sounds.
-  Logger logger;
 }
 
 /// All instantiated tiles.

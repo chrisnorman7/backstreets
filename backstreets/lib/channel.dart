@@ -47,7 +47,6 @@ class BackstreetsChannel extends ApplicationChannel {
   @override
   Future<void> prepare() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
-    bool mapBuilt = false;
     final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
     final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final PostgreSQLPersistentStore psc = PostgreSQLPersistentStore.fromConnectionInfo(
@@ -59,53 +58,37 @@ class BackstreetsChannel extends ApplicationChannel {
     );
     databaseContext = ManagedContext(dataModel, psc);
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
-    logger.info('Commands: ${commands.length}.');
-    await npcMoveAll(databaseContext);
-    logger.info('Gathering tile sounds.');
+    final Query<GameMap> q = Query<GameMap>(databaseContext);
+    if (await q.reduce.count() == 0) {
+      q.values.name = 'Map 1';
+      await q.insert();
+      logger.info('Created initial map.');
+    } else {
+      await npcMoveAll(databaseContext);
+    }
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
       if (entity is Directory) {
         final String name = path.basename(entity.path);
         final Tile tile = Tile(name);
         tiles[name] = tile;
-        logger.info('Added tile $name.');
-        if (tiles.length == 1 && !mapBuilt) {
-          mapBuilt = true;
-          // Let's see if we need to build a map.
-          final Query<GameMap> q = Query<GameMap>(databaseContext);
-          final int mapCount = await q.reduce.count();
-          if (mapCount < 1) {
-            logger.info('Creating default map.');
-            GameMap m = GameMap()
-              ..name = 'Map 1';
-            m = await databaseContext.insertObject(m);
-            logger.info('Map created.');
-          } else {
-            logger.info('Maps: $mapCount.');
-          }
-        }
       }
     }
     socials.addSuffix(
       <String>['name', 'n'],
       (GameObject o) => SuffixResult('you', o.name)
     );
-    logger.info('Gathering social sounds.');
     for (final FileSystemEntity entity in socialSoundsDirectory.listSync()) {
       if (entity is File) {
         final String socialName = path.basenameWithoutExtension(entity.path);
         socialSounds[socialName] = Sound(entity.path);
-        logger.info('Added sound for social $socialName.');
       }
     }
-    logger.info('Gathering ambiences.');
     for (final FileSystemEntity entity in ambienceDirectory.listSync()) {
       if (entity is File) {
         final String ambienceName = path.basenameWithoutExtension(entity.path);
         ambiences[ambienceName] = Sound(entity.path);
-        logger.info('Added ambience $ambienceName.');
       }
     }
-    logger.info('Gathering impulse files.');
     impulses = loadImpulses();
     for (final FileSystemEntity entity in echoSoundsDirectory.listSync()) {
       final String echoSound = path.basenameWithoutExtension(entity.path);
