@@ -21,4 +21,8 @@ bool validSounds() => commandContext != null && commandContext.sounds != null &&
 /// Only run if we have a valid book.
 bool validBook() => commandContext != null && commandContext.book != null;
 
+/// Only run if the player's options have been sent.
 bool validOptions() => commandContext?.options != null;
+
+/// Only run if there is a valid CommandContext.
+bool validCommandContext() => commandContext != null;

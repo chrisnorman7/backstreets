@@ -108,11 +108,11 @@ void main() {
       Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: builderOnly, titleString: 'Wall menu'),
 
       // General hotkeys:
-      Hotkey(keyboard, '.', previousMessage, titleString: 'Show previous message'),
-      Hotkey(keyboard, '>', firstMessage, shift: true, titleString: 'Show the first message'),
-      Hotkey(keyboard, ',', nextMessage, titleString: 'Show next message'),
-      Hotkey(keyboard, '<', lastMessage, shift: true, titleString: 'Show the last message'),
-      Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list', runWhen: validMap),
+      Hotkey(keyboard, '.', previousMessage, runWhen: validCommandContext, titleString: 'Show previous message'),
+      Hotkey(keyboard, '>', firstMessage, shift: true, runWhen: validCommandContext, titleString: 'Show the first message'),
+      Hotkey(keyboard, ',', nextMessage, runWhen: validCommandContext, titleString: 'Show next message'),
+      Hotkey(keyboard, '<', lastMessage, shift: true, runWhen: validCommandContext, titleString: 'Show the last message'),
+      Hotkey(keyboard, '/', messages, titleString: 'Show all messages in a list', runWhen: validCommandContext),
       Hotkey(keyboard, '?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
       Hotkey(keyboard, 'arrowleft', leftArrow, titleString: 'Left arrow'),
       Hotkey(keyboard, 'arrowright', rightArrow, titleString: 'Right arrow'),
