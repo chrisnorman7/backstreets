@@ -5,6 +5,6 @@ Done:
   Add map convolvers, to act as default when sections don't have them.
   Make shift+s turn you around.
   Sort out sound for "You can't go that way".
-  Look into the possibility of using Directory.watch for file discovery in realtime.
+  Look into the possibility of using Directory.watch for file discovery in realtime (decided not to use).
   Implement permissions in preparation for the building system.
   Separate builders and admins.
