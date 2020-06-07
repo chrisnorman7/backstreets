@@ -61,14 +61,19 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   ///
   /// Valid coordinates means either there is a [MapSection] encompassing the coordinates, or there is a [MapTile] there.
   Future<bool> validCoordinates(ManagedContext db, Point<int> coordinates) async {
-    final Query<MapSection> q = Query<MapSection>(db)
+    final Query<MapSection> mapSectionQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.startX).lessThanEqualTo(coordinates.x)
       ..where((MapSection s) => s.startY).lessThanEqualTo(coordinates.y)
       ..where((MapSection s) => s.endX).greaterThanEqualTo(coordinates.x)
       ..where((MapSection s) => s.endY).greaterThanEqualTo(coordinates.y)
       ..where((MapSection s) => s.location).identifiedBy(id);
-    if (await q.reduce.count() > 0) {
-      return true;
+    if (await mapSectionQuery.reduce.count() > 0) {
+      final Query<MapWall> wallsQuery = Query<MapWall>(db)
+        ..where((MapWall w) => w.x).equalTo(coordinates.x)
+        ..where((MapWall w) => w.y).equalTo(coordinates.y);
+      if (await wallsQuery.reduce.count() == 0) {
+        return true;
+      }
     }
     return false;
   }
