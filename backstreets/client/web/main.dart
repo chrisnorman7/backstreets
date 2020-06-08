@@ -120,7 +120,7 @@ void main() {
 
       // Staff only hotkeys:
       Hotkey(keyboard, 'g', goto, runWhen: staffOnly, titleString: 'Jump to specific coordinates on the map'),
-      Hotkey(keyboard, 't', teleport, runWhen: staffOnly, titleString: 'Teleport to another map'),
+      teleportHotkey,
     ]
   );
   keyboardArea.onKeyDown.listen((KeyboardEvent e) {
@@ -135,7 +135,7 @@ void main() {
   final Element mainDiv = querySelector('#main');
   startDiv.hidden = false;
   startButton.onClick.listen((Event event) {
-    for (final Element e in <Element>[adminControls, bookControls, builderControls, standardControls]) {
+    for (final Element e in <Element>[adminControls, bookControls, builderControls, staffControls, standardControls]) {
       e.hidden = true;
     }
     final AudioContext audio = AudioContext();

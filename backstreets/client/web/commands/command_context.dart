@@ -47,18 +47,21 @@ class CommandContext {
     _book = b;
     bookControls.hidden = b == null;
     standardControls.hidden = !bookControls.hidden;
-    if (b != null) {
-      for (final Element e in <Element>[builderControls, adminControls]) {
+    <Element, bool>{
+      staffControls: permissions.staff,
+      adminControls: permissions.admin,
+      builderControls: permissions.builder,
+    }.forEach((Element e, bool flag) {
+      if (standardControls.hidden) {
         e.hidden = true;
+      } else {
+        if (flag == true) {
+          e.hidden = false;
+        } else {
+          e.hidden = true;
+        }
       }
-    } else {
-      if (permissions.builder) {
-        builderControls.hidden = false;
-      }
-      if (permissions.admin) {
-        adminControls.hidden = false;
-      }
-    }
+    });
   }
 
   /// The current position in the messages list.

@@ -79,15 +79,13 @@ void characterName(CommandContext ctx) {
 /// Says whether or not this character is a builder.
 void builder(CommandContext ctx) {
   ctx.permissions.builder= ctx.args[0] as bool;
-  if (ctx.permissions.builder) {
-    builderControls.hidden = false;
-  }
+  builderControls.hidden = !ctx.permissions.builder;
+  staffControls.hidden = !ctx.permissions.staff;
 }
 
 /// Says whether or not this character is an admin.
 void admin(CommandContext ctx) {
   ctx.permissions.admin = ctx.args[0] as bool;
-  if (ctx.permissions.admin) {
-    adminControls.hidden = false;
-  }
+  adminControls.hidden = !ctx.permissions.admin;
+  staffControls.hidden = !ctx.permissions.staff;
 }

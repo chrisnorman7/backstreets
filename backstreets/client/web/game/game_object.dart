@@ -26,6 +26,11 @@ class Permissions {
 
   /// Whether or not this player is an admin.
   bool admin;
+
+  /// Whether or not this player is a staff member.
+  bool get staff {
+    return admin == true || builder == true;
+  }
 }
 
 /// A player object.

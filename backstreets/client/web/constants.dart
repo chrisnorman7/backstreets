@@ -12,6 +12,7 @@ import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
 import 'hotkeys/movement.dart';
 import 'hotkeys/socials.dart';
+import 'hotkeys/staff.dart';
 import 'run_conditions.dart';
 
 /// The first part of any sound URL.
@@ -64,6 +65,9 @@ final Element standardControls = querySelector('#standard');
 /// Builder controls.
 final Element builderControls = querySelector('#builder');
 
+/// Staff controls.
+final Element staffControls = querySelector('#staff');
+
 ///Admin controls.
 final Element adminControls = querySelector('#admin');
 
@@ -79,6 +83,7 @@ final Hotkey sayHotkey = Hotkey(keyboard, "'", say, runWhen: validMap, titleStri
 final Hotkey builderMenuHotkey = Hotkey(keyboard, 'b', builderMenu, runWhen: builderOnly, titleString: 'Builder menu');
 final Hotkey wallMenuHotkey = Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: builderOnly, titleString: 'Wall menu');
 final Hotkey adminMenuHotkey = Hotkey(keyboard, 'backspace', adminMenu, runWhen: adminOnly, titleString: 'Admin Menu');
+final Hotkey teleportHotkey = Hotkey(keyboard, 't', teleport, runWhen: staffOnly, titleString: 'Teleport to another map');
 
 /// All the hotkeys which can be triggered by buttons in the DOM.
 final Map<String, Hotkey> buttonHotkeys = <String, Hotkey>{
@@ -97,4 +102,5 @@ final Map<String, Hotkey> buttonHotkeys = <String, Hotkey>{
   'builderMenu': builderMenuHotkey,
   'wallMenu': wallMenuHotkey,
   'adminMenu': adminMenuHotkey,
+  'teleport': teleportHotkey,
 };
