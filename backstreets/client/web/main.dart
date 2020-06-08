@@ -135,7 +135,7 @@ void main() {
   final Element mainDiv = querySelector('#main');
   startDiv.hidden = false;
   startButton.onClick.listen((Event event) {
-    for (final Element e in querySelectorAll('.controls')) {
+    for (final Element e in <Element>[adminControls, bookControls, builderControls, standardControls]) {
       e.hidden = true;
     }
     final AudioContext audio = AudioContext();

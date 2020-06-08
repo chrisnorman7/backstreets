@@ -26,21 +26,23 @@
   <p id="message" aria-live="polite"></p>
   <div id="main" hidden>
     <p tabindex="0" id="keyboardArea">Keyboard</p>
-    <div class="controls" id="book">
-      <p><button id="cancel">Cancel</button> <button id="up">Up</button> <button id="down">Down</button>
-        <button id="activate">Activate</buttonid>
+    <div id="book">
+      <h2>Menu</h2>
+      <p>You are currently in a menu. Use the up and down buttons to move through the menu, and the activate button to activate an item.</p>
+      <p><button class="controls" id="cancel">Cancel</button> <button class="controls" id="up">Up</button> <button class="controls" id="down">Down</button>
+        <button class="controls" id="activate">Activate</buttonid>
       </p>
     </div>
-    <div class="controls" id="standard">
-      <p><button id="a">Left</button> <button id="w">Forward</button> <button id="s">Backwards</button> <button
+    <div id="standard">
+      <p><button class="controls" id="a">Left</button> <button class="controls" id="w">Forward</button> <button class="controls" id="s">Backwards</button> <button class="controls"
           id="d">Right</button></p>
-          <p><button id="coordinates">Show Coordinates</button> <button id="enter">Enter</button> <button id="escape">ESC</button> <button id="say">Say</button></p>
+          <p><button class="controls" id="coordinates">Show Coordinates</button> <button class="controls" id="enter">Enter</button> <button class="controls" id="escape">ESC</button> <button class="controls" id="say">Say</button></p>
     </div>
-    <div class="controls" id="builder">
-      <p><button id="builderMenu">Builder Menu</button> <button id="wallMenu">Wall Menu</button></p>
+    <div id="builder">
+      <p><button class="controls" id="builderMenu">Builder Menu</button> <button class="controls" id="wallMenu">Wall Menu</button></p>
     </div>
-    <div class="controls" id="admin">
-      <p><button id="adminMenu">Administration Menu</button></p>
+    <div id="admin">
+      <p><button class="controls" id="adminMenu">Administration Menu</button></p>
     </div>
   </div>
 </body>
