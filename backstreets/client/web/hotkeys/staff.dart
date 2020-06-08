@@ -12,21 +12,21 @@ import '../menus/map_reference_page.dart';
 import '../util.dart';
 
 void goto() {
-  FormBuilder('Goto', (Map<String, String> data) async {
+  FormBuilder('Goto', (Map<String, String> data) {
     resetFocus();
     final double x = double.tryParse(data['x']);
     final double y = double.tryParse(data['y']);
     moveCharacter(Point<double>(x, y), mode: MoveModes.staff);
-  }, showMessage, onCancel: resetFocus)
+  }, showMessage, onCancel: doCancel)
     ..addElement('x', element: NumberInputElement(), value:commandContext.coordinates.x.round().toString())
     ..addElement('y', element: NumberInputElement(), value: commandContext.coordinates.y.round().toString())
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
 }
 
 void teleport() {
-  commandContext.book = Book(bookOptions);
-  commandContext.book.push(mapReferencePage('Teleport', (MapReference m) {
-    clearBook();
-    commandContext.send('teleport', <int>[m.id, m.popX, m.popY]);
-  }, onCancel: clearBook));
+  commandContext.book = Book(bookOptions)
+    ..push(mapReferencePage('Teleport', (MapReference m) {
+      clearBook();
+      commandContext.send('teleport', <int>[m.id, m.popX, m.popY]);
+    }, onCancel: doCancel));
 }
