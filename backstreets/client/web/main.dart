@@ -216,7 +216,9 @@ void main() {
   });
   document.onContextMenu.listen((MouseEvent e) => e.preventDefault());
   for (final Element e in querySelectorAll('.controls')) {
-    e.onClick.listen((MouseEvent event) {
+    e.onClick.listen((MouseEvent e) {
+      e.stopPropagation();
+      e.preventDefault();
       final String currentId = document.activeElement.id.toString();
       final Hotkey hk = buttonHotkeys[currentId];
       if (hk == null) {
