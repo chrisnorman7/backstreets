@@ -11,12 +11,10 @@ import 'authentication.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
 import 'constants.dart';
-import 'hotkeys/admin.dart';
 import 'hotkeys/building.dart';
 import 'hotkeys/general.dart';
 import 'hotkeys/menu.dart';
 import 'hotkeys/movement.dart';
-import 'hotkeys/socials.dart';
 import 'hotkeys/sound.dart';
 import 'hotkeys/staff.dart';
 import 'menus/main_menu.dart';
@@ -62,13 +60,13 @@ void main() {
   keyboard.addHotkeys(
     <Hotkey>[
       // Admin hotkeys:
-      Hotkey(keyboard, 'backspace', adminMenu, runWhen: adminOnly, titleString: 'Admin Menu'),
+      adminMenuHotkey,
 
       // Building hotkeys:
-      Hotkey(keyboard, 'b', builderMenu, runWhen: builderOnly, titleString: 'Builder menu'),
+      builderMenuHotkey,
       Hotkey(keyboard, '[', buildWall, runWhen: builderOnly, titleString: 'Build a wall at your current coordinates'),
       Hotkey(keyboard, ']', buildBarricade, runWhen: builderOnly, titleString: 'Build a barricade at your current coordinates'),
-      Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: builderOnly, titleString: 'Wall menu'),
+      wallMenuHotkey,
 
       // General hotkeys:
       Hotkey(keyboard, '.', previousMessage, runWhen: validCommandContext, titleString: 'Show previous message'),
@@ -79,32 +77,32 @@ void main() {
       Hotkey(keyboard, '?', hotkeys, shift: true, runWhen: validMap, titleString: 'Show a menu containing all hotkeys'),
       Hotkey(keyboard, 'arrowleft', leftArrow, titleString: 'Left arrow'),
       Hotkey(keyboard, 'arrowright', rightArrow, titleString: 'Right arrow'),
-      Hotkey(keyboard, 'arrowup', upArrow, titleString: 'Up arrow'),
-      Hotkey(keyboard, 'arrowdown', downArrow, titleString: 'down arrow'),
-      Hotkey(keyboard, 'escape', escapeKey, titleString: 'Various escape / reset actions'),
-      Hotkey(keyboard, 'enter', enterKey, titleString: 'Performs a multitude of actions'),
+      upArrowHotkey,
+      downArrowHotkey,
+      escapeHotkey,
+      enterHotkey,
       Hotkey(keyboard, 'z', showActions, titleString: 'Shows the possible actions for the current section of the map', runWhen: validMap),
 
       // Menu hotkeys:
       Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),
 
-      /// Movement hotkeys:
-      Hotkey(keyboard, 'c', coordinates,runWhen: validMap, titleString: 'Show your coordinates'),
+      // Movement hotkeys:
+      coordinatesHotkey,
       Hotkey(keyboard, 'v', mapName, runWhen: validMap, titleString: 'View your current location'),
       Hotkey(keyboard, 'f', facing, runWhen: validMap, titleString: 'Show which way you are facing'),
       walkForwardsHotkey,
       walkBackwardsHotkey,
       Hotkey(keyboard, 'a', left, runWhen: validMap, titleString: 'Turn left a bit'),
-      Hotkey(keyboard, 'a', leftSnap, shift: true, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction'),
+      leftSnapHotkey,
       Hotkey(keyboard, 'd', right, runWhen: validMap, titleString: 'Turn right a bit'),
-      Hotkey(keyboard, 'd', rightSnap, shift: true, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction'),
+      rightSnapHotkey,
       Hotkey(keyboard, 's', aboutFace, runWhen: validMap, titleString: 'Turn around'),
       Hotkey(keyboard, 'v', sectionSize, shift: true, runWhen: validMap, titleString: 'Show the size of the current section.'),
       Hotkey(keyboard, 'x', mapSize, runWhen: validMap, titleString: 'Show the size of the current map.'),
       Hotkey(keyboard, 'x', showExits, shift: true, runWhen: validMap, titleString: 'Show any exits that are at your current coordinates.'),
 
       // Social hotkeys:
-      Hotkey(keyboard, "'", say, runWhen: validMap, titleString: 'Say something to other players nearby'),
+      sayHotkey,
 
       // Sound hotkeys:
       Hotkey(keyboard, 'j', soundVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game sounds'),
@@ -217,4 +215,20 @@ void main() {
     }
   });
   document.onContextMenu.listen((MouseEvent e) => e.preventDefault());
+  for (final Element e in querySelectorAll('.controls')) {
+    e.onClick.listen((MouseEvent event) {
+      final String currentId = document.activeElement.id.toString();
+      final Hotkey hk = buttonHotkeys[currentId];
+      if (hk == null) {
+        return commandContext.message('Unhandled button: $currentId.');
+      }
+      keyboard.heldKeys.add(hk.state);
+      if (hk.interval == null) {
+        hk.run();
+      } else {
+        hk.startTimer();
+      }
+      keyboard.release(hk.state.key);
+    });
+  }
 }
