@@ -123,25 +123,56 @@ void downArrow() => doArrowKey(Directions.south);
 void escapeKey() {
   if (validBook()) {
     commandContext.book.cancel();
-  } else if (builderOnly()) {
-    if (commandContext.mapSectionResizer != null) {
-      if (commandContext.mapSectionResizer.coordinates == commandContext.mapSectionResizer.defaultCoordinates) {
-        showMessage('Stop dragging ${commandContext.mapSectionResizer.section.name}.');
-        commandContext.mapSectionResizer = null;
-      } else {
-        commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
-        showMessage('Coordinates reset.');
-      }
-    } else if (commandContext.mapSectionMover!= null) {
-      if (commandContext.mapSectionMover.hasMoved) {
-        commandContext.mapSectionMover.restoreDefaults();
-        commandContext.message('Original location restored.');
-      } else {
-        commandContext.message('${commandContext.mapSectionMover.startX} -> ${commandContext.mapSectionMover.section.startX}.');
-        commandContext.message('Stop moving ${commandContext.mapSectionMover.section.name}.');
-        commandContext.mapSectionMover = null;
-      }
+  } else if (builderOnly()&& commandContext.mapSectionResizer != null) {
+    if (commandContext.mapSectionResizer.coordinates == commandContext.mapSectionResizer.defaultCoordinates) {
+      showMessage('Stop dragging ${commandContext.mapSectionResizer.section.name}.');
+      commandContext.mapSectionResizer = null;
+    } else {
+      commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
+      showMessage('Coordinates reset.');
     }
+  } else if (builderOnly() && commandContext.mapSectionMover!= null) {
+    if (commandContext.mapSectionMover.hasMoved) {
+      commandContext.mapSectionMover.restoreDefaults();
+      commandContext.message('Original location restored.');
+    } else {
+      commandContext.message('${commandContext.mapSectionMover.startX} -> ${commandContext.mapSectionMover.section.startX}.');
+      commandContext.message('Stop moving ${commandContext.mapSectionMover.section.name}.');
+      commandContext.mapSectionMover = null;
+    }
+  } else {
+    commandContext.book = Book(bookOptions)
+      ..push(
+        Page(
+          lines: <Line>[
+            Line(commandContext.book, () => commandContext.send('serverTime', null), titleString: 'Server Time'),
+            Line(commandContext.book, () {
+              clearBook();
+              commandContext?.map?.stop();
+              commandContext
+                ..map = null
+                ..lastMoved = 0
+                ..characterName = null
+                ..send('logout', null);
+            }, titleString: 'Log out'),
+            Line(commandContext.book, () => commandContext.send('connectedTime', null), titleString: 'Time Connected'),
+            Line(commandContext.book, () {
+              FormBuilder('Reset Password', (Map<String, String> data) {
+                if (data['confirmPassword'] == data['newPassword']) {
+                  commandContext.send('resetPassword', <String>[data['oldPassword'], data['newPassword']]);
+                  clearBook();
+                } else {
+                  showMessage('Passwords do not match.');
+                }
+              }, showMessage, onCancel: resetFocus, submitLabel: 'Change Password')
+                ..addElement('oldPassword', label: 'Old password', validator: notEmptyValidator, element: PasswordInputElement())
+                ..addElement('newPassword', label: 'New password', validator: notEmptyValidator, element: PasswordInputElement())
+                ..addElement('confirmPassword', label: 'Confirm password', element: PasswordInputElement())
+                ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+            }, titleString: 'Reset Password')
+          ], onCancel: doCancel, titleString: 'Player Menu'
+        )
+      );
   }
 }
 

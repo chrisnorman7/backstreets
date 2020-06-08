@@ -5,6 +5,8 @@ import 'package:aqueduct/aqueduct.dart';
 
 import '../actions/action.dart';
 import '../actions/actions.dart';
+import '../game/util.dart';
+import '../model/account.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/player_options.dart';
@@ -69,4 +71,26 @@ Future<void> action(CommandContext ctx) async {
       return ctx.sendError('Invalid action name.');
   }
   await a.func(s, ctx);
+}
+
+Future<void> resetPassword(CommandContext ctx) async {
+  final String  oldPassword = ctx.args[0] as String;
+  final String newPassword = ctx.args[1] as String;
+  Account a = await ctx.getAccount();
+  if (a.verify(oldPassword)) {
+    a.setPassword(newPassword);
+    final Query<Account> q = Query<Account>(ctx.db)
+      ..values.password = a.password
+      ..where((Account a) => a.id).equalTo(ctx.accountId);
+    a = await q.updateOne();
+    ctx.message('Password changed.');
+  } else {
+    ctx.sendError('Wrong password.');
+  }
+}
+
+Future<void> connectedTime(CommandContext ctx) async {
+  final GameObject c = await ctx.getCharacter();
+  final Duration ct = await c.connectedDuration(ctx.db);
+  ctx.message('Time connected: ${formatDuration(ct)}.');
 }

@@ -114,3 +114,9 @@ Future<void> connectCharacter(CommandContext ctx) async {
   await ctx.sendCharacter();
   ctx.logger.info('Connected to object $c.');
 }
+
+Future<void> logout(CommandContext ctx) async {
+  ctx.message('Logging you out.');
+  ctx.character = null;
+  await ctx.sendAccount();
+}

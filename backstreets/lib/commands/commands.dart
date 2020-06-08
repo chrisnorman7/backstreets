@@ -61,12 +61,15 @@ Map<String, Command> commands = <String, Command>{
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),
   'playerOption': Command(playerOption),
   'action': Command(action),
+  'resetPassword': Command(resetPassword),
+  'connectedTime': Command(connectedTime),
 
   // Login commands:
   'createAccount': Command(createAccount, authenticationType: AuthenticationTypes.anonymous),
   'login': Command(login, authenticationType: AuthenticationTypes.anonymous),
   'createCharacter': Command(createCharacter, authenticationType: AuthenticationTypes.account),
   'connectCharacter': Command(connectCharacter, authenticationType: AuthenticationTypes.account),
+  'logout': Command(logout),
 
   // Movement commands:
   'characterCoordinates': Command(characterCoordinates),
