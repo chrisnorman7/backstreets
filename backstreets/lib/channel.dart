@@ -58,14 +58,6 @@ class BackstreetsChannel extends ApplicationChannel {
     );
     databaseContext = ManagedContext(dataModel, psc);
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
-    final Query<GameMap> q = Query<GameMap>(databaseContext);
-    if (await q.reduce.count() == 0) {
-      q.values.name = 'Map 1';
-      await q.insert();
-      logger.info('Created initial map.');
-    } else {
-      await npcStartTasks(databaseContext);
-    }
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
       if (entity is Directory) {
         final String name = path.basename(entity.path);
@@ -107,6 +99,14 @@ class BackstreetsChannel extends ApplicationChannel {
       } else {
         phrases[path.basename(path.dirname(entity.path))].add(Sound(entity.path));
       }
+    }
+    final Query<GameMap> q = Query<GameMap>(databaseContext);
+    if (await q.reduce.count() == 0) {
+      q.values.name = 'Map 1';
+      await q.insert();
+      logger.info('Created initial map.');
+    } else {
+      await npcStartTasks(databaseContext);
     }
     final double duration = (DateTime.now().millisecondsSinceEpoch - started) / 1000;
     logger.info('Preparation completed in ${duration.toStringAsFixed(2)} seconds.');
