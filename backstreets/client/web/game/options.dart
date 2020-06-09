@@ -13,4 +13,7 @@ class Options {
 
   /// The sound to play when pinging.
   String echoSound;
+
+  /// The amount to elevate "airborn" sounds by.
+  int airbornElevate;
 }

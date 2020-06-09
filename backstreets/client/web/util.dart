@@ -239,7 +239,7 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
       ..panningModel = 'HRTF'
       ..connectNode(output);
     if (airborn) {
-      panner.positionZ.value = 5;
+      panner.positionZ.value = commandContext.options.airbornElevate;
     }
     gain.connectNode(panner);
     if (size != null) {

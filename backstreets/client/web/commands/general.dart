@@ -45,9 +45,11 @@ void playerOptions(CommandContext ctx) {
   ctx.sounds.setVolume(OutputTypes.sound, (data['soundVolume'] as num).toDouble());
   ctx.sounds.setVolume(OutputTypes.ambience, (data['ambienceVolume'] as num).toDouble());
   ctx.sounds.setVolume(OutputTypes.music, (data['musicVolume'] as num).toDouble());
-  ctx.options.echoLocationDistance = data['echoLocationDistance'] as int;
-  ctx.options.echoLocationDistanceMultiplier = data['echoLocationDistanceMultiplier'] as int;
-  ctx.options.echoSound = data['echoSound'] as String;
+  ctx.options
+    ..echoLocationDistance = data['echoLocationDistance'] as int
+    ..echoLocationDistanceMultiplier = data['echoLocationDistanceMultiplier'] as int
+    ..echoSound = data['echoSound'] as String
+    ..airbornElevate = data['airbornElevate'] as int;
 }
 
 /// A list of objects has been sent.

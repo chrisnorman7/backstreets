@@ -283,7 +283,7 @@ class CommandContext{
   }
 
   /// Send the options this player has configured.
-  //
+  ///
   /// These include (but are probably not limited to):
   /// * Sound volume.
   /// * Ambience volume.

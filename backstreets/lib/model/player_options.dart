@@ -40,6 +40,10 @@ class _PlayerOptions with PrimaryKeyMixin {
   /// The default echo sound.
   @Column(defaultValue: "'clack'")
   String echoSound;
+
+  /// The elevation of "airborn" sounds.
+  @Column(defaultValue: '5')
+  int airbornElevate;
 }
 
 /// A class to hold player options.
