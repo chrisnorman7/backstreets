@@ -91,8 +91,13 @@ class CommandContext {
   }
 
   /// Set [_coordinates].
+  ///
+  /// Also set the listener position.
   set coordinates(Point<double> value) {
     _coordinates = value;
+    sounds.audioContext.listener
+      ..positionX.value = value.x
+      ..positionY.value = value.y;
     for (final PannedSound s in pannedSounds) {
       if (s.sound.source == null) {
         continue;

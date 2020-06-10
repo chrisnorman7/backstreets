@@ -35,19 +35,21 @@ class Ambience {
   /// The actual sound that has been loaded from [url].
   PannedSound sound;
 
+  /// Stop [sound].
+  void stop() {
+    sound?.stop();
+    sound = null;
+  }
+
   void reset() {
     if (url == null) {
-      sound = null;
+      stop();
     } else if (coordinates == null) {
-      if (sound != null) {
-        sound.sound.stop();
-      }
+      stop();
       sound = PannedSound(sounds.playSound(url, output: output, loop: true), null, null, null);
     } else {
       if (url != sound?.sound?.url) {
-        if (sound != null) {
-          sound.sound.stop();
-        }
+        stop();
         sound = playSoundAtCoordinates(url, coordinates: coordinates, output: output, loop: true, size: distance);
       } else {
         sound.panner
