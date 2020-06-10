@@ -149,7 +149,7 @@ void main() {
     sounds.playSound('sounds/general/start.wav');
     startDiv.hidden = true;
     mainDiv.hidden = false;
-    final WebSocket socket = WebSocket('ws://${window.location.hostname}:8888/ws');
+    final WebSocket socket = WebSocket('wss://${window.location.hostname}:8888/ws');
     setTitle(state: 'Connecting');
     socket.onOpen.listen((Event e) {
       authenticationStage = AuthenticationStages.anonymous;
