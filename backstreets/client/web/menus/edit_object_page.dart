@@ -81,6 +81,11 @@ Page editObjectPage(Book b, GameObject o) {
         o.canLeaveMap = value;
         commandContext.send('objectCanLeaveMap', <dynamic>[o.id, o.canLeaveMap]);
       }),
+      Line(b, () {
+        clearBook();
+        showMessage('Head to where you want to move the object, and pess enter.');
+        commandContext.summonObjectId = o.id;
+      }, titleString: 'Summon Object'),
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');

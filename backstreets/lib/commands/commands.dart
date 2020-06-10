@@ -85,4 +85,5 @@ Map<String, Command> commands = <String, Command>{
   // Staff only commands:
   'teleport': Command(teleport, authenticationType: AuthenticationTypes.staff),
   'renameObject': Command(renameObject, authenticationType: AuthenticationTypes.staff),
+  'summonObject': Command(summonObject, authenticationType: AuthenticationTypes.staff),
 };

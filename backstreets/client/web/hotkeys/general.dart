@@ -239,6 +239,9 @@ void enterKey() {
         commandContext.exit.update();
       }
       commandContext.exit = null;
+    } else if (commandContext.summonObjectId != null) {
+      commandContext.send('summonObject', <int>[commandContext.summonObjectId]);
+      commandContext.summonObjectId = null;
     }
   }
 }

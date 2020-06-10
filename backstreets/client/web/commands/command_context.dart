@@ -221,6 +221,9 @@ class CommandContext {
   /// The coordinates of all the objects on the current map.
   Map<int, Point<double>> objectCoordinates = <int, Point<double>>{};
 
+  /// The ID of an object which the player wants to summon.
+  int summonObjectId;
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].
