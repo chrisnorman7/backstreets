@@ -183,9 +183,6 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
     commandContext.message('$action $name.');
   }
   commandContext.coordinates = coordinates;
-  commandContext.sounds.audioContext.listener
-    ..positionX.value = coordinates.x
-    ..positionY.value = coordinates.y;
   if (mode != MoveModes.silent) {
     final String tileName = newSection?.tileName;
     if (tileName != null) {
