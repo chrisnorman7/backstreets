@@ -149,8 +149,8 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
         url = '$wallSoundsDirectory/${s.substring(s.indexOf('.') + 1)}.wav';
       }
     }
-    playSoundAtCoordinates(url);
     if (mode == MoveModes.normal) {
+      playSoundAtCoordinates(url);
       return commandContext.message('You cannot go that way.');
     }
   }
@@ -175,8 +175,6 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
       final String url = getFootstepSound(tileName);
       playSoundAtCoordinates(url);
     }
-  }
-  if (mode != MoveModes.silent) {
     commandContext.send('characterCoordinates', <double>[coordinates.x, coordinates.y]);
   }
 }
@@ -232,7 +230,9 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
   output ??= commandContext.sounds.soundOutput;
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume;
-  if (coordinates != null) {
+  if (coordinates == null) {
+    gain.connectNode(output);
+  } else {
     final PannerNode panner = commandContext.sounds.audioContext.createPanner()
       ..positionX.value = coordinates.x
       ..positionY.value = coordinates.y
@@ -245,8 +245,6 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
     if (size != null) {
       panner.refDistance = size;
     }
-  } else {
-  gain.connectNode(output);
   }
   if (!dry) {
     coordinates ??= commandContext.coordinates;
@@ -255,7 +253,11 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
       gain.connectNode(convolver);
     }
   }
-  return commandContext.sounds.playSound(url, output: gain, loop: loop);
+  final Sound s = commandContext.sounds.playSound(url, output: gain, loop: loop, onEnded: (Sound sound, Event e) {
+    sounds.remove(sound);
+  });
+  sounds.add(s);
+  return s;
 }
 
 /// Ping the objects nearby.
