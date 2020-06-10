@@ -38,6 +38,7 @@ void showMessage(String text, {bool important = true}) {
     final ParagraphElement p = ParagraphElement()
       ..innerText = messageArea.innerText;
     messagesDiv.append(p);
+    messagesDiv.scroll();
   }
   rememberLastMessage = important;
   messageArea.innerText = text;
