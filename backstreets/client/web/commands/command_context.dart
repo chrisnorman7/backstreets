@@ -98,7 +98,7 @@ class CommandContext {
     sounds.audioContext.listener
       ..positionX.value = value.x
       ..positionY.value = value.y;
-    for (final PannedSound s in pannedSounds) {
+    for (final PannedSound s in map.pannedSounds) {
       if (s.sound.source == null) {
         continue;
       }
@@ -217,9 +217,6 @@ class CommandContext {
 
   /// The phrase directories on the server.
   List<String> phrases = <String>[];
-
-  /// All the sounds that have been panned.
-  final List<PannedSound> pannedSounds = <PannedSound>[];
 
   /// The coordinates of all the objects on the current map.
   Map<int, Point<double>> objectCoordinates = <int, Point<double>>{};

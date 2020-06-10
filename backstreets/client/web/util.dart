@@ -290,11 +290,11 @@ PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, doubl
   final PannedSound ps = PannedSound(s, filter, coordinates, panner, id);
   if (panner != null) {
     s.onEnded = (Event e) {
-      if (commandContext.pannedSounds.contains(ps)) {
-        commandContext.pannedSounds.remove(ps);
+      if (commandContext.map.pannedSounds.contains(ps)) {
+        commandContext.map.pannedSounds.remove(ps);
       }
     };
-    commandContext.pannedSounds.add(ps);
+    commandContext.map.pannedSounds.add(ps);
   }
   return ps;
 }

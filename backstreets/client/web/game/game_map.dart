@@ -8,6 +8,7 @@ import 'ambience.dart';
 import 'convolver.dart';
 import 'exit.dart';
 import 'map_section.dart';
+import 'panned_sound.dart';
 import 'wall.dart';
 
 /// A map in the game.
@@ -39,13 +40,19 @@ class GameMap {
   /// Every exit on this map.
   Map<int, Exit> exits = <int, Exit>{};
 
+  /// All the sounds that have been panned.
+  final List<PannedSound> pannedSounds = <PannedSound>[];
+
   /// Stop all sounds on this map.
   ///
   /// This function will run through [sections], and stop all ambiences, and disconnect all nodes.
   ///
-  /// It will also stop [ambience].
+  /// It will also stop [ambience], and all items in [pannedSounds].
   void stop() {
     ambience.sound?.stop();
     sections.forEach((int id, MapSection s) => s.ambience?.sound?.stop());
+    for (final PannedSound s in pannedSounds) {
+      s.stop();
+    }
   }
 }

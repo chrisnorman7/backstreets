@@ -319,7 +319,7 @@ void objectMoved(CommandContext ctx) {
   final double x = (ctx.args[1] as num).toDouble();
   final double y = (ctx.args[2] as num).toDouble();
   ctx.objectCoordinates[id] = Point<double>(x, y);
-  for (final PannedSound s in ctx.pannedSounds) {
+  for (final PannedSound s in ctx.map.pannedSounds) {
     if (s.id == id && s.panner != null) {
       s.panner
         ..positionX.value = x
