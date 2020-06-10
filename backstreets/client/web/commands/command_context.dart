@@ -218,11 +218,11 @@ class CommandContext {
   /// The phrase directories on the server.
   List<String> phrases = <String>[];
 
-/// All the sounds that have been panned.
-final List<PannedSound> pannedSounds = <PannedSound>[];
+  /// All the sounds that have been panned.
+  final List<PannedSound> pannedSounds = <PannedSound>[];
 
-/// The coordinates of all the objects on the current map.
-Map<int, Point<double>> objectCoordinates = <int, Point<double>>{};
+  /// The coordinates of all the objects on the current map.
+  Map<int, Point<double>> objectCoordinates = <int, Point<double>>{};
 
   /// Get the section spanned by the provided coordinates.
   ///
