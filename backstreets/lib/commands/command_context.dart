@@ -219,7 +219,6 @@ class CommandContext{
   /// It probably won't be as slow now we're using [MapSection]s, not [MapTile]s, but it works fine as it is.
   Future<void> sendMap() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
-    logger.info('Sending map data.');
     final Query<GameMap> mapQuery = Query<GameMap>(db)
       ..where((GameMap m) => m.id).equalTo(mapId);
     final GameMap m = await mapQuery.fetchOne();
