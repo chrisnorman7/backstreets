@@ -64,10 +64,6 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
 
   /// Allow an object through this exit.
   Future<void> use(ManagedContext db, GameObject o) async {
-    if (useSound != null) {
-      location.broadcastSound(db, exitSounds[useSound], o.coordinates);
-      destination.broadcastSound(db, exitSounds[useSound], destinationCoordinates);
-    }
     if (useSocial != null) {
       // Create a pretend object that we can use to perform socials using this exit's name.
       final GameObject pretend = GameObject()
@@ -81,5 +77,9 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
       await o.doSocial(db, useSocial, perspectives: <GameObject>[o, pretend], observers: observers);
     }
     await o.move(db, destinationX.toDouble(), destinationY.toDouble(), destination: destination);
+    if (useSound != null) {
+      await location.broadcastSound(db, exitSounds[useSound], o.coordinates);
+      await destination.broadcastSound(db, exitSounds[useSound], destinationCoordinates);
+    }
   }
 }
