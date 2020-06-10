@@ -13,7 +13,7 @@ class Convolver {
   Convolver(this.sounds, this.url, double _volume) {
     volume = sounds.audioContext.createGain()
       ..gain.value = _volume
-      ..connectNode(sounds.output);
+      ..connectNode(sounds.soundOutput);
     resetConvolver();
   }
 
