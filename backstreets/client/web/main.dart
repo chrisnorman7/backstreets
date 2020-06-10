@@ -149,7 +149,14 @@ void main() {
     sounds.playSound('sounds/general/start.wav');
     startDiv.hidden = true;
     mainDiv.hidden = false;
-    final WebSocket socket = WebSocket('wss://${window.location.hostname}:8888/ws');
+    final CheckboxInputElement tls = querySelector('#tls') as CheckboxInputElement;
+    String prefix;
+    if (tls.checked == true) {
+      prefix = 'wss';
+    } else {
+      prefix = 'ws';
+    }
+    final WebSocket socket = WebSocket('$prefix://${window.location.hostname}:8888/ws');
     setTitle(state: 'Connecting');
     socket.onOpen.listen((Event e) {
       authenticationStage = AuthenticationStages.anonymous;
