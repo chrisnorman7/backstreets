@@ -81,6 +81,12 @@ Page editObjectPage(Book b, GameObject o) {
         o.canLeaveMap = value;
         commandContext.send('objectCanLeaveMap', <dynamic>[o.id, o.canLeaveMap]);
       }),
+      Line(
+        b, () {
+          clearBook();
+          commandContext.send('teleport', <dynamic>[o.locationId, o.coordinates.x, o.coordinates.y]);
+        }, titleString: 'Join Object'
+      ),
       Line(b, () {
         clearBook();
         showMessage('Head to where you want to move the object, and pess enter.');
