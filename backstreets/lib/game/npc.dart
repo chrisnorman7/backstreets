@@ -41,12 +41,16 @@ Future<void> npcMove(ManagedContext db, int id) async {
     final Query<Exit> exitQuery = Query<Exit>(db)
       ..where((Exit e) => e.x).equalTo(tileCoordinates.x)
       ..where((Exit e) => e.y).equalTo(tileCoordinates.y)
-      ..where((Exit e) => e.location).identifiedBy(o.location.id);
+      ..where((Exit e) => e.location).identifiedBy(o.location.id)
+      ..join(object: (Exit e) => e.destination);
     final List<Exit> exits = await exitQuery.fetch();
-    if (exits.isNotEmpty && randInt(o.useExitChance) == 1) {
+    if (exits.isNotEmpty && o.useExitChance != null && randInt(o.useExitChance) == 1) {
       final Exit e = randomElement<Exit>(exits);
-      e.use(db, o);
-    } else if (await o.location.validCoordinates(db, tileCoordinates)) {
+      if (e.destination == o.location || o.canLeaveMap) {
+        return e.use(db, o);
+      }
+    }
+    if (await o.location.validCoordinates(db, tileCoordinates)) {
       o = await o.move(db, c.x, c.y);
       if (!o.flying) {
         final Tile t = tiles[s.tileName];
