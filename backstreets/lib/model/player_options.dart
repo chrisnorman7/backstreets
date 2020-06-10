@@ -46,7 +46,7 @@ class _PlayerOptions with PrimaryKeyMixin {
   int airbornElevate;
 
   /// How much sounds on the other side of walls should be filtered.
-  /// @Column(defaultValue: '4000')
+  @Column(defaultValue: '9000')
   int wallFilterAmount;
 }
 
