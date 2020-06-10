@@ -356,6 +356,10 @@ Future<void> objectSpeed(CommandContext ctx) async {
   if (o == null) {
     return ctx.sendError('Invalid object ID.');
   }
+  if (moveTimers.containsKey(o.id)) {
+    moveTimers[o.id].cancel();
+    moveTimers.remove(o.id);
+  }
   await npcMaybeMove(ctx.db, o.id);
   ctx.message('Speed updated.');
 }
@@ -373,6 +377,7 @@ Future<void> objectMaxMoveTime(CommandContext ctx) async {
   if (o.maxMoveTime == null) {
     if (moveTimers.containsKey(o.id)) {
       moveTimers[o.id].cancel();
+      moveTimers.remove(o.id);
     }
   } else {
     await npcMaybeMove(ctx.db, o.id);
