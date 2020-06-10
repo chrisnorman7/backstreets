@@ -38,6 +38,11 @@ class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin, PermissionsMix
 ///
 /// Exits link maps, so that players can travel between them.
 class Exit extends ManagedObject<_Exit> implements _Exit {
+  /// The destination coordinates.
+  Point<double> get destinationCoordinates {
+    return Point<double>(destinationX.toDouble(), destinationY.toDouble());
+  }
+
   /// Convert this object to a map.
   ///
   /// Used for sending with the `exit` command.
@@ -61,7 +66,7 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
   Future<void> use(ManagedContext db, GameObject o) async {
     if (useSound != null) {
       location.broadcastSound(db, exitSounds[useSound], o.coordinates);
-      destination.broadcastSound(db, exitSounds[useSound], Point<double>(destinationX.toDouble(), destinationY.toDouble()));
+      destination.broadcastSound(db, exitSounds[useSound], destinationCoordinates);
     }
     if (useSocial != null) {
       // Create a pretend object that we can use to perform socials using this exit's name.
