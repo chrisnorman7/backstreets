@@ -468,5 +468,5 @@ Future<void> objectCanLeaveMap(CommandContext ctx) async {
   if (o == null) {
     return ctx.sendError('Invalid object ID.');
   }
-  ctx.message('Object ${o.canLeaveMap ? "can" : "cannot"} leave tis map.');
+  ctx.message('Object ${o.canLeaveMap ? "can" : "cannot"} leave this map.');
 }
