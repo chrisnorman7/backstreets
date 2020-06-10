@@ -66,7 +66,7 @@ class Convolver {
         if (commandContext.map != null) {
           commandContext.map.sections.forEach((int id, MapSection s) {
             if (s.ambience.sound != null) {
-              s.ambience.sound.source.connectNode(convolver);
+              s.ambience.sound.sound.source.connectNode(convolver);
             }
           });
         }

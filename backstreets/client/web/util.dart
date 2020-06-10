@@ -10,8 +10,8 @@ import 'package:game_utils/game_utils.dart' show randomElement, Sound, FormBuild
 
 import 'constants.dart';
 import 'directions.dart';
-import 'game/filtered_sound.dart';
 import 'game/map_section.dart';
+import 'game/panned_sound.dart';
 import 'game/wall.dart';
 import 'main.dart';
 
@@ -251,7 +251,7 @@ BiquadFilterNode getWallFilter(Point<double> coordinates){
 }
 
 /// Play a sound at a specific set of coordinates.
-Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size, bool airborn = false}) {
+PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size, bool airborn = false}) {
   output ??= commandContext.sounds.soundOutput;
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume;
@@ -287,8 +287,8 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
     }
   }
   final Sound s = commandContext.sounds.playSound(url, output: gain, loop: loop);
+  final PannedSound fs = PannedSound(s, filter, coordinates, panner);
   if (panner != null) {
-    final FilteredSound fs = FilteredSound(s, filter, coordinates, panner);
     s.onEnded = (Event e) {
       if (commandContext.pannedSounds.contains(fs)) {
         commandContext.pannedSounds.remove(fs);
@@ -296,7 +296,7 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
     };
     commandContext.pannedSounds.add(fs);
   }
-  return s;
+  return fs;
 }
 
 /// Ping the objects nearby.

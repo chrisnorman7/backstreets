@@ -11,12 +11,12 @@ import 'package:game_utils/game_utils.dart';
 import '../constants.dart';
 import '../directory.dart';
 import '../game/exit.dart';
-import '../game/filtered_sound.dart';
 import '../game/game_map.dart';
 import '../game/game_object.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/options.dart';
+import '../game/panned_sound.dart';
 import '../game/wall.dart';
 import '../util.dart';
 
@@ -93,7 +93,7 @@ class CommandContext {
   /// Set [_coordinates].
   set coordinates(Point<double> value) {
     _coordinates = value;
-    for (final FilteredSound s in pannedSounds) {
+    for (final PannedSound s in pannedSounds) {
       if (s.sound.source == null) {
         continue;
       }
@@ -214,7 +214,7 @@ class CommandContext {
   List<String> phrases = <String>[];
 
 /// All the sounds that have been panned.
-final List<FilteredSound> pannedSounds = <FilteredSound>[];
+final List<PannedSound> pannedSounds = <PannedSound>[];
 
   /// Get the section spanned by the provided coordinates.
   ///

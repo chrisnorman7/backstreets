@@ -7,6 +7,7 @@ import 'dart:web_audio';
 import 'package:game_utils/game_utils.dart';
 
 import '../util.dart';
+import 'panned_sound.dart';
 
 class Ambience {
   Ambience(this.sounds, this.url, {this.output, this.coordinates, this.distance}) {
@@ -32,19 +33,27 @@ class Ambience {
   int distance;
 
   /// The actual sound that has been loaded from [url].
-  Sound sound;
+  PannedSound sound;
 
   void reset() {
-    if (sound != null) {
-      sound.stop();
-      sound = null;
-    }
     if (url == null) {
       sound = null;
-    } else if (coordinates != null) {
-      sound = playSoundAtCoordinates(url, coordinates: coordinates, output: output, loop: true, size: distance);
+    } else if (coordinates == null) {
+      if (sound != null) {
+        sound.sound.stop();
+      }
+      sound = PannedSound(sounds.playSound(url, output: output, loop: true), null, null, null);
     } else {
-      sound = sounds.playSound(url, output: output, loop: true);
+      if (url != sound?.sound?.url) {
+        if (sound != null) {
+          sound.sound.stop();
+        }
+        sound = playSoundAtCoordinates(url, coordinates: coordinates, output: output, loop: true, size: distance);
+      } else {
+        sound.panner
+          ..positionX.value = coordinates.x
+          ..positionY.value = coordinates.y;
+      }
     }
   }
 }
