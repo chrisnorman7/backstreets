@@ -84,6 +84,8 @@ void listOfObjects(CommandContext ctx) {
         ..minPhraseTime = data['minPhraseTime'] as int
         ..maxPhraseTime = data['maxPhraseTime'] as int
         ..flying = data['flying'] as bool
+        ..useExitChance = data['useExitChance'] as int
+        ..canLeaveMap = data['canLeaveMap'] as bool
     );
   }
   if (ctx.onListOfObjects == null) {

@@ -73,7 +73,14 @@ Page editObjectPage(Book b, GameObject o) {
       Line.checkboxLine(b, () => '${o.flying ? "Unset" : "Set"} Object Flying', () => o.flying, (bool value) {
         o.flying = value;
         commandContext.send('objectFlying', <dynamic>[o.id, o.flying]);
-      })
+      }),
+      Line(b, () {
+        getInt('Use Exit Chance', () => o.useExitChance, (int value) => o.useExitChance = value, 'objectUseExitChance', id: o.id);
+      }, titleFunc: () => 'Exit Use Chance (${o.useExitChance == null ? "Will not use exits" : "1 in ${o.useExitChance}"})'),
+      Line.checkboxLine(b, () => '${o.canLeaveMap ? "Un" : "Map"} lock Object', () => o.canLeaveMap, (bool value) {
+        o.canLeaveMap = value;
+        commandContext.send('objectCanLeaveMap', <dynamic>[o.id, o.canLeaveMap]);
+      }),
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');

@@ -73,6 +73,12 @@ class GameObject {
   /// Whether or not this object is airborn.
   bool flying;
 
+  /// The chance this object has of using an exit.
+  int useExitChance;
+
+  /// Whether or not this object can leave the current map.
+  bool canLeaveMap;
+
   /// A list of [Player] objects who are also connected to this account.
   List<GameObject> get relatedObjects => commandContext.objects.where((GameObject o) => o.account?.id == account?.id && o.id != id).toList();
 
@@ -84,5 +90,5 @@ class GameObject {
 
   /// Return a name and an object number.
   @override
-  String toString() => '$name (#$id)';
+  String toString() => '$name (#$id) [$locationName ${coordinates.x.toStringAsFixed(2)}, ${coordinates.y.toStringAsFixed(2)}]';
 }

@@ -83,6 +83,16 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   /// Whether or not this object is airborn.
   @Column(defaultValue: 'false')
   bool flying;
+
+  /// The chance this object has of using exits.
+  ///
+  /// Change to 0 to prevent them from using exits.
+  @Column(nullable: true)
+  int useExitChance;
+
+  /// Whether or not this object can leave the current map.
+  @Column(defaultValue: 'false')
+  bool canLeaveMap;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
@@ -218,7 +228,9 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'builder': builder,
       'admin': admin,
       'accountId': account?.id,
-      'username': account?.username
+      'username': account?.username,
+      'useExitChance': useExitChance,
+      'canLeaveMap': canLeaveMap,
     };
   }
 }

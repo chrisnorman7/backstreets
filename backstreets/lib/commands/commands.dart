@@ -56,6 +56,8 @@ Map<String, Command> commands = <String, Command>{
   'objectMinPhraseTime': Command(objectMinPhraseTime, authenticationType: AuthenticationTypes.builder),
   'objectMaxPhraseTime': Command(objectMaxPhraseTime, authenticationType: AuthenticationTypes.builder),
   'objectFlying': Command(objectFlying, authenticationType: AuthenticationTypes.builder),
+  'objectUseExitChance': Command(objectUseExitChance, authenticationType: AuthenticationTypes.builder),
+  'objectCanLeaveMap': Command(objectCanLeaveMap, authenticationType: AuthenticationTypes.builder),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),

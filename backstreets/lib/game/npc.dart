@@ -7,6 +7,7 @@ import 'dart:math';
 import 'package:aqueduct/aqueduct.dart';
 
 import '../game/tile.dart';
+import '../model/exit.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../sound.dart';
@@ -36,7 +37,16 @@ Future<void> npcMove(ManagedContext db, int id) async {
     }
     final MapSection s = await o.location.getCurrentSection(db, Point<int>(o.x.round(), o.y.round()));
     final Point<double> c = o.coordinatesInDirection(s.tileSize);
-    if (await o.location.validCoordinates(db, Point<int>(c.x.round(), c.y.round()))) {
+    final Point<int> tileCoordinates = Point<int>(c.x.round(), c.y.round());
+    final Query<Exit> exitQuery = Query<Exit>(db)
+      ..where((Exit e) => e.x).equalTo(tileCoordinates.x)
+      ..where((Exit e) => e.y).equalTo(tileCoordinates.y)
+      ..where((Exit e) => e.location).identifiedBy(o.location.id);
+    final List<Exit> exits = await exitQuery.fetch();
+    if (exits.isNotEmpty && randInt(o.useExitChance) == 1) {
+      final Exit e = randomElement<Exit>(exits);
+      e.use(db, o);
+    } else if (await o.location.validCoordinates(db, tileCoordinates)) {
       o = await o.move(db, c.x, c.y);
       if (!o.flying) {
         final Tile t = tiles[s.tileName];

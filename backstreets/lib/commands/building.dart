@@ -329,6 +329,7 @@ Future<void> deleteExit(CommandContext ctx) async {
 
 Future<void> getObjects(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..join(object: (GameObject o) => o.location)
     ..where((GameObject o) => o.account).isNull();
   ctx.sendObjects(await q.fetch());
 }
@@ -442,4 +443,30 @@ Future<void> objectFlying(CommandContext ctx) async {
     return ctx.sendError('Invalid object ID.');
   }
   ctx.message('Object is ${o.flying ? "now" : "no longer"} flying.');
+}
+
+Future<void> objectUseExitChance(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final int value = ctx.args[1] as int;
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.useExitChance = value
+    ..where((GameObject o) => o.id).equalTo(id);
+  final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  ctx.message('${o.name} now has a 1 in ${o.useExitChance} chance of going through exits.');
+}
+
+Future<void> objectCanLeaveMap(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final bool value = ctx.args[1] as bool;
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..values.canLeaveMap = value
+    ..where((GameObject o) => o.id).equalTo(id);
+  final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  ctx.message('Object ${o.canLeaveMap ? "can" : "cannot"} leave tis map.');
 }
