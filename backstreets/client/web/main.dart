@@ -117,6 +117,8 @@ void main() {
       Hotkey(keyboard, ';', echoLocationDistanceMultiplierUp, runWhen: validOptions, titleString: 'Increase the time before echoes are heard'),
       Hotkey(keyboard, 'p', ping, runWhen: validSounds, titleString: 'Ping your surroundings'),
       Hotkey(keyboard, 'p', echoSoundsMenu, shift: true, runWhen: validOptions, titleString: 'Change your echo sound'),
+      Hotkey(keyboard, 'q', wallFilterDown, shift: true, titleString: 'Reduce the amount sounds that are blocked walls are filtered by'),
+      Hotkey(keyboard, 'q', wallFilterUp, titleString: 'Increase the amount sounds that are blocked walls are filtered by'),
 
       // Staff only hotkeys:
       Hotkey(keyboard, 'g', goto, runWhen: staffOnly, titleString: 'Jump to specific coordinates on the map'),

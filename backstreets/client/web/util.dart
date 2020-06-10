@@ -10,6 +10,7 @@ import 'package:game_utils/game_utils.dart' show randomElement, Sound, FormBuild
 
 import 'constants.dart';
 import 'directions.dart';
+import 'game/filtered_sound.dart';
 import 'game/map_section.dart';
 import 'game/wall.dart';
 import 'main.dart';
@@ -109,6 +110,22 @@ Point<double> coordinatesInDirection(Point<double> start, double direction, {dou
   return Point<double>(x, y);
 }
 
+/// Returns a list of walls between [a] and [b].
+List<Wall> wallsBetween(Point<double> a, Point<double> b) {
+  final List<Wall> walls = <Wall>[];
+  final double lowerX = min(a.x, b.x);
+  final double lowerY = min(a.y, b.y);
+  final double upperX = max(a.x, b.x);
+  final double upperY = max(a.y, b.y);
+  final Rectangle<double> r = Rectangle<double>.fromPoints(Point<double>(lowerX, lowerY), Point<double>(upperX, upperY));
+  commandContext.map?.walls?.forEach((Point<int> coordinates, Wall w) {
+    if (r.containsPoint(Point<double>(coordinates.x.toDouble(), coordinates.y.toDouble()))) {
+      walls.add(w);
+    }
+  });
+  return walls;
+}
+
 void move(double multiplier) {
   final MapSection s = commandContext.getCurrentSection();
   if (s == null) {
@@ -149,8 +166,8 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
         url = '$wallSoundsDirectory/${s.substring(s.indexOf('.') + 1)}.wav';
       }
     }
+    playSoundAtCoordinates(url);
     if (mode == MoveModes.normal) {
-      playSoundAtCoordinates(url);
       return commandContext.message('You cannot go that way.');
     }
   }
@@ -225,15 +242,25 @@ void instantMove(Directions d) {
   moveCharacter(coordinates, mode: MoveModes.staff);
 }
 
+/// Get a filter that simulates the affect a wall would have on a sound.
+BiquadFilterNode getWallFilter(Point<double> coordinates){
+  return commandContext.sounds.audioContext.createBiquadFilter()
+    ..type = 'highshelf'
+    ..frequency.value = commandContext.options.wallFilterAmount
+    ..gain.value = -100;
+}
+
 /// Play a sound at a specific set of coordinates.
 Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size, bool airborn = false}) {
   output ??= commandContext.sounds.soundOutput;
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume;
+  BiquadFilterNode filter;
+  PannerNode panner;
   if (coordinates == null) {
     gain.connectNode(output);
   } else {
-    final PannerNode panner = commandContext.sounds.audioContext.createPanner()
+    panner = commandContext.sounds.audioContext.createPanner()
       ..positionX.value = coordinates.x
       ..positionY.value = coordinates.y
       ..panningModel = 'HRTF'
@@ -241,22 +268,34 @@ Sound playSoundAtCoordinates(String url, {Point<double> coordinates, double volu
     if (airborn) {
       panner.positionZ.value = commandContext.options.airbornElevate;
     }
-    gain.connectNode(panner);
     if (size != null) {
       panner.refDistance = size;
+    }
+    if (!dry && wallsBetween(commandContext.coordinates, coordinates).isNotEmpty) {
+      filter = getWallFilter(coordinates)
+        ..connectNode(panner);
+      gain.connectNode(filter);
+    } else {
+      gain.connectNode(panner);
     }
   }
   if (!dry) {
     coordinates ??= commandContext.coordinates;
     final ConvolverNode convolver = commandContext.getCurrentConvolver(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
     if (convolver != null) {
-      gain.connectNode(convolver);
+      (filter ?? gain).connectNode(convolver);
     }
   }
-  final Sound s = commandContext.sounds.playSound(url, output: gain, loop: loop, onEnded: (Sound sound, Event e) {
-    sounds.remove(sound);
-  });
-  sounds.add(s);
+  final Sound s = commandContext.sounds.playSound(url, output: gain, loop: loop);
+  if (panner != null) {
+    final FilteredSound fs = FilteredSound(s, filter, coordinates, panner);
+    s.onEnded = (Event e) {
+      if (commandContext.pannedSounds.contains(fs)) {
+        commandContext.pannedSounds.remove(fs);
+      }
+    };
+    commandContext.pannedSounds.add(fs);
+  }
   return s;
 }
 

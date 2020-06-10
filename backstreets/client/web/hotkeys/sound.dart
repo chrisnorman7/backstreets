@@ -79,3 +79,15 @@ void echoSoundsMenu() {
   });
   commandContext.book.push(Page(lines: lines, titleString: 'Echo Sounds', onCancel: clearBook));
 }
+
+void wallFilterDown() {
+  commandContext.options.wallFilterAmount = max(0, commandContext.options.wallFilterAmount - 100);
+  commandContext.send('playerOption', <dynamic>['wallFilterAmount', commandContext.options.wallFilterAmount]);
+  showMessage('Filter: ${commandContext.options.wallFilterAmount}.');
+}
+
+void wallFilterUp() {
+  commandContext.options.wallFilterAmount += 100;
+  commandContext.send('playerOption', <dynamic>['wallFilterAmount', commandContext.options.wallFilterAmount]);
+  showMessage('Filter: ${commandContext.options.wallFilterAmount}.');
+}

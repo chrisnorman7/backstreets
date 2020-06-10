@@ -43,6 +43,9 @@ Future<void> playerOption(CommandContext ctx) async {
     case 'echoSound':
       q.values.echoSound = value as String;
       break;
+    case 'wallFilterAmount':
+      q.values.wallFilterAmount = value as int;
+      break;
     default:
       return ctx.sendError('Invalid option name "$name".');
       break;

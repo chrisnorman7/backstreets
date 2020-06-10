@@ -44,6 +44,10 @@ class _PlayerOptions with PrimaryKeyMixin {
   /// The elevation of "airborn" sounds.
   @Column(defaultValue: '5')
   int airbornElevate;
+
+  /// How much sounds on the other side of walls should be filtered.
+  /// @Column(defaultValue: '4000')
+  int wallFilterAmount;
 }
 
 /// A class to hold player options.

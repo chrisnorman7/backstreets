@@ -18,9 +18,6 @@ import 'run_conditions.dart';
 /// The first part of any sound URL.
 const String soundsDirectory = 'sounds/';
 
-/// All the sounds that have been panned.
-final List<Sound> sounds = <Sound>[];
-
 /// Character data, as sent to the [account] command.
 List<dynamic> characterList;
 

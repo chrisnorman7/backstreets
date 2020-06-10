@@ -49,7 +49,8 @@ void playerOptions(CommandContext ctx) {
     ..echoLocationDistance = data['echoLocationDistance'] as int
     ..echoLocationDistanceMultiplier = data['echoLocationDistanceMultiplier'] as int
     ..echoSound = data['echoSound'] as String
-    ..airbornElevate = data['airbornElevate'] as int;
+    ..airbornElevate = data['airbornElevate'] as int
+    ..wallFilterAmount = data['wallFilterAmount'] as int;
 }
 
 /// A list of objects has been sent.

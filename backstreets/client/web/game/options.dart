@@ -16,4 +16,7 @@ class Options {
 
   /// The amount to elevate "airborn" sounds by.
   int airbornElevate;
+
+  /// How much sounds on the other side of walls should be filtered.
+  int wallFilterAmount;
 }

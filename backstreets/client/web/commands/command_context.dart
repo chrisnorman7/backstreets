@@ -11,11 +11,14 @@ import 'package:game_utils/game_utils.dart';
 import '../constants.dart';
 import '../directory.dart';
 import '../game/exit.dart';
+import '../game/filtered_sound.dart';
 import '../game/game_map.dart';
 import '../game/game_object.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/options.dart';
+import '../game/wall.dart';
+import '../util.dart';
 
 /// A command context. Will be passed to all commands, instead of using individual arguments, which will quickly become unmanageable.
 class CommandContext {
@@ -80,7 +83,39 @@ class CommandContext {
   /// The coordinates of the connected character.
   ///
   /// Send by [characterCoordinates].
-  Point<double> coordinates = const Point<double>(0, 0);
+  Point<double> _coordinates = const Point<double>(0, 0);
+
+  /// Get [_coordinates].
+  Point<double> get coordinates {
+    return _coordinates;
+  }
+
+  /// Set [_coordinates].
+  set coordinates(Point<double> value) {
+    _coordinates = value;
+    for (final FilteredSound s in pannedSounds) {
+      if (s.sound.source == null) {
+        continue;
+      }
+      final List<Wall> walls = wallsBetween(value, s.coordinates);
+      if (walls.isNotEmpty) {
+        if (s.filter == null) {
+          s.sound.output.disconnect();
+          s.filter = getWallFilter(s.coordinates)
+            ..connectNode(s.panner);
+          s.sound.output.connectNode(s.filter);
+        } else {
+        }
+      } else {
+        if (s.filter != null) {
+          s.filter.disconnect();
+          s.filter = null;
+          s.sound.output.connectNode(s.panner);
+        } else {
+        }
+      }
+    }
+  }
 
   /// The speed of this character.
   ///
@@ -177,6 +212,9 @@ class CommandContext {
 
   /// The phrase directories on the server.
   List<String> phrases = <String>[];
+
+/// All the sounds that have been panned.
+final List<FilteredSound> pannedSounds = <FilteredSound>[];
 
   /// Get the section spanned by the provided coordinates.
   ///
