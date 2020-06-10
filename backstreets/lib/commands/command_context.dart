@@ -302,13 +302,14 @@ class CommandContext{
   /// Make the player's web browser play a sound.
   ///
   /// This is a game sound, and as such coordinates must be supplied.
-  void sendSound(Sound s, Point<double> coordinates, {double volume = 1.0, bool airborn = false}) {
+  void sendSound(Sound s, Point<double> coordinates, {double volume = 1.0, bool airborn = false, int id}) {
     send('sound', <Map<String, dynamic>>[<String, dynamic>{
       'url': s.url,
       'x': coordinates.x,
       'y': coordinates.y,
       'volume': volume,
       'airborn': airborn,
+      'id': id,
     }]);
   }
 

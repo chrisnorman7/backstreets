@@ -37,14 +37,10 @@ Future<void> npcMove(ManagedContext db, int id) async {
     final MapSection s = await o.location.getCurrentSection(db, Point<int>(o.x.round(), o.y.round()));
     final Point<double> c = o.coordinatesInDirection(s.tileSize);
     if (await o.location.validCoordinates(db, Point<int>(c.x.round(), c.y.round()))) {
-      q = Query<GameObject>(db)
-        ..values.x = c.x
-        ..values.y = c.y
-        ..where((GameObject obj) => obj.id).equalTo(id);
-      o = await q.updateOne();
+      o = await o.move(db, c.x, c.y);
       if (!o.flying) {
         final Tile t = tiles[s.tileName];
-        o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates);
+        o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, objectId: o.id);
       }
     } else {
       // Turn a random amount.
@@ -114,7 +110,7 @@ Future<void> npcPhrase(ManagedContext db, int id) async {
     nextRun = randInt(o.maxPhraseTime, start: o.minPhraseTime);
     final List<Sound> phrase = phrases[o.phrase];
     final Sound s = randomElement(phrase);
-    o.location.broadcastSound(db, s, o.coordinates, airborn: o.flying);
+    o.location.broadcastSound(db, s, o.coordinates, airborn: o.flying, objectId: o.id);
   }
   catch (e, s) {
     logger.severe(e.toString());

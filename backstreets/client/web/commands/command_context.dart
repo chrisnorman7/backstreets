@@ -221,6 +221,9 @@ class CommandContext {
 /// All the sounds that have been panned.
 final List<PannedSound> pannedSounds = <PannedSound>[];
 
+/// The coordinates of all the objects on the current map.
+Map<int, Point<double>> objectCoordinates = <int, Point<double>>{};
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].

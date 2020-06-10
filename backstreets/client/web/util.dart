@@ -251,7 +251,7 @@ BiquadFilterNode getWallFilter(Point<double> coordinates){
 }
 
 /// Play a sound at a specific set of coordinates.
-PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size, bool airborn = false}) {
+PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size, bool airborn = false, int id}) {
   output ??= commandContext.sounds.soundOutput;
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume;
@@ -287,16 +287,16 @@ PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, doubl
     }
   }
   final Sound s = commandContext.sounds.playSound(url, output: gain, loop: loop);
-  final PannedSound fs = PannedSound(s, filter, coordinates, panner);
+  final PannedSound ps = PannedSound(s, filter, coordinates, panner, id);
   if (panner != null) {
     s.onEnded = (Event e) {
-      if (commandContext.pannedSounds.contains(fs)) {
-        commandContext.pannedSounds.remove(fs);
+      if (commandContext.pannedSounds.contains(ps)) {
+        commandContext.pannedSounds.remove(ps);
       }
     };
-    commandContext.pannedSounds.add(fs);
+    commandContext.pannedSounds.add(ps);
   }
-  return fs;
+  return ps;
 }
 
 /// Ping the objects nearby.

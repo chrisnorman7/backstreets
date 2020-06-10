@@ -16,7 +16,7 @@ Future<void> teleport(CommandContext ctx) async {
     return ctx.sendError('Invalid map ID.');
   }
   final GameObject c = await ctx.getCharacter();
-  await c.move(ctx.db, m, x, y);
+  await c.move(ctx.db, x, y, destination: m);
 }
 
 Future<void> renameObject(CommandContext ctx) async {

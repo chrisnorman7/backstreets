@@ -80,6 +80,6 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
       o = observers.firstWhere((GameObject obj) => obj.id == o.id);
       await o.doSocial(db, useSocial, perspectives: <GameObject>[o, pretend], observers: observers);
     }
-    await o.move(db, destination, destinationX.toDouble(), destinationY.toDouble());
+    await o.move(db, destinationX.toDouble(), destinationY.toDouble(), destination: destination);
   }
 }

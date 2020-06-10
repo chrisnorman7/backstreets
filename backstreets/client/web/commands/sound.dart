@@ -26,7 +26,8 @@ void sound(CommandContext ctx) {
   final double x = (data['x'] as num).toDouble();
   final double y = (data['y'] as num).toDouble();
   final bool airborn = data['airborn'] as bool;
-  playSoundAtCoordinates(url, coordinates: Point<double>(x, y), volume: volume, airborn: airborn);
+  final int id = data['id'] as int;
+  playSoundAtCoordinates(url, coordinates: Point<double>(x, y), volume: volume, airborn: airborn, id: id);
 }
 
 

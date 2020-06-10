@@ -49,6 +49,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'removeMapSectionAction': removeMapSectionAction,
   'addExit': addExit,
   'deleteExit': deleteExit,
+  'objectMoved': objectMoved,
 
   // Sound commands:
   'interfaceSound': interfaceSound,

@@ -11,6 +11,7 @@ import '../game/exit.dart';
 import '../game/game_map.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
+import '../game/panned_sound.dart';
 import '../game/wall.dart';
 import '../util.dart';
 import 'command_context.dart';
@@ -310,4 +311,19 @@ void addExit(CommandContext ctx) {
 void deleteExit(CommandContext ctx) {
   final int id = ctx.args[0] as int;
   ctx.map.exits.remove(id);
+}
+
+/// An object on the current map has moved.
+void objectMoved(CommandContext ctx) {
+  final int id = ctx.args[0] as int;
+  final double x = (ctx.args[1] as num).toDouble();
+  final double y = (ctx.args[2] as num).toDouble();
+  ctx.objectCoordinates[id] = Point<double>(x, y);
+  for (final PannedSound s in ctx.pannedSounds) {
+    if (s.id == id && s.panner != null) {
+      s.panner
+        ..positionX.value = x
+        ..positionY.value = y;
+    }
+  }
 }

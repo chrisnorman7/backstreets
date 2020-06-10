@@ -114,10 +114,10 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   /// Tell the connected player to play a sound.
   ///
   /// If coordinates are given, the sound will be heard there. If not, then coordinates will be made from [x] and [y].
-  void sound(Sound s, {Point<double> coordinates, double volume}) {
+  void sound(Sound s, {Point<double> coordinates, double volume, int id}) {
     coordinates ??= Point<double>(x, y);
     volume ??= 1.0;
-    commandContext?.sendSound(s, coordinates, volume: volume);
+    commandContext?.sendSound(s, coordinates, volume: volume, id: id);
   }
 
   /// Have this object perform a social.
@@ -136,7 +136,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
     }
     socials.getStrings(social, perspectives).dispatch(observers, (GameObject obj, String s) {
       if (sound != null) {
-        obj.sound(sound, coordinates: Point<double>(x, y));
+        obj.sound(sound, coordinates: Point<double>(x, y), id: id);
       }
       obj.message(s);
     } );
@@ -167,19 +167,27 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   /// Teleport this object to another map.
   ///
   /// Used by both staff commands, and the more prosaic `exit` command.
-  Future<void> move(ManagedContext db, GameMap destination, double destinationX, double destinationY) async {
+  Future<GameObject> move(ManagedContext db, double destinationX, double destinationY, {GameMap destination}) async {
     final Query<GameObject> q = Query<GameObject>(db)
-      ..values.location = destination
       ..values.x = destinationX
       ..values.y = destinationY
+      ..values.steps = steps + 1
       ..where((GameObject o) => o.id).equalTo(id);
+    if (destination != null) {
+      q.values.location = destination;
+    }
     final GameObject o = await q.updateOne();
     final CommandContext ctx = o.commandContext;
     if (ctx != null) {
-      ctx.map = destination;
-      await ctx.sendMap();
+      if (destination != null) {
+        ctx.map = destination;
+        await ctx.sendMap();
+      }
       ctx.send('characterCoordinates', <double>[o.x, o.y]);
     }
+    final GameMap m = await db.fetchObjectWithID<GameMap>(o.location.id);
+    await m.broadcastMove(db, o.id, o.x, o.y);
+    return o;
   }
 
   /// Return the coordinates in the direction this object is currently facing.

@@ -46,7 +46,7 @@ class Ambience {
       stop();
     } else if (coordinates == null) {
       stop();
-      sound = PannedSound(sounds.playSound(url, output: output, loop: true), null, null, null);
+      sound = PannedSound(sounds.playSound(url, output: output, loop: true), null, null, null, null);
     } else {
       if (url != sound?.sound?.url) {
         stop();
