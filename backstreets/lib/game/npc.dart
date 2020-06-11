@@ -44,7 +44,7 @@ Future<void> npcMove(ManagedContext db, int id) async {
       ..where((Exit e) => e.location).identifiedBy(o.location.id)
       ..join(object: (Exit e) => e.destination);
     final List<Exit> exits = await exitQuery.fetch();
-    if (exits.isNotEmpty && o.useExitChance != null && randInt(o.useExitChance) == 1) {
+    if (exits.isNotEmpty && o.useExitChance != null && randInt(o.useExitChance) == 0) {
       final Exit e = randomElement<Exit>(exits);
       if (e.destination == o.location || o.canLeaveMap) {
         return e.use(db, o);
