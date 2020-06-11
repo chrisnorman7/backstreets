@@ -91,6 +91,7 @@ void main() {
       coordinatesHotkey,
       Hotkey(keyboard, 'v', mapName, runWhen: validMap, titleString: 'View your current location'),
       Hotkey(keyboard, 'f', facing, runWhen: validMap, titleString: 'Show which way you are facing'),
+      Hotkey(keyboard, 'f', showTheta, shift: true, runWhen: validMap, titleString: 'Show your heading in degrees'),
       walkForwardsHotkey,
       walkBackwardsHotkey,
       Hotkey(keyboard, 'a', left, runWhen: validMap, titleString: 'Turn left a bit'),
@@ -170,6 +171,7 @@ void main() {
     });
     socket.onClose.listen((CloseEvent e) {
       startButton.innerText = 'Reconnect';
+      document.exitPointerLock();
       showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
       authenticationStage = null;
       setTitle(state: 'Disconnected');
@@ -243,4 +245,12 @@ void main() {
       keyboard.release(hk.state.key);
     });
   }
+  keyboardArea.requestPointerLock();
+  document.onMouseMove.listen((MouseEvent e) {
+    if (commandContext != null) {
+      e.stopPropagation();
+      e.preventDefault();
+      commandContext.theta = normaliseTheta(commandContext.theta + e.movement.x);
+    }
+  });
 }

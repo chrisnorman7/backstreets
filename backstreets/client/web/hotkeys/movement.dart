@@ -25,6 +25,8 @@ void mapName() {
 
 void facing() => showMessage(headingToString(commandContext.theta));
 
+void showTheta() => showMessage(commandContext.theta.toString());
+
 void walkForwards() => move(1);
 
 void walkBackwards() => move(-0.5);
