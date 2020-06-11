@@ -11,7 +11,7 @@ void say() {
   FormBuilder('Say', (Map<String, String> data) {
     resetFocus();
     commandContext.send('say', <String>[data['say']]);
-  }, showMessage, onCancel: resetFocus)
+  }, showMessage, onCancel: doCancel)
     ..addElement('say', label: 'Say something')
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
 }
