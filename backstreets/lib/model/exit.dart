@@ -70,7 +70,7 @@ class Exit extends ManagedObject<_Exit> implements _Exit {
         ..name = name
         ..x = x.toDouble()
         ..y = y.toDouble();
-      await location.handleSocial(db, useSocial, <GameObject>[o, pretend], sound: exitSounds[useSound]);
+      await location.handleSocial(db, useSocial, <GameObject>[o, pretend]);
     }
     await o.move(db, destinationX.toDouble(), destinationY.toDouble(), destination: destination);
     if (useSound != null) {
