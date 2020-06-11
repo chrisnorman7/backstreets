@@ -98,11 +98,16 @@ class CommandContext {
     sounds.audioContext.listener
       ..positionX.value = value.x
       ..positionY.value = value.y;
+    updateFilters();
+  }
+
+  /// Update all filters.
+  void updateFilters() {
     for (final PannedSound s in map.pannedSounds) {
       if (s.sound.source == null) {
         continue;
       }
-      final List<Wall> walls = wallsBetween(value, s.coordinates);
+      final List<Wall> walls = wallsBetween(coordinates, s.coordinates);
       if (walls.isNotEmpty) {
         if (s.filter == null) {
           s.sound.output.disconnect();

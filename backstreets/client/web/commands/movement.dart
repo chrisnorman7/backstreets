@@ -227,12 +227,14 @@ void mapWall(CommandContext ctx) {
   } else {
     ctx.map.walls[coordinates] = Wall(id, type, sound);
   }
+  commandContext.updateFilters();
 }
 
 /// A wall should be deleted from a map.
 void deleteWall(CommandContext ctx) {
   final int id = ctx.args[0] as int;
   ctx.map.walls.removeWhere((Point<int> coordinates, Wall w) => w.id == id);
+  commandContext.updateFilters();
 }
 
 /// Assign a new ambience to a map section.

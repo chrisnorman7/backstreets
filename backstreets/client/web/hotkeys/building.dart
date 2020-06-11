@@ -149,6 +149,7 @@ void buildWall() => commandContext.send('addWall', <String>[]);
 void buildBarricade () => commandContext.send('addBarricade', <String>[]);
 
 void wallMenu() {
+  commandContext.book = Book(bookOptions);
   final Point<int> coordinates = getIntCoordinates();
   final Wall currentWall = commandContext.map.walls[coordinates];
   final List<Line> lines = <Line>[];
@@ -174,6 +175,14 @@ void wallMenu() {
       }, titleString: 'Delete')
     ]);
   }
-  commandContext.book = Book(bookOptions)
-    ..push(Page(lines: lines, titleString: 'Wall Menu', onCancel: clearBook));
+  lines.add(Line(commandContext.book, () {
+    if (commandContext.map.walls.isEmpty) {
+      showMessage('There are no walls on this map.');
+    } else {
+      final Point<int> coordinates = commandContext.map.walls.keys.first;
+      moveCharacter(Point<double>(coordinates.x.toDouble(), coordinates.y.toDouble()), mode: MoveModes.staff);
+    }
+    clearBook();
+  }, titleString: 'Go to first wall'));
+  commandContext.book.push(Page(lines: lines, titleString: 'Wall Menu', onCancel: clearBook));
 }
