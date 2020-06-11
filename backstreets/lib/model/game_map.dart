@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../socials_factory.dart';
 import '../sound.dart';
 import 'exit.dart';
 import 'game_object.dart';
@@ -149,5 +150,28 @@ class GameMap extends ManagedObject<_GameMap> implements _GameMap {
   /// Broadcast that an object has moved.
   Future<void> broadcastMove(ManagedContext db, int id, double x, double y) async {
     await broadcastCommand(db, 'objectMoved', <dynamic>[id, x, y]);
+  }
+
+  /// Have this map emit a social.
+  Future<void> handleSocial(ManagedContext db, String social, List<GameObject> perspectives, {Sound sound}) async {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..where((GameObject o) => o.location).identifiedBy(id);
+    final List<GameObject> observers = await q.fetch();
+    final List<GameObject> objects = <GameObject>[];
+    for (final GameObject o in perspectives) {
+      if (o.id == null) {
+        objects.add(o);
+      } else {
+        objects.add(observers.firstWhere((GameObject obj) => obj.id == o.id));
+      }
+    }
+    final GameObject actor = objects[0];
+    final Point<double> coordinates = actor.coordinates;
+    socials.getStrings(social, objects).dispatch(observers, (GameObject obj, String s) {
+      if (sound != null) {
+        obj.sound(sound, coordinates: coordinates, id: actor.id);
+      }
+      obj.message(s);
+    } );
   }
 }

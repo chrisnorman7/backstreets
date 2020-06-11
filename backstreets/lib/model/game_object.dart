@@ -6,11 +6,7 @@ import 'dart:math';
 import 'package:aqueduct/aqueduct.dart';
 
 import '../commands/command_context.dart';
-
-import '../socials_factory.dart';
-
 import '../sound.dart';
-
 import 'account.dart';
 import 'connection_record.dart';
 import 'game_map.dart';
@@ -128,28 +124,6 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
     coordinates ??= Point<double>(x, y);
     volume ??= 1.0;
     commandContext?.sendSound(s, coordinates, volume: volume, id: id);
-  }
-
-  /// Have this object perform a social.
-  Future<void> doSocial(
-    ManagedContext db, String social, {
-      List<GameObject> perspectives,
-      List<GameObject> observers,
-      Sound sound
-    }
-  ) async {
-    if (observers == null) {
-      final Query<GameObject> q = Query<GameObject>(db)
-        ..where((GameObject o) => o.location).identifiedBy(location.id);
-      observers = await q.fetch();
-      perspectives ??= observers.where((GameObject o) => o.id == id).toList();
-    }
-    socials.getStrings(social, perspectives).dispatch(observers, (GameObject obj, String s) {
-      if (sound != null) {
-        obj.sound(sound, coordinates: Point<double>(x, y), id: id);
-      }
-      obj.message(s);
-    } );
   }
 
   @override

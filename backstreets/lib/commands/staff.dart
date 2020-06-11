@@ -35,8 +35,8 @@ Future<void> renameObject(CommandContext ctx) async {
 }
 
 Future<void> summonObject(CommandContext ctx) async {
-  GameObject c = await ctx.getCharacter();
-  Query<GameObject> q = Query<GameObject>(ctx.db)
+  final GameObject c = await ctx.getCharacter();
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..where((GameObject o) => o.id).equalTo(ctx.args[0] as int);
   if (!c.builder) {
     q.where((GameObject o) => o.account).isNull();
@@ -46,10 +46,5 @@ Future<void> summonObject(CommandContext ctx) async {
     return ctx.sendError('Invalid object ID.');
   }
   o = await o.move(ctx.db, c.x, c.y, destination: await ctx.getMap());
-  q = Query<GameObject>(ctx.db)
-    ..where((GameObject obj) => obj.location).identifiedBy(ctx.mapId);
-  final List<GameObject> observers = await q.fetch();
-  c = observers.firstWhere((GameObject obj) => obj.id == c.id);
-  o = observers.firstWhere((GameObject obj) => obj.id == o.id);
-  await c.doSocial(ctx.db, '%1N summon%1s %2n.', perspectives: <GameObject>[c, o], observers: observers);
+  await ctx.doSocial('%1N summon%1s %2n.', perspectives: <GameObject>[c, o]);
 }

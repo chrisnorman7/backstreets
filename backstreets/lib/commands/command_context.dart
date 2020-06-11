@@ -200,14 +200,14 @@ class CommandContext{
     }
     send('characterName', <String>[c.name]);
     send('characterSpeed', <int>[c.speed]);
-    send('characterTheta', <double>[c.theta]);
-    send('characterCoordinates', <double>[c.x, c.y]);
     send('builder', <bool>[c.builder]);
     send('admin', <bool>[c.admin]);
     await sendPlayerOptions();
     logger.info('Sent character details.');
     await sendMap();
-    await c.doSocial(db, c.connectSocial);
+    send('characterTheta', <double>[c.theta]);
+    send('characterCoordinates', <double>[c.x, c.y]);
+    await doSocial(c.connectSocial);
   }
 
   /// Tell the connected player about the map they are on.
@@ -320,5 +320,12 @@ class CommandContext{
      data.add(o.toJson());
     }
     send('listOfObjects', <List<Map<String, dynamic>>>[data]);
+  }
+
+  /// Have the attached character perform a social.
+  Future<void> doSocial(String social, {Sound sound, List<GameObject> perspectives}) async {
+    perspectives = <GameObject>[await getCharacter()];
+    final GameMap m = await getMap();
+    await m.handleSocial(db, social, perspectives, sound: sound);
   }
 }
