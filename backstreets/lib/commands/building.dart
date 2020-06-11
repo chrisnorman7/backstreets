@@ -470,3 +470,14 @@ Future<void> objectCanLeaveMap(CommandContext ctx) async {
   }
   ctx.message('Object ${o.canLeaveMap ? "can" : "cannot"} leave this map.');
 }
+
+Future<void> deleteObject(CommandContext ctx) async {
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.id).equalTo(ctx.args[0] as int)
+    ..where((GameObject o) => o.account).isNull();
+  final int deleted = await q.delete();
+  if (deleted == 0) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  ctx.message('Object deleted.');
+}

@@ -92,6 +92,12 @@ Page editObjectPage(Book b, GameObject o) {
         showMessage('Head to where you want to move the object, and pess enter.');
         commandContext.summonObjectId = o.id;
       }, titleString: 'Summon Object'),
+      Line(b, () {
+        b.push(Page.confirmPage(b, () {
+          clearBook();
+          commandContext.send('deleteObject', <int>[o.id]);
+        }));
+      }, titleString: 'Delete')
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');
