@@ -177,7 +177,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   /// Teleport this object to another map.
   ///
   /// Used by both staff commands, and the more prosaic `exit` command.
-  Future<GameObject> move(ManagedContext db, double destinationX, double destinationY, {GameMap destination}) async {
+  Future<GameObject> move(ManagedContext db, double destinationX, double destinationY, {GameMap destination, bool silent = false}) async {
     final Query<GameObject> q = Query<GameObject>(db)
       ..values.x = destinationX
       ..values.y = destinationY
@@ -193,7 +193,9 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
         ctx.map = destination;
         await ctx.sendMap();
       }
-      ctx.send('characterCoordinates', <double>[o.x, o.y]);
+      if (!silent) {
+        ctx.send('characterCoordinates', <double>[o.x, o.y]);
+      }
     }
     final GameMap m = await db.fetchObjectWithID<GameMap>(o.location.id);
     await m.broadcastMove(db, o.id, o.x, o.y);

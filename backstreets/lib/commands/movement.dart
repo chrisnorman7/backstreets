@@ -22,11 +22,12 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   final double y = (ctx.args[1] as num).toDouble();
   final GameObject c = await ctx.getCharacter();
   final GameMap m = await ctx.getMap();
-  if (!c.staff && !(await m.validCoordinates(ctx.db, Point<int>(x.floor(), y.floor())))) {
+  if (c.staff || await m.validCoordinates(ctx.db, Point<int>(x.floor(), y.floor()))) {
+    await c.move(ctx.db, x, y, silent: true);
+  } else {
     ctx.logger.warning('Tried to move to $x, $y.');
     return ctx.send('characterCoordinates', <double>[c.x, c.y]);
   }
-  await c.move(ctx.db, x, y);
 }
 
 /// The character has turned their player, now they're letting us know.
