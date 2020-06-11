@@ -123,7 +123,7 @@ void downArrow() => doArrowKey(Directions.south);
 void escapeKey() {
   if (validBook()) {
     commandContext.book.cancel();
-  } else if (builderOnly()&& commandContext.mapSectionResizer != null) {
+  } else if (commandContext.mapSectionResizer != null) {
     if (commandContext.mapSectionResizer.coordinates == commandContext.mapSectionResizer.defaultCoordinates) {
       showMessage('Stop dragging ${commandContext.mapSectionResizer.section.name}.');
       commandContext.mapSectionResizer = null;
@@ -131,7 +131,7 @@ void escapeKey() {
       commandContext.mapSectionResizer.updateCoordinates(commandContext.mapSectionResizer.defaultCoordinates);
       showMessage('Coordinates reset.');
     }
-  } else if (builderOnly() && commandContext.mapSectionMover!= null) {
+  } else if (commandContext.mapSectionMover!= null) {
     if (commandContext.mapSectionMover.hasMoved) {
       commandContext.mapSectionMover.restoreDefaults();
       commandContext.message('Original location restored.');
@@ -140,6 +140,9 @@ void escapeKey() {
       commandContext.message('Stop moving ${commandContext.mapSectionMover.section.name}.');
       commandContext.mapSectionMover = null;
     }
+  } else if (commandContext.summonObjectId != null) {
+    commandContext.message('Summon cancelled.');
+    commandContext.summonObjectId = null;
   } else {
     commandContext.book = Book(bookOptions)
       ..push(
