@@ -6,7 +6,6 @@ import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
 
-import '../game/tile.dart';
 import '../model/exit.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
@@ -53,10 +52,6 @@ Future<void> npcMove(ManagedContext db, int id) async {
       await e.use(db, o);
     } else if (await o.location.validCoordinates(db, tileCoordinates)) {
       o = await o.move(db, c.x, c.y);
-      if (!o.flying) {
-        final Tile t = tiles[s.tileName];
-        await o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, objectId: o.id);
-      }
     } else {
       // Turn a random amount.
       q = Query<GameObject>(db)

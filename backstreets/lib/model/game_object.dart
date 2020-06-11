@@ -6,10 +6,13 @@ import 'dart:math';
 import 'package:aqueduct/aqueduct.dart';
 
 import '../commands/command_context.dart';
+import '../game/tile.dart';
+import '../game/util.dart';
 import '../sound.dart';
 import 'account.dart';
 import 'connection_record.dart';
 import 'game_map.dart';
+import 'map_section.dart';
 import 'mixins.dart';
 import 'player_options.dart';
 
@@ -171,6 +174,11 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       }
     }
     final GameMap m = await db.fetchObjectWithID<GameMap>(o.location.id);
+    final MapSection s = await m.getCurrentSection(db, Point<int>(o.x.floor(), o.y.floor()));
+    if (!flying) {
+      final Tile t = tiles[s.tileName];
+      await o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, objectId: o.id, excludeIds: <int>[o.id]);
+    }
     await m.broadcastMove(db, o.id, o.x, o.y);
     return o;
   }
