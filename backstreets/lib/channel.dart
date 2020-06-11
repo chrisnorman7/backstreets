@@ -212,11 +212,11 @@ class BackstreetsChannel extends ApplicationChannel {
           logger.severe(s.toString());
           ctx.sendError(e.toString());
         }
-      },
-      onError: (dynamic error) => logger.warning(error),
+      }, onError: (dynamic error) => logger.warning(error),
       onDone: () async {
         CommandContext.instances.remove(ctx);
         if (ctx.characterId != null) {
+          GameObject.commandContexts.remove(ctx.characterId);
           final Query<ConnectionRecord> q = Query<ConnectionRecord>(ctx.db)
             ..values.disconnected = DateTime.now()
             ..where((ConnectionRecord c) => c.object).identifiedBy(ctx.characterId)

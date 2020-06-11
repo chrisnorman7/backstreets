@@ -93,6 +93,9 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
 
 /// An object in a game. Contained by a [GameMap] instance.
 class GameObject extends ManagedObject<_GameObject> implements _GameObject {
+  /// The command contexts that are logged in with characters.
+  static Map<int, CommandContext> commandContexts = <int, CommandContext>{};
+
   /// Get the coordinates of this object.
   Point<double> get coordinates => Point<double>(x, y);
 
@@ -105,11 +108,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   ///
   /// If no player is connected to this object, null is returned.
   CommandContext get commandContext {
-    final List<CommandContext> c = CommandContext.instances.where((CommandContext c) => c.characterId == id).toList();
-    if (c.isNotEmpty) {
-      return c.first;
-    }
-    return null;
+    return commandContexts[id];
   }
 
   /// Send a message to the socket which this object is connected to.

@@ -86,7 +86,13 @@ class CommandContext{
 
   /// Set [characterId] to the id of the provided [GameObject] instance.
   set character(GameObject c) {
+    if (characterId != null && GameObject.commandContexts.containsKey(characterId)) {
+      GameObject.commandContexts.remove(characterId);
+    }
     characterId = c?.id;
+    if (characterId != null) {
+      GameObject.commandContexts[characterId] = this;
+    }
   }
 
   /// Get the map this context's character is on.
