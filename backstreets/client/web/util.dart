@@ -337,6 +337,7 @@ void getInt(
     }
     args.add(value);
     commandContext.send(command, args);
+    resetFocus();
   }, showMessage, onCancel: resetFocus)
     ..addElement('value', element: e, value: getValue().toString(), label: title)
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
