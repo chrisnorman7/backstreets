@@ -7,6 +7,7 @@ import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
 import 'map_section.dart';
+import 'panned_sound.dart';
 
 /// Provides convolvers for maps and map sections.
 class Convolver {
@@ -66,9 +67,12 @@ class Convolver {
         if (commandContext.map != null) {
           commandContext.map.sections.forEach((int id, MapSection s) {
             if (s.ambience.sound != null) {
-              s.ambience.sound.sound.source.connectNode(convolver);
+              s.ambience.sound.panner.connectNode(convolver);
             }
           });
+          for (final PannedSound s in commandContext.map.pannedSounds) {
+            s.panner.connectNode(convolver);
+          }
         }
       });
     }
