@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
+import '../game/panned_sound.dart';
 import '../main.dart';
 import '../util.dart';
 
@@ -80,14 +81,16 @@ void echoSoundsMenu() {
   commandContext.book.push(Page(lines: lines, titleString: 'Echo Sounds', onCancel: clearBook));
 }
 
-void wallFilterDown() {
-  commandContext.options.wallFilterAmount = max(0, commandContext.options.wallFilterAmount - 100);
+void setWallFilterAmount(int amount) {
+  commandContext.options.wallFilterAmount = amount;
   commandContext.send('playerOption', <dynamic>['wallFilterAmount', commandContext.options.wallFilterAmount]);
   showMessage('Filter: ${commandContext.options.wallFilterAmount}.');
+  for (final PannedSound s in commandContext.map.pannedSounds) {
+    if (s.filter != null) {
+      s.filter.frequency.value= commandContext.options.wallFilterAmount;
+    }
+  }
 }
 
-void wallFilterUp() {
-  commandContext.options.wallFilterAmount += 100;
-  commandContext.send('playerOption', <dynamic>['wallFilterAmount', commandContext.options.wallFilterAmount]);
-  showMessage('Filter: ${commandContext.options.wallFilterAmount}.');
-}
+void wallFilterDown() => setWallFilterAmount(max(0, commandContext.options.wallFilterAmount - 1000));
+void wallFilterUp() => setWallFilterAmount(commandContext.options.wallFilterAmount + 1000);
