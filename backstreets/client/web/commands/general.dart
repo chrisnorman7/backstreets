@@ -8,7 +8,6 @@ import 'package:game_utils/game_utils.dart';
 import '../authentication.dart';
 import '../constants.dart';
 import '../game/game_object.dart';
-import '../main.dart';
 import '../menus/main_menu.dart';
 import 'command_context.dart';
 import 'login.dart';
@@ -53,7 +52,6 @@ void playerOptions(CommandContext ctx) {
     ..airbornElevate = data['airbornElevate'] as int
     ..wallFilterAmount = data['wallFilterAmount'] as int
     ..mouseSensitivity = data['mouseSensitivity'] as int;
-  showMessage(commandContext.options.mouseSensitivity.toString());
 }
 
 /// A list of objects has been sent.
