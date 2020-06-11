@@ -19,7 +19,7 @@ Page editObjectPage(Book b, GameObject o) {
         resetFocus();
         o.name = data['name'];
         commandContext.send('renameObject', <dynamic>[o.id, o.name]);
-      }, showMessage)
+      }, showMessage, onCancel: resetFocus)
         ..addElement(
           'name', label: 'Object Name', value: o.name,
           validator: notSameAsValidator(() => o.name, message: 'You cannot enter the same name.', onSuccess: notEmptyValidator)

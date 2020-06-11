@@ -209,6 +209,7 @@ void resetFocus() {
   if (commandContext != null && commandContext.book != null) {
     commandContext.book.showFocus();
   }
+  keyboard.releaseAll();
 }
 
 /// Used to drag [MapSection] coordinates.
