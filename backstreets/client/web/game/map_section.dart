@@ -201,4 +201,10 @@ class MapSectionMover {
       ..startY = startY
       ..endY = endY;
   }
+
+  /// Get the start coordinates.
+  Point<int> get startCoordinates => Point<int>(startX, startY);
+
+  /// Get the end coordinates.
+  Point<int> get endCoordinates => Point<int>(endX, endY);
 }

@@ -228,7 +228,7 @@ class CommandContext {
   ///
   /// If no coordinates are provided, use [coordinates].
   MapSection getCurrentSection([Point<int> c]) {
-    c ??= Point<int>(coordinates.x.floor(), coordinates.y.floor());
+    c ??= getIntCoordinates();
     final List<MapSection> matchingSections = <MapSection>[];
     map.sections.forEach((int id, MapSection s) {
       if (s.rect.containsPoint(c)) {

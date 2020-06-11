@@ -151,7 +151,7 @@ enum MoveModes {
 ///
 /// The function operates differently, depending on the value of the [mode] argument.
 void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal}) {
-  final Point<int> tileCoordinates = Point<int>(coordinates.x.floor(), coordinates.y.floor());
+  final Point<int> tileCoordinates = getIntCoordinates(coordinates);
   final MapSection oldSection = commandContext.getCurrentSection();
   final MapSection newSection = commandContext.getCurrentSection(tileCoordinates);
   final Wall wall = commandContext.map.walls[tileCoordinates];
@@ -229,7 +229,7 @@ void moveMapSection(Directions d) {
     ..section.startY += da.y
     ..section.endX += da.x
     ..section.endY += da.y;
-  commandContext.message(relativeDirections(Point<int>(commandContext.mapSectionMover.startX, commandContext.mapSectionMover.startY), Point<int>(commandContext.mapSectionMover.section.startX, commandContext.mapSectionMover.section.startY)).toString());
+  commandContext.message(relativeDirections(commandContext.mapSectionMover.startCoordinates, commandContext.mapSectionMover.endCoordinates).toString());
 }
 
 /// Instantly move the character.
@@ -279,7 +279,7 @@ PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, doubl
   }
   if (!dry) {
     coordinates ??= commandContext.coordinates;
-    final ConvolverNode convolver = commandContext.getCurrentConvolver(Point<int>(coordinates.x.floor(), coordinates.y.floor()));
+    final ConvolverNode convolver = commandContext.getCurrentConvolver(getIntCoordinates(coordinates));
     if (convolver != null) {
       (filter ?? gain).connectNode(convolver);
     }
@@ -300,7 +300,7 @@ PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, doubl
 /// Ping the objects nearby.
 void echoLocate([String url]) {
   url ??= commandContext.echoSounds[commandContext.options.echoSound];
-  final Point<int> startCoordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+  final Point<int> startCoordinates = getIntCoordinates();
   commandContext.map.walls.forEach((Point<int> coordinates, Wall w) {
     final double distance = startCoordinates.distanceTo(coordinates);
     if (distance <= commandContext.options.echoLocationDistance) {
@@ -340,4 +340,10 @@ void getInt(
   }, showMessage, onCancel: resetFocus)
     ..addElement('value', element: e, value: getValue().toString(), label: title)
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+}
+
+/// Get int coordinates.
+Point<int> getIntCoordinates([Point<double> c]) {
+  c ??= commandContext.coordinates;
+  return Point<int>(c.x.floor(), c.y.floor());
 }

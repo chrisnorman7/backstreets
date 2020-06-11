@@ -149,7 +149,7 @@ void buildWall() => commandContext.send('addWall', <String>[]);
 void buildBarricade () => commandContext.send('addBarricade', <String>[]);
 
 void wallMenu() {
-  final Point<int> coordinates = Point<int>(commandContext.coordinates.x.floor(), commandContext.coordinates.y.floor());
+  final Point<int> coordinates = getIntCoordinates();
   final Wall currentWall = commandContext.map.walls[coordinates];
   final List<Line> lines = <Line>[];
   if (currentWall == null) {
