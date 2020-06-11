@@ -175,7 +175,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
     }
     final GameMap m = await db.fetchObjectWithID<GameMap>(o.location.id);
     final MapSection s = await m.getCurrentSection(db, Point<int>(o.x.floor(), o.y.floor()));
-    if (!flying) {
+    if (s != null && !flying) {
       final Tile t = tiles[s.tileName];
       await o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, objectId: o.id, excludeIds: <int>[o.id]);
     }
