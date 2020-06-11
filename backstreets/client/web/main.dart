@@ -201,6 +201,7 @@ void main() {
       }
     });
     resetFocus();
+    keyboardArea.requestPointerLock();
   });
   document.onMouseDown.listen((MouseEvent e) {
     e.stopPropagation();
@@ -245,7 +246,6 @@ void main() {
       keyboard.release(hk.state.key);
     });
   }
-  keyboardArea.requestPointerLock();
   document.onMouseMove.listen((MouseEvent e) {
     if (commandContext != null) {
       e.stopPropagation();
