@@ -48,6 +48,10 @@ class _PlayerOptions with PrimaryKeyMixin {
   /// How much sounds on the other side of walls should be filtered.
   @Column(defaultValue: '9000')
   int wallFilterAmount;
+
+  /// The mouse sensitivity.
+  @Column(defaultValue: '5')
+  int mouseSensitivity;
 }
 
 /// A class to hold player options.

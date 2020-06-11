@@ -472,12 +472,16 @@ Future<void> objectCanLeaveMap(CommandContext ctx) async {
 }
 
 Future<void> deleteObject(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
   final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..where((GameObject o) => o.id).equalTo(ctx.args[0] as int)
+    ..where((GameObject o) => o.id).equalTo(id)
     ..where((GameObject o) => o.account).isNull();
   final int deleted = await q.delete();
   if (deleted == 0) {
     return ctx.sendError('Invalid object ID.');
   }
   ctx.message('Object deleted.');
+  if (moveTimers.containsKey(id)) {
+    moveTimers.remove(id);
+  }
 }

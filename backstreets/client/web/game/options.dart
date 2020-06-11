@@ -19,4 +19,7 @@ class Options {
 
   /// How much sounds on the other side of walls should be filtered.
   int wallFilterAmount;
+
+  /// The mouse sensitivity.
+  int mouseSensitivity;
 }

@@ -113,14 +113,16 @@ void main() {
       Hotkey(keyboard, 'k', ambienceVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of the map ambience'),
       Hotkey(keyboard, 'l', musicVolumeDown, shift: true, runWhen: validSounds, titleString: 'Reduce the volume of game music'),
       Hotkey(keyboard, 'l', musicVolumeUp, runWhen: validSounds, titleString: 'Increase the volume of game music'),
-      Hotkey(keyboard, 'h', echoLocationDistanceDown, shift: true, runWhen: validOptions, titleString: 'Decrease the distance the echo location system will work at'),
-      Hotkey(keyboard, 'h', echoLocationDistanceUp, runWhen: validOptions, titleString: 'Decrease the distance the echo location system will work at'),
-      Hotkey(keyboard, ':', echoLocationDistanceMultiplierDown, shift: true, runWhen: validOptions, titleString: 'Decrease the time before echoes are heard'),
-      Hotkey(keyboard, ';', echoLocationDistanceMultiplierUp, runWhen: validOptions, titleString: 'Increase the time before echoes are heard'),
+      Hotkey(keyboard, 'h', echoLocationDistanceDown, shift: true, runWhen: validSounds, titleString: 'Decrease the distance the echo location system will work at'),
+      Hotkey(keyboard, 'h', echoLocationDistanceUp, runWhen: validSounds, titleString: 'Decrease the distance the echo location system will work at'),
+      Hotkey(keyboard, ':', echoLocationDistanceMultiplierDown, shift: true, runWhen: validSounds, titleString: 'Decrease the time before echoes are heard'),
+      Hotkey(keyboard, ';', echoLocationDistanceMultiplierUp, runWhen: validSounds, titleString: 'Increase the time before echoes are heard'),
       Hotkey(keyboard, 'p', ping, runWhen: validSounds, titleString: 'Ping your surroundings'),
       Hotkey(keyboard, 'p', echoSoundsMenu, shift: true, runWhen: validOptions, titleString: 'Change your echo sound'),
-      Hotkey(keyboard, 'q', wallFilterDown, shift: true, titleString: 'Reduce the amount sounds that are blocked walls are filtered by'),
-      Hotkey(keyboard, 'q', wallFilterUp, titleString: 'Increase the amount sounds that are blocked walls are filtered by'),
+      Hotkey(keyboard, 'q', wallFilterDown, shift: true, runWhen: validSounds, titleString: 'Reduce the amount sounds that are blocked walls are filtered by'),
+      Hotkey(keyboard, 'q', wallFilterUp, runWhen: validSounds, titleString: 'Increase the amount sounds that are blocked walls are filtered by'),
+      Hotkey(keyboard, 'm', mouseSensitivityDown, shift: true, runWhen: validSounds, titleString: 'Reduce mouse sensitivity'),
+      Hotkey(keyboard, 'm', mouseSensitivityUp, runWhen: validSounds, titleString: 'Increase mouse sensitivity'),
 
       // Staff only hotkeys:
       Hotkey(keyboard, 'g', goto, runWhen: staffOnly, titleString: 'Jump to specific coordinates on the map'),
@@ -247,10 +249,17 @@ void main() {
     });
   }
   document.onMouseMove.listen((MouseEvent e) {
-    if (commandContext != null) {
+    if (commandContext?.options != null) {
       e.stopPropagation();
       e.preventDefault();
-      commandContext.theta = normaliseTheta(commandContext.theta + e.movement.x);
+      double t = commandContext.theta;
+      if (e.movement.x < 0) {
+        t -= commandContext.options.mouseSensitivity;
+      } else {
+        t += commandContext.options.mouseSensitivity;
+      }
+      commandContext.theta = normaliseTheta(t);
+      commandContext.sendTheta();
     }
   });
 }

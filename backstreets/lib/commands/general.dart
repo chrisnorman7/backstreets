@@ -46,6 +46,9 @@ Future<void> playerOption(CommandContext ctx) async {
     case 'wallFilterAmount':
       q.values.wallFilterAmount = value as int;
       break;
+    case 'mouseSensitivity':
+      q.values.mouseSensitivity = value as int;
+      break;
     default:
       return ctx.sendError('Invalid option name "$name".');
       break;

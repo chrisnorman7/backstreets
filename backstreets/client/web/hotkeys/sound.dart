@@ -94,3 +94,18 @@ void setWallFilterAmount(int amount) {
 
 void wallFilterDown() => setWallFilterAmount(max(0, commandContext.options.wallFilterAmount - 1000));
 void wallFilterUp() => setWallFilterAmount(commandContext.options.wallFilterAmount + 1000);
+
+/// Set mouse sensitivity.
+void setMouseSensitivity(int value) {
+  commandContext.options.mouseSensitivity = value;
+  commandContext.send('playerOption', <dynamic>['mouseSensitivity', commandContext.options.mouseSensitivity]);
+  showMessage('Mouse sensitivity set to $value.');
+}
+
+void mouseSensitivityDown() {
+  setMouseSensitivity(max(1, commandContext.options.mouseSensitivity - 1));
+}
+
+void mouseSensitivityUp() {
+  setMouseSensitivity(commandContext.options.mouseSensitivity + 1);
+}
