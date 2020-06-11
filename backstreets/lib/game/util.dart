@@ -17,17 +17,12 @@ class DivmodResult {
   num remainder;
 }
 
-/// Generate a random number between start and end inclusive.
-int randInt(int end, {int start = 0}) {
-  return random.nextInt(end) + start;
-}
-
 /// Return a random element from a list.
 ///
 ///
 /// This function doesn't check for an empty list.
 T randomElement<T>(List<T> items) {
-  return items[randInt(items.length)];
+  return items[random.nextInt(items.length)];
 }
 
 /// Convert a theta to a human readable string.

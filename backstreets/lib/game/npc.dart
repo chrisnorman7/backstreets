@@ -35,35 +35,36 @@ Future<void> npcMove(ManagedContext db, int id) async {
     if (o.location == null) {
       throw 'This object has no location.';
     }
-    final MapSection s = await o.location.getCurrentSection(db, Point<int>(o.x.round(), o.y.round()));
+    final MapSection s = await o.location.getCurrentSection(db, Point<int>(o.x.floor(), o.y.floor()));
     final Point<double> c = o.coordinatesInDirection(s.tileSize);
-    final Point<int> tileCoordinates = Point<int>(c.x.round(), c.y.round());
+    final Point<int> tileCoordinates = Point<int>(c.x.floor(), c.y.floor());
     final Query<Exit> exitQuery = Query<Exit>(db)
+      ..join(object: (Exit e) => e.destination)
       ..where((Exit e) => e.x).equalTo(tileCoordinates.x)
       ..where((Exit e) => e.y).equalTo(tileCoordinates.y)
-      ..where((Exit e) => e.location).identifiedBy(o.location.id)
-      ..join(object: (Exit e) => e.destination);
-    final List<Exit> exits = await exitQuery.fetch();
-    if (exits.isNotEmpty && o.useExitChance != null && randInt(o.useExitChance) == 0) {
-      final Exit e = randomElement<Exit>(exits);
-      if (e.destination == o.location || o.canLeaveMap) {
-        return e.use(db, o);
-      }
+      ..where((Exit e) => e.location).identifiedBy(o.location.id);
+    if (!o.canLeaveMap) {
+      exitQuery.where((Exit e) => e.destination).identifiedBy(o.location.id);
     }
-    if (await o.location.validCoordinates(db, tileCoordinates)) {
+    final List<Exit> exits = await exitQuery.fetch();
+    if (exits.isNotEmpty && o.useExitChance != null && random.nextInt(o.useExitChance) == 0) {
+      final Exit e = randomElement<Exit>(exits);
+      logger.info('Heading through ${e.name}.');
+      await e.use(db, o);
+    } else if (await o.location.validCoordinates(db, tileCoordinates)) {
       o = await o.move(db, c.x, c.y);
       if (!o.flying) {
         final Tile t = tiles[s.tileName];
-        o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, objectId: o.id);
+        await o.location.broadcastSound(db, randomElement<Sound>(t.footstepSounds), o.coordinates, objectId: o.id);
       }
     } else {
       // Turn a random amount.
       q = Query<GameObject>(db)
-        ..values.theta = randInt(360).toDouble()
+        ..values.theta = random.nextInt(360).toDouble()
         ..where((GameObject obj) => obj.id).equalTo(id);
       o = await q.updateOne();
     }
-    nextRun = randInt(o.maxMoveTime, start: o.speed);
+    nextRun = random.nextInt(o.maxMoveTime) + o.speed;
   }
   catch (e, s) {
     logger.severe(e.toString());
@@ -121,7 +122,7 @@ Future<void> npcPhrase(ManagedContext db, int id) async {
     if (o.location == null) {
       throw 'This object has no location.';
     }
-    nextRun = randInt(o.maxPhraseTime, start: o.minPhraseTime);
+    nextRun = random.nextInt(o.maxPhraseTime) + o.minPhraseTime;
     final List<Sound> phrase = phrases[o.phrase];
     final Sound s = randomElement(phrase);
     o.location.broadcastSound(db, s, o.coordinates, airborn: o.flying, objectId: o.id);
