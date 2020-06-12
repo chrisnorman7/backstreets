@@ -149,6 +149,7 @@ void builderMenu() {
                   commandContext.send('addBuilderPermission', <int>[o.id, commandContext.map.id]);
                 }, titleString: o.name));
               }
+              lines.sort((Line a, Line b) => a.getTitle().toLowerCase().compareTo(b.getTitle().toLowerCase()));
               commandContext.book.push(Page(lines: lines, titleString: 'Add Builder'));
             }, 'addMapBuilder');
           }, titleString: 'Add Builder')
