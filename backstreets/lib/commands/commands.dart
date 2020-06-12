@@ -1,6 +1,6 @@
 /// Used for storing commands.
 ///
-/// To create more commands, add them to [commands] dictionary.
+/// To create more commands, add them to the [commands] dictionary.
 ///
 /// ```
 /// commands['time'] = Command((CommandContext ctx) async => ctx.message('The current time is ${DateTime.now()}.'));
@@ -66,6 +66,7 @@ Map<String, Command> commands = <String, Command>{
   'action': Command(action),
   'resetPassword': Command(resetPassword),
   'connectedTime': Command(connectedTime),
+  'who': Command(who),
 
   // Login commands:
   'createAccount': Command(createAccount, authenticationType: AuthenticationTypes.anonymous),

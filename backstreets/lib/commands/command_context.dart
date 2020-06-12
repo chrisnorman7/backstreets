@@ -185,7 +185,7 @@ class CommandContext{
   ///
   /// I feel like this function should send one big data package, like [sendMap] does, but as player stuff is most likely only going to get sent once - when the player connects, it's probably not all that important.
   Future<void> sendCharacter() async {
-    final GameObject c = await getCharacter();
+    final GameObject c = await setConnected(true);
     for (final CommandContext ctx in CommandContext.instances) {
       if (ctx.characterId == c.id && ctx != this) {
         await ctx.socket.close(WebSocketStatus.policyViolation, 'Logging you in from somewhere else.');
@@ -326,5 +326,13 @@ class CommandContext{
      data.add(o.toJson());
     }
     send('listOfObjects', <List<Map<String, dynamic>>>[data]);
+  }
+
+  /// Set the connected state of the attached character, and return the character.
+  Future<GameObject> setConnected(bool value) {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..values.connected = value
+      ..where((GameObject o) => o.id).equalTo(characterId);
+    return q.updateOne();
   }
 }

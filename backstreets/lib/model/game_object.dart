@@ -92,6 +92,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   /// Whether or not this object can leave the current map.
   @Column(defaultValue: 'false')
   bool canLeaveMap;
+
+  /// Whether or not this object is connected.
+  @Column(defaultValue: 'false')
+  bool connected;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.

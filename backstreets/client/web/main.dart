@@ -83,6 +83,7 @@ void main() {
       escapeHotkey,
       enterHotkey,
       Hotkey(keyboard, 'z', showActions, titleString: 'Shows the possible actions for the current section of the map', runWhen: validMap),
+      Hotkey(keyboard, 'e', showWho, runWhen: validMap, titleString: 'Show who is connected'),
 
       // Menu hotkeys:
       Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),

@@ -260,3 +260,5 @@ void showActions() {
     showMessage('Actions: ${englishList(actions)}.');
   }
 }
+
+void showWho() => commandContext.send('who', null);

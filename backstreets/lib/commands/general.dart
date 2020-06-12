@@ -100,3 +100,19 @@ Future<void> connectedTime(CommandContext ctx) async {
   final Duration ct = await c.connectedDuration(ctx.db);
   ctx.message('Time connected: ${formatDuration(ct)}.');
 }
+
+Future<void> who(CommandContext ctx) async {
+  final List<String> here = <String>[];
+  final List<String> elsewhere = <String>[];
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.connected).equalTo(true)
+    ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
+  for (final GameObject o in await q.fetch()) {
+    if (o.location.id == ctx.mapId) {
+      here.add(o.name);
+    } else {
+      elsewhere.add(o.name);
+    }
+  }
+  ctx.message('There ${pluralise(here.length, "is", "are")} ${here.length} ${pluralise(here.length, "player")} on your map: ${englishList(here)}.\nThere ${pluralise(elsewhere.length, "is", "are")} ${elsewhere.length} ${pluralise(elsewhere.length, "player")} on other maps: ${englishList(elsewhere, emptyString: "Nobody")}.');
+}
