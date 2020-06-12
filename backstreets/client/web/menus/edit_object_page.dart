@@ -91,7 +91,7 @@ Page editObjectPage(Book b, GameObject o) {
         clearBook();
         showMessage('Head to where you want to move the object, and pess enter.');
         commandContext.summonObjectId = o.id;
-      }, titleString: 'Summon Object'),
+      }, titleString: 'Bring Object Here'),
       Line(b, () {
         b.push(Page.confirmPage(b, () {
           clearBook();
