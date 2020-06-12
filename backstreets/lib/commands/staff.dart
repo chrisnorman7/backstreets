@@ -26,10 +26,13 @@ Future<void> renameObject(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..values.name = name
     ..where((GameObject o) => o.id).equalTo(id);
-  if (c.builder) {
+  if (!c.admin) {
     q.where((GameObject o) => o.account).isNull();
   }
   final GameObject o = await q.updateOne();
+  if (c == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
   o.commandContext?.send('characterName', <String>[o.name]);
   ctx.message('Object rename.');
 }
