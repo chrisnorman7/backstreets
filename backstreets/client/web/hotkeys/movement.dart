@@ -97,3 +97,19 @@ void showExits() {
     showMessage('Exits: ${englishList(exits)}.', important: false);
   }
 }
+
+void nearestExit() {
+  final Point<int> coordinates = getIntCoordinates();
+  Exit x;
+  for (final Exit e in commandContext.map.exits.values) {
+    if (x == null || e.coordinates.distanceTo(coordinates) < x.coordinates.distanceTo(coordinates)) {
+      x = e;
+    }
+    if (x == null) {
+      commandContext.message('There are no visible exits.');
+    } else {
+      playSoundAtCoordinates(commandContext.echoSounds[commandContext.options.echoSound], coordinates: Point<double>(x.x.toDouble(), x.y.toDouble()), dry: true);
+      commandContext.message('The nearest exit is ${x.name}: ${relativeDirections(coordinates, x.coordinates)}.');
+    }
+  }
+}

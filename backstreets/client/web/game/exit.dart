@@ -1,6 +1,8 @@
 /// Provides the [Exit] class.
 library exit;
 
+import 'dart:math';
+
 import '../commands/command_context.dart';
 import '../constants.dart';
 import 'game_object.dart';
@@ -40,6 +42,9 @@ class Exit {
 
   /// Add permissions.
   Permissions permissions = Permissions();
+
+  /// Get the coordinates of this object.
+  Point<int> get coordinates => Point<int>(x, y);
 
   /// Return this object as a map.
   ///
