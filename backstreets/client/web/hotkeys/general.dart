@@ -70,13 +70,26 @@ void messages() {
 }
 
 void hotkeys() {
+  final List<Hotkey> hotkeys = <Hotkey>[];
+  for (final Hotkey hk in keyboard.hotkeys) {
+    if (hk.runWhen == null || hk.runWhen()) {
+      hotkeys.add(hk);
+    }
+  }
   commandContext.book = Book(bookOptions);
-  final Page hotkeysPage = Page.hotkeysPage(keyboard.hotkeys, commandContext.book, beforeRun: clearBook, onCancel: doCancel);
-  hotkeysPage.lines.insert(0, Line.checkboxLine(commandContext.book, () => '${commandContext.helpMode ? "Disable" : "Enable"} help mode', () => commandContext.helpMode, (bool value) {
+  final List<Line> lines = <Line>[Line.checkboxLine(commandContext.book, () => '${commandContext.helpMode ? "Disable" : "Enable"} help mode', () => commandContext.helpMode, (bool value) {
     commandContext.helpMode = value;
     commandContext.message('Help mode ${value ? "enabled" : "disabled"}.');
-  }));
-  commandContext.book.push(hotkeysPage);
+  })];
+  for (final Hotkey hk in hotkeys) {
+    lines.add(Line(commandContext.book, () {
+      clearBook();
+      keyboard.heldKeys.add(hk.state);
+      hk.run();
+      keyboard.releaseAll();
+    }, titleFunc: () => '${hk.state}: ${hk.getTitle()}'));
+  }
+  commandContext.book.push(Page(lines: lines, titleString: 'Hotkeys', onCancel: doCancel));
 }
 
 /// What to do with the arrow keys.
