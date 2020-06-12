@@ -76,6 +76,7 @@ void hotkeys() {
       hotkeys.add(hk);
     }
   }
+  hotkeys.sort((Hotkey a, Hotkey b) => a.state.toString().compareTo(b.state.toString()));
   commandContext.book = Book(bookOptions);
   final List<Line> lines = <Line>[Line.checkboxLine(commandContext.book, () => '${commandContext.helpMode ? "Disable" : "Enable"} help mode', () => commandContext.helpMode, (bool value) {
     commandContext.helpMode = value;
