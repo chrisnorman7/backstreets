@@ -53,7 +53,7 @@ void sectionSize() {
   if (s == null) {
     return showMessage('You are not currently on a section.');
   }
-  showMessage('${s.textSize}.', important: false);
+  showMessage('Section size: ${s.textSize}: ${s.startX}, ${s.startY} to ${s.endX}, ${s.endY}.', important: false);
 }
 
 void mapSize() {
@@ -81,7 +81,7 @@ void mapSize() {
     }
   });
   final Rectangle<int> rect = Rectangle<int>.fromPoints(Point<int>(startX, startY), Point<int>(endX, endY));
-  showMessage('${rect.width + 1} x ${rect.height + 1}: $startX, $endX to $endX, $endY.', important: false);
+  showMessage('Map size: ${rect.width + 1} x ${rect.height + 1}: $startX, $endX to $endX, $endY.', important: false);
 }
 
 void showExits() {
