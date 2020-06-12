@@ -12,7 +12,7 @@ import 'mixins.dart';
 
 /// The exits table. To deal with exits directly, use the [Exit] class instead.
 @Table(name: 'exits')
-class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin, PermissionsMixin {
+class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin, AdminMixin {
   @Relate(#exits)
   GameMap location;
 
@@ -32,6 +32,10 @@ class _Exit with PrimaryKeyMixin, NameMixin, IntCoordinatesMixin, PermissionsMix
   /// The social that is seen when this exit is used.
   @Column(defaultValue: "'%1N walk%1s through %2n.'")
   String useSocial;
+
+  /// Whether or not prospective objects must be builders to traverse this exit.
+  @Column(defaultValue: 'false')
+  bool builder;
 }
 
 /// An exit between two maps.

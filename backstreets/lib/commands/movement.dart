@@ -22,7 +22,7 @@ Future<void> characterCoordinates(CommandContext ctx) async {
   final double y = (ctx.args[1] as num).toDouble();
   final GameObject c = await ctx.getCharacter();
   final GameMap m = await ctx.getMap();
-  if (c.staff || await m.validCoordinates(ctx.db, Point<int>(x.floor(), y.floor()))) {
+  if (await c.getStaff(ctx.db) || await m.validCoordinates(ctx.db, Point<int>(x.floor(), y.floor()))) {
     await c.move(ctx.db, x, y, silent: true);
   } else {
     ctx.logger.warning('Tried to move to $x, $y.');
@@ -69,7 +69,7 @@ Future<void> exit(CommandContext ctx) async{
     ctx.sendError('Invalid exit ID.');
   } else if (e.admin && ! c.admin) {
     ctx.message('Only admins are allowed past this point.');
-  } else if (e.builder && !c.builder) {
+  } else if (e.builder && !(await c.canBuild(ctx.db))) {
     ctx.message('Only builders are allowed past this point.');
   } else {
     await e.use(ctx.db, c);

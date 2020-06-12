@@ -190,14 +190,11 @@ class BackstreetsChannel extends ApplicationChannel {
             // When checking AuthenticationTypes.authenticated, check to see if they have no player.
             } else if (command.authenticationType == AuthenticationTypes.authenticated && character == null) {
               throw 'Attempting to call an authenticated command without being connected to a player.';
-            // When checking AuthenticationTypes.builder, check to see if they have no player, or their player's builder field isn't true.
-            } else if (command.authenticationType == AuthenticationTypes.builder&& character?.builder!= true) {
-              throw 'Attempting to call a builder command without being a builder.';
             // When checking AuthenticationTypes.admin, check to see if they have no player, or their player's admin field isn't true.
             } else if (command.authenticationType == AuthenticationTypes.admin && character?.admin != true) {
               throw 'Attempting to call an admin command without being an administrator.';
             // When checking AuthenticationTypes.staff, check to see if they have no player, or their player's admin and builder fields isn't true.
-            } else if (command.authenticationType == AuthenticationTypes.staff && character?.staff != true) {
+            } else if (command.authenticationType == AuthenticationTypes.staff && !(await character.getStaff(ctx.db))) {
               throw 'Attempting to call a staff command without being a member of staff.';
             }
             ctx.args = arguments;

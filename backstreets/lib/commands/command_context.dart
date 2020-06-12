@@ -206,7 +206,7 @@ class CommandContext{
     }
     send('characterName', <String>[c.name]);
     send('characterSpeed', <int>[c.speed]);
-    send('builder', <bool>[c.builder]);
+    send('builder', <bool>[await c.canBuild(db)]);
     send('admin', <bool>[c.admin]);
     await sendPlayerOptions();
     logger.info('Sent character details.');
@@ -228,6 +228,8 @@ class CommandContext{
     final Query<GameMap> mapQuery = Query<GameMap>(db)
       ..where((GameMap m) => m.id).equalTo(mapId);
     final GameMap m = await mapQuery.fetchOne();
+    final GameObject c = await getCharacter();
+    send('builder', <bool>[await c.canBuild(db, m)]);
     final Map<String, dynamic> mapData = <String, dynamic>{
       'id': m.id,
       'name': m.name,
@@ -320,10 +322,10 @@ class CommandContext{
   }
 
   /// Send a list of objects to the player.
-  void sendObjects(List<GameObject> objects) {
+  Future<void> sendObjects(List<GameObject> objects) async {
     final List<Map<String, dynamic>> data = <Map<String, dynamic>>[];
     for (final GameObject o in objects) {
-     data.add(o.toJson());
+     data.add(await o.toJson(db));
     }
     send('listOfObjects', <List<Map<String, dynamic>>>[data]);
   }

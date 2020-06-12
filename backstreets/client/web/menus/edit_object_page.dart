@@ -29,11 +29,6 @@ Page editObjectPage(Book b, GameObject o) {
   ];
   if (o.permissions != null) {
     lines.addAll(<Line>[
-      Line.checkboxLine(b, () => '${o.permissions.builder ? "Unset" : "Set"} Builder', () => o.permissions.builder, (bool value) {
-        resetFocus();
-        o.permissions.builder = value;
-        commandContext.send('setObjectPermission', <dynamic>[o.id, 'builder', value]);
-      }),
       Line.checkboxLine(b, () => '${o.permissions.admin ? "Unset" : "Set"} Admin', () => o.permissions.admin, (bool value) {
         resetFocus();
         o.permissions.admin = value;
@@ -43,6 +38,13 @@ Page editObjectPage(Book b, GameObject o) {
   }
   lines.addAll(
     <Line>[
+      Line(b, () => commandContext.send('addBuilderPermission', <int>[o.id, commandContext.map.id]), titleString: 'Allow Building Here'),
+      Line(b, () {
+        b.push(Page.confirmPage(b, () {
+          b.pop();
+          commandContext.send('revokeBuilderPermissions', <int>[o.id]);
+        }));
+      }, titleString: 'Revoke All Builder Permissions'),
       Line(b, () {
         getInt('Object Speed', () => o.speed, (int value) => o.speed = value, 'objectSpeed', id: o.id, min: 1, allowNull: false);
       }, titleFunc: () => 'Speed (${o.speed})'),

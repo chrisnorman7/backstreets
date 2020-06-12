@@ -31,6 +31,6 @@ void adminMenu() {
             })
           );
         }, titleString: 'Delete Map'),
-      ], onCancel: clearBook)
+      ], onCancel: doCancel)
     );
 }

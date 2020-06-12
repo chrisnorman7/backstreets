@@ -17,7 +17,7 @@ class Account {
   String username;
 }
 
-/// The permissions for a [Player] object.
+/// The permissions for a [GameObject].
 class Permissions {
   Permissions({this.builder = false, this.admin = false});
 
@@ -37,7 +37,7 @@ class Permissions {
 ///
 /// As created by the [playerList] command.
 class GameObject {
-  /// Create a player.
+  /// Create a player or other object.
   GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account);
 
   /// The id of the Character.

@@ -54,13 +54,9 @@ mixin AmbienceDistanceMixin {
   int ambienceDistance;
 }
 
-/// Add permissions flags to any object.
-mixin PermissionsMixin {
+/// Add an admin flag to any object.
+mixin AdminMixin {
   /// Whether or not this object is an admin.
   @Column(defaultValue: 'false')
   bool admin;
-
-  /// Whether or not this object is a builder.
-  @Column(defaultValue: 'false')
-  bool builder;
 }

@@ -65,8 +65,8 @@ void main() {
 
       // Building hotkeys:
       builderMenuHotkey,
-      Hotkey(keyboard, '[', buildWall, runWhen: builderOnly, titleString: 'Build a wall at your current coordinates'),
-      Hotkey(keyboard, ']', buildBarricade, runWhen: builderOnly, titleString: 'Build a barricade at your current coordinates'),
+      Hotkey(keyboard, '[', buildWall, runWhen: staffOnly, titleString: 'Build a wall at your current coordinates'),
+      Hotkey(keyboard, ']', buildBarricade, runWhen: staffOnly, titleString: 'Build a barricade at your current coordinates'),
       wallMenuHotkey,
 
       // General hotkeys:

@@ -2,6 +2,7 @@
 library admin;
 
 import 'package:aqueduct/aqueduct.dart';
+import 'package:backstreets/model/builder_permission.dart';
 
 import '../model/game_map.dart';
 import '../model/game_object.dart';
@@ -13,7 +14,7 @@ Future<void> adminPlayerList(CommandContext ctx) async {
     ..join(object: (GameObject o) => o.account)
     ..join(object: (GameObject o) => o.location)
     ..where((GameObject o) => o.account).isNotNull();
-  ctx.sendObjects(await q.fetch());
+  await ctx.sendObjects(await q.fetch());
 }
 
 Future<void> setObjectPermission(CommandContext ctx) async {
@@ -23,9 +24,7 @@ Future<void> setObjectPermission(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..where((GameObject o) => o.account).isNotNull()
     ..where((GameObject o) => o.id).equalTo(id);
-  if (permission == 'builder') {
-    q.values.builder = value;
-  } else if (permission == 'admin') {
+  if (permission == 'admin') {
     q.values.admin = value;
   } else {
     return ctx.sendError('Invalid permission name "$permission".');
@@ -74,4 +73,15 @@ Future<void> deleteGameMap(CommandContext ctx) async {
   }
   CommandContext.broadcast('deleteGameMap', <int>[id]);
   ctx.message('Map deleted.');
+}
+
+Future<void> revokeBuilderPermissions(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Query<BuilderPermission> q = Query<BuilderPermission>(ctx.db)
+    ..where((BuilderPermission p) => p.object).identifiedBy(id);
+  final int deleted = await q.delete();
+  ctx.message('Builder permissions deleted: $deleted.');
+  if (GameObject.commandContexts.containsKey(id)) {
+    GameObject.commandContexts[id].send('builder', <bool>[false]);
+  }
 }

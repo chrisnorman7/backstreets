@@ -80,8 +80,8 @@ final Hotkey coordinatesHotkey = Hotkey(keyboard, 'c', coordinates,runWhen: vali
 final Hotkey leftSnapHotkey = Hotkey(keyboard, 'a', leftSnap, runWhen: validMap, titleString: 'Snap left to the nearest cardinal direction');
 final Hotkey rightSnapHotkey = Hotkey(keyboard, 'd', rightSnap, runWhen: validMap, titleString: 'Snap right to the nearest cardinal direction');
 final Hotkey sayHotkey = Hotkey(keyboard, "'", say, runWhen: validMap, titleString: 'Say something to other players nearby');
-final Hotkey builderMenuHotkey = Hotkey(keyboard, 'b', builderMenu, runWhen: builderOnly, titleString: 'Builder menu');
-final Hotkey wallMenuHotkey = Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: builderOnly, titleString: 'Wall menu');
+final Hotkey builderMenuHotkey = Hotkey(keyboard, 'b', builderMenu, runWhen: staffOnly, titleString: 'Builder menu');
+final Hotkey wallMenuHotkey = Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: staffOnly, titleString: 'Wall menu');
 final Hotkey adminMenuHotkey = Hotkey(keyboard, 'backspace', adminMenu, runWhen: adminOnly, titleString: 'Admin Menu');
 final Hotkey teleportHotkey = Hotkey(keyboard, 't', teleport, runWhen: staffOnly, titleString: 'Teleport to another map');
 

@@ -4,13 +4,13 @@ library run_condigiont;
 import 'constants.dart';
 
 /// Returns true if the player is connected to a builder character.
-bool builderOnly() => commandContext != null && commandContext.book == null && commandContext.permissions.builder == true;
+bool _builderOnly() => commandContext != null && commandContext.book == null && commandContext.permissions.builder == true;
 
 /// Returns true if the player is connected to an admin character.
 bool adminOnly() => commandContext != null && commandContext.book == null && commandContext.permissions.admin == true;
 
 /// Returns true if the player is connected to an admin or builder character.
-bool staffOnly() => builderOnly() || adminOnly();
+bool staffOnly() => _builderOnly() || adminOnly();
 
 /// Returns true if the map has been loaded, and there is no book in the way.
 bool validMap() => commandContext != null && commandContext.map != null && commandContext.book == null;

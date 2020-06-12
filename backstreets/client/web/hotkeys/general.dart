@@ -112,7 +112,7 @@ void doArrowKey(Directions d) {
       default:
         throw 'Unhandled direction: $d.';
     }
-  } else if (builderOnly()) {
+  } else if (staffOnly()) {
     if (commandContext.mapSectionResizer != null) {
       resizeMapSection(d);
     } else if (commandContext.mapSectionMover != null) {
@@ -237,7 +237,7 @@ void enterKey() {
       }
     }, titleString: 'Use Exit'));
   }
-  if (builderOnly()) {
+  if (staffOnly()) {
     if (commandContext.mapSectionResizer != null || commandContext.mapSectionMover != null) {
       lines.add(Line(b, () {
         clearBook();

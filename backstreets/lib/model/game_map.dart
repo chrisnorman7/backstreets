@@ -7,6 +7,7 @@ import 'package:aqueduct/aqueduct.dart';
 
 import '../socials_factory.dart';
 import '../sound.dart';
+import 'builder_permission.dart';
 import 'exit.dart';
 import 'game_object.dart';
 import 'map_section.dart';
@@ -20,6 +21,9 @@ import 'mixins.dart';
 class _GameMap with PrimaryKeyMixin, NameMixin, AmbienceMixin {
   /// All the [GameObject] instances on this map.
   ManagedSet<GameObject> objects;
+
+  /// References to all the [GameObject]s who can build on this map.
+  ManagedSet<BuilderPermission> builderPermissions;
 
   /// All the [MapWall] instances on this map.
   ManagedSet<MapWall> walls;

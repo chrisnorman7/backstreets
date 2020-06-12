@@ -10,6 +10,7 @@ import '../game/tile.dart';
 import '../game/util.dart';
 import '../sound.dart';
 import 'account.dart';
+import 'builder_permission.dart';
 import 'connection_record.dart';
 import 'game_map.dart';
 import 'map_section.dart';
@@ -20,7 +21,7 @@ import 'player_options.dart';
 ///
 /// To deal with game objects directly, use the [GameObject] class instead.
 @Table(name: 'game_objects')
-class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, AmbienceMixin, PermissionsMixin {
+class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, AmbienceMixin, AdminMixin {
   /// The options for this object.
   PlayerOptions options;
 
@@ -34,6 +35,9 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
 
   /// The connections which have been made to this object.
   ManagedSet<ConnectionRecord> connectionRecords;
+
+  /// Used to find out what [GameMap]s this object can build on.
+  ManagedSet<BuilderPermission> builderPermissions;
 
   /// The number of times this object has died.
   ///
@@ -110,10 +114,37 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   /// Get the coordinates of this object.
   Point<double> get coordinates => Point<double>(x, y);
 
+  /// See if there is a builder permission for this object.
+  Future<BuilderPermission> getBuilderPermission(ManagedContext db, [GameMap m]) async {
+    m ??= location;
+    final Query<BuilderPermission> q = Query<BuilderPermission>(db)
+      ..where((BuilderPermission p) => p.object).identifiedBy(id)
+      ..where((BuilderPermission p) => p.location).identifiedBy(location.id);
+    return q.fetchOne();
+  }
+
+  /// Returns true if this object can build on [where], flase otherwise.
+  ///
+  /// If [where] is null, [location] is used instead.
+  Future<bool> canBuild(ManagedContext db, [GameMap where]) async {
+    if ((await getBuilderPermission(db, where)) == null) {
+      return false;
+    }
+    return true;
+  }
+
   /// Get the staff status of this object.
   ///
   /// An object is considered a member of staff if it is either a builder or an admin.
-  bool get staff => admin || builder;
+  Future<bool> getStaff(ManagedContext db) async {
+    if (admin) {
+      return true;
+    }
+    if (await getBuilderPermission(db) != null) {
+      return true;
+    }
+    return false;
+  }
 
   /// Get the command context which is connected to this object.
   ///
@@ -211,7 +242,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   /// Convert this object to json.
   ///
   /// Used for sending to a connection.
-  Map<String, dynamic> toJson() {
+  Future<Map<String, dynamic>> toJson(ManagedContext db) async {
     return <String, dynamic>{
       'id': id,
       'name': name,
@@ -225,8 +256,8 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'minPhraseTime': minPhraseTime,
       'maxPhraseTime': maxPhraseTime,
       'flying': flying,
-      'builder': builder,
       'admin': admin,
+      'builder': await canBuild(db),
       'accountId': account?.id,
       'username': account?.username,
       'useExitChance': useExitChance,
