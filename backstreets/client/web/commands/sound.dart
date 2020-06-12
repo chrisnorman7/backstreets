@@ -33,7 +33,14 @@ void sound(CommandContext ctx) {
 
 void ambiences(CommandContext ctx) {
   final Map<dynamic, dynamic> data = ctx.args[0] as Map<dynamic, dynamic>;
-  data.forEach((dynamic name, dynamic url) => ctx.ambiences[name as String] = url as String);
+  final List<String> names = <String>[];
+  for (final dynamic name in data.keys) {
+    names.add(name as String);
+  }
+  names.sort((String a, String b) => a.toUpperCase().compareTo(b.toUpperCase()));
+  for (final String name in names) {
+    ctx.ambiences[name] = data[name] as String;
+  }
 }
 
 void impulses(CommandContext ctx) {
