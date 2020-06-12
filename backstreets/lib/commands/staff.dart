@@ -79,7 +79,7 @@ Future<void> addBuilderPermission(CommandContext ctx) async {
   }
   o.message('You are now allowed to build on ${m.name}.');
   ctx.message('${o.name} can now build on ${m.name}.');
-  if (o.location == m && GameObject.commandContexts.containsKey(o.id)) {
+  if (o.location.id == m.id && GameObject.commandContexts.containsKey(o.id)) {
     GameObject.commandContexts[o.id].send('builder', <bool>[true]);
   }
 }
@@ -104,7 +104,7 @@ Future<void> removeBuilderPermission(CommandContext ctx) async {
   }
   o.message('You are no longer allowed to build on ${m.name}.');
   ctx.message('${o.name} can no longer build on ${m.name}.');
-  if (o.location == m && GameObject.commandContexts.containsKey(o.id)) {
+  if (o.location.id == m.id && GameObject.commandContexts.containsKey(o.id)) {
     GameObject.commandContexts[o.id].send('builder', <bool>[false]);
   }
 }
