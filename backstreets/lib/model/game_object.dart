@@ -191,6 +191,15 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
     return Point<double>(x + (distance * sin(rads)), y + (distance * cos(rads)));
   }
 
+  /// Perform a social.
+  Future<void> doSocial(ManagedContext db, String social, {Sound sound, List<GameObject> others}) async {
+    final List<GameObject> perspectives = <GameObject>[this];
+    if (others != null) {
+      others.forEach(perspectives.add);
+    }
+    await location.handleSocial(db, social, perspectives, sound: sound);
+  }
+
   /// Convert this object to json.
   ///
   /// Used for sending to a connection.

@@ -1,7 +1,7 @@
 /// Provides social commands.
 library socials;
 
-
+import '../model/game_object.dart';
 import '../socials_factory.dart';
 
 import 'command_context.dart';
@@ -12,5 +12,6 @@ Future<void> say(CommandContext ctx) async {
   if (text.isEmpty) {
     return ctx.message('You say nothing. Good job!');
   }
-  await ctx.doSocial('%1N say%1s: "$text"', sound: socialSounds['say']);
+  final GameObject c = await ctx.getCharacter();
+  await c.doSocial(ctx.db, '%1N say%1s: "$text"', sound: socialSounds['say']);
 }

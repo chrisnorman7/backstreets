@@ -174,10 +174,11 @@ class BackstreetsChannel extends ApplicationChannel {
           }
           final String name = data[0] as String;
           final List<dynamic> arguments = data[1] as List<dynamic>;
+          GameObject character;
           if (commands.containsKey(name)) {
             final Command command = commands[name];
             final Account account = await ctx.getAccount();
-            final GameObject character = await ctx.getCharacter();
+            character = await ctx.getCharacter();
             ///Let's check that the player has the right level of authentication.
             //
             // When checking AuthenticationTypes.anonymous, we only need to check ctx.account, since if they have a player, and no account, then there's a larger bug going on.

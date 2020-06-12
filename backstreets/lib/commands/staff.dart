@@ -46,5 +46,5 @@ Future<void> summonObject(CommandContext ctx) async {
     return ctx.sendError('Invalid object ID.');
   }
   o = await o.move(ctx.db, c.x, c.y, destination: await ctx.getMap());
-  await ctx.doSocial('%1N summon%1s %2n.', perspectives: <GameObject>[c, o]);
+  await c.doSocial(ctx.db, '%1N summon%1s %2n.', others: <GameObject>[o]);
 }
