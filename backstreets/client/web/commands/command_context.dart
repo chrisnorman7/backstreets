@@ -287,9 +287,9 @@ class CommandContext {
   void updateLastMoved() => lastMoved = timestamp();
 
   /// Used to call a map action to the server.
-  void sendAction(MapSection s, String action) {
+  void sendAction(String action) {
     if (canMove) {
-      send('action', <dynamic>[s.id, action]);
+      send('action', <String>[action]);
       updateLastMoved();
     }
   }

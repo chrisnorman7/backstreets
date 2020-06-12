@@ -164,7 +164,7 @@ void escapeKey() {
                 } else {
                   showMessage('Passwords do not match.');
                 }
-              }, showMessage, onCancel: resetFocus, submitLabel: 'Change Password')
+              }, showMessage, onCancel: doCancel, submitLabel: 'Change Password')
                 ..addElement('oldPassword', label: 'Old password', validator: notEmptyValidator, element: PasswordInputElement())
                 ..addElement('newPassword', label: 'New password', validator: notEmptyValidator, element: PasswordInputElement())
                 ..addElement('confirmPassword', label: 'Confirm password', element: PasswordInputElement())
@@ -177,7 +177,12 @@ void escapeKey() {
 }
 
 void enterKey() {
+  if (validBook()) {
+    return commandContext.book.activate();
+  }
   final List<Exit> exits = <Exit>[];
+  final Book b = Book(bookOptions);
+  final List<Line> lines = <Line>[];
   if (commandContext?.map != null) {
     commandContext.map.exits.forEach((int id, Exit e) {
       if (e.x == commandContext.coordinates.x.floor() && e.y == commandContext.coordinates.y.floor()) {
@@ -185,63 +190,82 @@ void enterKey() {
       }
     });
   }
-  if (validBook()) {
-    commandContext.book.activate();
-  } else if (commandContext?.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
-    final MapSection s = commandContext.getCurrentSection();
-    if (s.actions.length == 1) {
-      commandContext.sendAction(s, s.actions[0]);
-    } else {
-      commandContext.book = Book(bookOptions);
-      final List<Line> lines = <Line>[];
-      for (final String name in s.actions) {
-        lines.add(
-          Line(
-            commandContext.book, () {
-              commandContext.sendAction(s, name);
+  if (commandContext?.map != null && commandContext.getCurrentSection()?.actions?.isNotEmpty == true) {
+    lines.add(Line(b, () {
+      final MapSection s = commandContext.getCurrentSection();
+      if (s.actions.length == 1) {
+        clearBook();
+        commandContext.sendAction(s.actions[0]);
+      } else {
+        final List<Line> lines = <Line>[];
+        for (final String name in s.actions) {
+          lines.add(
+            Line(b, () {
               clearBook();
-            }, titleString: commandContext.actions[name]
-          )
-        );
+              commandContext.sendAction(name);
+            }, titleString: commandContext.actions[name])
+          );
+        }
+        b.push(Page(lines: lines, titleString: 'Actions', onCancel: doCancel));
       }
-      commandContext.book.push(Page(lines: lines, titleString: 'Actions', onCancel: clearBook));
-    }
-  } else if (exits.isNotEmpty) {
-    if (exits.length == 1) {
-      exits[0].use(commandContext);
-    } else {
-      commandContext.book = Book(bookOptions)
-        ..push(selectExitPage(commandContext.book, exits, (Exit e) {
+    }, titleString: 'Perform Action'));
+  }
+  if (exits.isNotEmpty) {
+    lines.add(Line(b, () {
+      if (exits.length == 1) {
+        clearBook();
+        exits[0].use(commandContext);
+      } else {
+        b.push(selectExitPage(b, exits, (Exit e) {
           clearBook();
           e.use(commandContext);
-        }, onCancel: clearBook));
-    }
-  } else if (builderOnly()) {
+        }, onCancel: doCancel));
+      }
+    }, titleString: 'Use Exit'));
+  }
+  if (builderOnly()) {
     if (commandContext.mapSectionResizer != null || commandContext.mapSectionMover != null) {
-      commandContext.book = Book(bookOptions)
-        ..push(mapSectionPage(commandContext.book, commandContext.mapSectionResizer == null? commandContext.mapSectionMover.section : commandContext.mapSectionResizer.section, commandContext, onUpload: () {
+      lines.add(Line(b, () {
+        clearBook();
+        b.push(mapSectionPage(b, commandContext.mapSectionResizer == null? commandContext.mapSectionMover.section : commandContext.mapSectionResizer.section, commandContext, onUpload: () {
           commandContext.section = null;
           clearBook();
-        }, onCancel: () {
-          showMessage('Cancelled.');
-          clearBook();
-        }));
-      commandContext.mapSectionResizer = null;
-      commandContext.mapSectionMover = null;
-    } else if (commandContext.exit != null) {
-      commandContext.exit
-        ..destinationId = commandContext.map.id
-        ..destinationX = commandContext.coordinates.x.floor()..destinationY = commandContext.coordinates.y.floor()
-        ..destinationY = commandContext.coordinates.y.floor()..destinationY = commandContext.coordinates.y.floor();
-      if (commandContext.exit.id == null) {
-        commandContext.send('addExit', <Map<String, dynamic>>[commandContext.exit.toJson()]);
-      } else {
-        commandContext.exit.update();
-      }
-      commandContext.exit = null;
-    } else if (commandContext.summonObjectId != null) {
-      commandContext.send('summonObject', <int>[commandContext.summonObjectId]);
-      commandContext.summonObjectId = null;
+        }, onCancel: doCancel));
+        commandContext.mapSectionResizer = null;
+        commandContext.mapSectionMover = null;
+      }, titleString: 'Finish Resizing ${commandContext.mapSectionResizer.section.name}'));
+    }
+    if (commandContext.exit != null) {
+      lines.add(Line(b, () {
+        clearBook();
+        commandContext.exit
+          ..destinationId = commandContext.map.id
+          ..destinationX = commandContext.coordinates.x.floor()..destinationY = commandContext.coordinates.y.floor()
+          ..destinationY = commandContext.coordinates.y.floor()..destinationY = commandContext.coordinates.y.floor();
+        if (commandContext.exit.id == null) {
+          commandContext.send('addExit', <Map<String, dynamic>>[commandContext.exit.toJson()]);
+        } else {
+          commandContext.exit.update();
+        }
+        commandContext.exit = null;
+      }, titleString: 'Finish ${commandContext.exit.id == null ? "Adding" : "Editing"} ${commandContext.exit.name ?? "Exit"}'));
+    }
+    if (commandContext.summonObjectId != null) {
+      lines.add(Line(b, () {
+        clearBook();
+        commandContext.send('summonObject', <int>[commandContext.summonObjectId]);
+        commandContext.summonObjectId = null;
+      }, titleString: 'Finish Summoning'));
+    }
+  }
+  if (lines.isEmpty) {
+    showMessage('Nothing to do.', important: false);
+  } else {
+    commandContext.book = b;
+    if (lines.length == 1) {
+      lines[0].func();
+    } else {
+      b.push(Page(lines: lines, titleString: 'Actions', onCancel: doCancel));
     }
   }
 }

@@ -1,6 +1,8 @@
 /// Contains general commands.
 library general;
 
+import 'dart:math';
+
 import 'package:aqueduct/aqueduct.dart';
 
 import '../actions/action.dart';
@@ -57,18 +59,11 @@ Future<void> playerOption(CommandContext ctx) async {
 }
 
 Future<void> action(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final String name = ctx.args[1] as String;
+  final String name = ctx.args[0] as String;
   final GameObject c = await ctx.getCharacter();
   final int x = c.x.floor();
   final int y = c.y.floor();
-  final Query<MapSection> mapSectionQuery = Query<MapSection>(ctx.db)
-    ..where((MapSection s) => s.id).equalTo(id)
-    ..where((MapSection s) => s.startX).greaterThanEqualTo(x)
-    ..where((MapSection s) => s.startY).greaterThanEqualTo(y)
-    ..where((MapSection s) => s.endX).lessThanEqualTo(x)
-    ..where((MapSection s) => s.endY).lessThanEqualTo(y);
-  final MapSection s = await mapSectionQuery.fetchOne();
+  final MapSection s = await c.location.getCurrentSection(ctx.db, Point<int>(x, y));
   if (s == null) {
     return ctx.sendError('Invalid section ID.');
   }
