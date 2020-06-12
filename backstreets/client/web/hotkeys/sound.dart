@@ -43,25 +43,25 @@ void musicVolumeUp() {
 void echoLocationDistanceDown() {
   commandContext.options.echoLocationDistance = max(1, commandContext.options.echoLocationDistance - 1);
   commandContext.send('playerOption', <dynamic>['echoLocationDistance', commandContext.options.echoLocationDistance]);
-  showMessage('Echo location distance ${commandContext.options.echoLocationDistance}.');
+  showMessage('Echo location distance ${commandContext.options.echoLocationDistance}.', important: false);
 }
 
 void echoLocationDistanceUp() {
   commandContext.options.echoLocationDistance++;
   commandContext.send('playerOption', <dynamic>['echoLocationDistance', commandContext.options.echoLocationDistance]);
-  showMessage('Echo location distance ${commandContext.options.echoLocationDistance}.');
+  showMessage('Echo location distance ${commandContext.options.echoLocationDistance}.', important: false);
 }
 
 void echoLocationDistanceMultiplierDown() {
   commandContext.options.echoLocationDistanceMultiplier = max(5, commandContext.options.echoLocationDistanceMultiplier - 5);
   commandContext.send('playerOption', <dynamic>['echoLocationDistanceMultiplier', commandContext.options.echoLocationDistanceMultiplier]);
-  showMessage('Echo location distance multiplier ${commandContext.options.echoLocationDistanceMultiplier}.');
+  showMessage('Echo location distance multiplier ${commandContext.options.echoLocationDistanceMultiplier}.', important: false);
 }
 
 void echoLocationDistanceMultiplierUp() {
   commandContext.options.echoLocationDistanceMultiplier += 5;
   commandContext.send('playerOption', <dynamic>['echoLocationDistanceMultiplier', commandContext.options.echoLocationDistanceMultiplier]);
-  showMessage('Echo location distance multiplier ${commandContext.options.echoLocationDistanceMultiplier}.');
+  showMessage('Echo location distance multiplier ${commandContext.options.echoLocationDistanceMultiplier}.', important: false);
 }
 
 void ping() => echoLocate();
@@ -84,7 +84,7 @@ void echoSoundsMenu() {
 void setWallFilterAmount(int amount) {
   commandContext.options.wallFilterAmount = amount;
   commandContext.send('playerOption', <dynamic>['wallFilterAmount', commandContext.options.wallFilterAmount]);
-  showMessage('Filter: ${commandContext.options.wallFilterAmount}.');
+  showMessage('Filter: ${commandContext.options.wallFilterAmount}.', important: false);
   for (final PannedSound s in commandContext.map.pannedSounds) {
     if (s.filter != null) {
       s.filter.frequency.value= commandContext.options.wallFilterAmount;
@@ -99,7 +99,7 @@ void wallFilterUp() => setWallFilterAmount(commandContext.options.wallFilterAmou
 void setMouseSensitivity(int value) {
   commandContext.options.mouseSensitivity = value;
   commandContext.send('playerOption', <dynamic>['mouseSensitivity', commandContext.options.mouseSensitivity]);
-  showMessage('Mouse sensitivity set to $value.');
+  showMessage('Mouse sensitivity set to $value.', important: false);
 }
 
 void mouseSensitivityDown() {

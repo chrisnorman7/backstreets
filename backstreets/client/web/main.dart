@@ -147,7 +147,7 @@ void main() {
       e.hidden = true;
     }
     final AudioContext audio = AudioContext();
-    final SoundPool sounds = SoundPool(audio, showMessage: showMessage);
+    final SoundPool sounds = SoundPool(audio, showMessage: (String text) => showMessage(text, important: false));
     sounds.audioContext.listener
       ..upX.value = 0
       ..upY.value = 0
