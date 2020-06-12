@@ -7,6 +7,7 @@ import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
 import '../game/exit.dart';
+import '../game/game_object.dart';
 import '../game/map_reference.dart';
 import '../game/map_section.dart';
 import '../game/wall.dart';
@@ -135,10 +136,35 @@ void builderMenu() {
       }, titleString: 'Map Menu'),
       Line(commandContext.book, () {
         commandContext.getObjectList(() => editObjects(allowAddObject: true), 'getObjects');
-      }, titleString: 'Objects')
+      }, titleString: 'Objects'),
+      Line(commandContext.book, () => commandContext.getObjectList(() {
+        final List<Line> lines = <Line>[
+          Line(commandContext.book, () {
+            commandContext.getObjectList(() {
+              final List<Line> lines = <Line>[];
+              for (final GameObject o in commandContext.objects) {
+                lines.add(Line(commandContext.book, () {
+                  commandContext.book.pop();
+                  commandContext.book.pop();
+                  commandContext.send('addBuilderPermission', <int>[o.id, commandContext.map.id]);
+                }, titleString: o.name));
+              }
+              commandContext.book.push(Page(lines: lines, titleString: 'Add Builder'));
+            }, 'addMapBuilder');
+          }, titleString: 'Add Builder')
+        ];
+        for (final GameObject o in commandContext.objects) {
+          lines.add(Line(commandContext.book, () {
+            commandContext.book.pop();
+            commandContext.send('removeBuilderPermission', <int>[o.id, commandContext.map.id]);
+          }, titleString: o.name));
+        }
+        commandContext.book.push(Page(lines: lines, titleString: 'Builders', onCancel: doCancel));
+      }, 'getMapBuilders'), titleString: 'Builders'),
     ], titleString: 'Building', onCancel: () {
       showMessage('Done.');
       clearBook();
+      resetFocus();
     }
   );
   commandContext.book.push(page);

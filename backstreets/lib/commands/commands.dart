@@ -90,4 +90,7 @@ Map<String, Command> commands = <String, Command>{
   'renameObject': Command(renameObject, authenticationType: AuthenticationTypes.staff),
   'summonObject': Command(summonObject, authenticationType: AuthenticationTypes.staff),
   'addBuilderPermission': Command(addBuilderPermission, authenticationType: AuthenticationTypes.staff),
+  'removeBuilderPermission': Command(removeBuilderPermission, authenticationType: AuthenticationTypes.staff),
+  'getMapBuilders': Command(getMapBuilders, authenticationType: AuthenticationTypes.staff),
+  'addMapBuilder': Command(addMapBuilder, authenticationType: AuthenticationTypes.staff),
 };

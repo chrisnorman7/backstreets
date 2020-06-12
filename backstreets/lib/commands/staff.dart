@@ -57,7 +57,7 @@ Future<void> addBuilderPermission(CommandContext ctx) async {
   final int objectId = ctx.args[0] as int;
   final int mapId = ctx.args[1] as int;
   final GameObject o = await ctx.db.fetchObjectWithID<GameObject>(objectId);
-  if (o == null) {
+  if (o == null || o.account == null) {
     return ctx.sendError('Invalid object ID.');
   }
   final GameMap m = await ctx.db.fetchObjectWithID<GameMap>(mapId);
@@ -82,4 +82,49 @@ Future<void> addBuilderPermission(CommandContext ctx) async {
   if (o.location == m && GameObject.commandContexts.containsKey(o.id)) {
     GameObject.commandContexts[o.id].send('builder', <bool>[true]);
   }
+}
+
+Future<void> removeBuilderPermission(CommandContext ctx) async {
+  final int objectId = ctx.args[0] as int;
+  final int mapId = ctx.args[1] as int;
+  final GameObject o = await ctx.db.fetchObjectWithID<GameObject>(objectId);
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  final GameMap m = await ctx.db.fetchObjectWithID<GameMap>(mapId);
+  if (m == null) {
+    return ctx.sendError('Invalid map ID.');
+  }
+  final Query<BuilderPermission> q = Query<BuilderPermission>(ctx.db)
+    ..where((BuilderPermission p) => p.object).identifiedBy(objectId)
+    ..where((BuilderPermission p) => p.location).identifiedBy(mapId);
+  final int deleted = await q.delete();
+  if (deleted == 0) {
+    return ctx.sendError('${o.name} could not build on ${m.name} in the first place.');
+  }
+  o.message('You are no longer allowed to build on ${m.name}.');
+  ctx.message('${o.name} can no longer build on ${m.name}.');
+  if (o.location == m && GameObject.commandContexts.containsKey(o.id)) {
+    GameObject.commandContexts[o.id].send('builder', <bool>[false]);
+  }
+}
+
+Future<void> getMapBuilders(CommandContext ctx) async {
+  final Query<BuilderPermission> q = Query<BuilderPermission>(ctx.db)
+    ..join(object: (BuilderPermission p) => p.object)
+    ..where((BuilderPermission p) => p.location).identifiedBy(ctx.mapId);
+  await ctx.sendObjects(<GameObject>[for (final BuilderPermission p in await q.fetch()) p.object]);
+}
+
+Future<void> addMapBuilder(CommandContext ctx) async {
+  final GameMap m = await ctx.getMap();
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.account).isNotNull();
+  final List<GameObject> objects = <GameObject>[];
+  for (final GameObject o in await q.fetch()) {
+    if (!(await o.canBuild(ctx.db, m))) {
+      objects.add(o);
+    }
+  }
+  await ctx.sendObjects(objects);
 }

@@ -27,7 +27,7 @@ void account(CommandContext ctx) {
     lines.add(
       Line(
         commandContext.book, () {
-          commandContext.book = null;
+          clearBook();
           ctx.message('Loading...');
           ctx.send('connectCharacter', <int>[id]);
         }, titleString: name
@@ -54,7 +54,7 @@ void account(CommandContext ctx) {
           }, showMessage,
           subTitle: 'Enter the name for your new character',
           submitLabel: 'Create Character',
-          cancellable: true, onCancel: resetFocus
+          cancellable: true, onCancel: doCancel
         )
           ..addElement('name', label: 'Character Name', validator: notEmptyValidator)
           ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);

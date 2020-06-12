@@ -167,6 +167,7 @@ void main() {
     socket.onOpen.listen((Event e) {
       authenticationStage = AuthenticationStages.anonymous;
       keyboardArea.focus();
+      keyboard.releaseAll();
       commandContext = CommandContext(socket, showMessage, sounds);
       bookOptions = BookOptions(sounds, (String text) => showMessage(text, important: false));
       commandContext.book = Book(bookOptions)
