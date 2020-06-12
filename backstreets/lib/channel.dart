@@ -217,7 +217,8 @@ class BackstreetsChannel extends ApplicationChannel {
       onDone: () async {
         CommandContext.instances.remove(ctx);
         if (ctx.characterId != null) {
-          await ctx.setConnected(false);
+          final GameObject c = await ctx.setConnected(false);
+          await c.doSocial(ctx.db, c.disconnectSocial);
           GameObject.commandContexts.remove(ctx.characterId);
           final Query<ConnectionRecord> q = Query<ConnectionRecord>(ctx.db)
             ..values.disconnected = DateTime.now()

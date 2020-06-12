@@ -65,6 +65,10 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   @Column(defaultValue: "'%1N %1has connected.'")
   String connectSocial;
 
+  /// The social which is used when this object disconnects from the game.
+  @Column(defaultValue: "'%1N %1has disconnected.'")
+  String disconnectSocial;
+
   /// The phrase directory used by this object.
   ///
   /// Set to null for no phrase.
