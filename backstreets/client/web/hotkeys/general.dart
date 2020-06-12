@@ -57,6 +57,7 @@ void lastMessage() {
 }
 
 void messages() {
+  commandContext.book = Book(bookOptions);
   final List<Line> lines = <Line>[];
   for (final Element e in messagesDiv.children.reversed) {
     lines.add(
@@ -65,16 +66,12 @@ void messages() {
       )
     );
   }
-  commandContext.book = Book(bookOptions)
-    ..push(Page(titleString: 'Messages', lines: lines, onCancel: clearBook));
+  commandContext.book.push(Page(titleString: 'Messages', lines: lines, onCancel: doCancel));
 }
 
 void hotkeys() {
   commandContext.book = Book(bookOptions);
-  final Page hotkeysPage = Page.hotkeysPage(keyboard.hotkeys, commandContext.book, beforeRun: clearBook, onCancel: () {
-    clearBook();
-    resetFocus();
-  });
+  final Page hotkeysPage = Page.hotkeysPage(keyboard.hotkeys, commandContext.book, beforeRun: clearBook, onCancel: doCancel);
   hotkeysPage.lines.insert(0, Line.checkboxLine(commandContext.book, () => '${commandContext.helpMode ? "Disable" : "Enable"} help mode', () => commandContext.helpMode, (bool value) {
     commandContext.helpMode = value;
     commandContext.message('Help mode ${value ? "enabled" : "disabled"}.');
