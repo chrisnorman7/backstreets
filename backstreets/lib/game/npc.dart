@@ -48,7 +48,6 @@ Future<void> npcMove(ManagedContext db, int id) async {
     final List<Exit> exits = await exitQuery.fetch();
     if (exits.isNotEmpty && o.useExitChance != null && random.nextInt(o.useExitChance) == 0) {
       final Exit e = randomElement<Exit>(exits);
-      logger.info('Heading through ${e.name}.');
       await e.use(db, o);
     } else if (await o.location.validCoordinates(db, tileCoordinates)) {
       o = await o.move(db, c.x, c.y);
