@@ -1,0 +1,1 @@
+clear && git pull && webdev build --no-release
