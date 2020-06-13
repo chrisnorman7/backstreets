@@ -112,6 +112,7 @@ void builderMenu() {
               Line(commandContext.book, () {
                   commandContext.book = null;
                 FormBuilder('Rename Map', (Map<String, String> data) {
+                  resetFocus();
                   commandContext.send('renameMap', <String>[data['name']]);
                 }, showMessage, subTitle: 'Enter the new name for this map.', onCancel: resetFocus)
                   ..addElement(
