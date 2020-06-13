@@ -58,6 +58,9 @@ void sectionSize() {
 
 void mapSize() {
   int startX, startY, endX, endY;
+  if (commandContext.map.sections.isEmpty) {
+    return showMessage('This map is empty.', important: false);
+  }
   commandContext.map.sections.forEach((int id, MapSection s) {
     if (startX == null) {
       startX = s.startX;
