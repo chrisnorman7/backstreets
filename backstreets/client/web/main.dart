@@ -21,6 +21,12 @@ import 'menus/main_menu.dart';
 import 'run_conditions.dart';
 import 'util.dart';
 
+/// The div containing [startButton].
+final Element startDiv = querySelector('#startDiv');
+
+/// The button which should start everything off.
+final Element startButton = querySelector('#startButton');  final Element mainDiv = querySelector('#main');
+
 /// Set the document title. [state] will be shown in square brackets.
 void setTitle({String state}) {
   document.title = 'Backstreets';
@@ -42,6 +48,86 @@ void showMessage(String text, {bool important = true}) {
   }
   rememberLastMessage = important;
   messageArea.innerText = text;
+}
+
+/// The URL to use for websockets.
+///
+///Doesn't include the "ws" part, as that is changeable.
+final String socketUrl = '${window.location.hostname}:8888/ws';
+
+/// The websocket to use.
+WebSocket socket;
+
+/// A function to build a socket.
+void createSocket(String url, [bool reconnect = true]) {
+  socket = WebSocket(url)
+    ..onOpen.listen(onOpen)
+    ..onMessage.listen(onMessage)
+    ..onClose.listen((CloseEvent e) {
+      if (connectedAt == null && reconnect) {
+        createSocket('ws://$socketUrl', false);
+      } else {
+        onClose(e);
+      }
+    });
+}
+
+/// The time [socket] connected at.
+DateTime connectedAt;
+
+/// The soundpool to use.
+SoundPool sounds;
+
+/// The callback to run when the websocket gets opened.
+void onOpen(Event e) {
+  connectedAt = DateTime.now();
+  authenticationStage = AuthenticationStages.anonymous;
+  keyboardArea.focus();
+  keyboard.releaseAll();
+  commandContext = CommandContext(socket, showMessage, sounds);
+  commandContext.book = Book(bookOptions)
+    ..push(mainMenu());
+  setTitle(state: 'Connected');
+}
+
+/// The callback to call when [socket] closes.
+void onClose(CloseEvent e) {
+  startButton.innerText = 'Reconnect';
+  document.exitPointerLock();
+  if (connectedAt == null) {
+    showMessage('Connection failed. The server seems to be down.');
+  } else {
+    showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
+    connectedAt = null;
+  }
+  authenticationStage = null;
+  setTitle(state: 'Disconnected');
+  if (commandContext?.map != null) {
+    commandContext.map.stop();
+  }
+  commandContext = null;
+  mainDiv.hidden = true;
+  startDiv.hidden = false;
+  startButton.focus();
+}
+
+/// The callback for when [socket] receives a message.
+void onMessage(MessageEvent e) {
+  final List<dynamic> data = jsonDecode(e.data as String) as List<dynamic>;
+  final String commandName = data[0] as String;
+  final List<dynamic> commandArgs = data[1] as List<dynamic>;
+  if (commands.containsKey(commandName)) {
+    commandContext.args = commandArgs;
+    final CommandType command = commands[commandName];
+    try {
+      command(commandContext);
+    }
+    catch (e, s) {
+      commandContext.message('${e.toString()}\n${s.toString()}');
+    }
+  } else {
+    commandContext.message('Unrecognised command: $commandName.');
+  }
 }
 
 /// Main entry point.
@@ -138,75 +224,21 @@ void main() {
     }
   });
   keyboardArea.onKeyUp.listen((KeyboardEvent e) => keyboard.release(e.key.toLowerCase()));
-  final Element startDiv = querySelector('#startDiv');
-  final Element startButton = querySelector('#startButton');
-  final Element mainDiv = querySelector('#main');
   startDiv.hidden = false;
   startButton.onClick.listen((Event event) {
     for (final Element e in <Element>[adminControls, bookControls, builderControls, staffControls, standardControls]) {
       e.hidden = true;
     }
-    final AudioContext audio = AudioContext();
-    final SoundPool sounds = SoundPool(audio, showMessage: (String text) => showMessage(text, important: false));
-    sounds.audioContext.listener
-      ..upX.value = 0
-      ..upY.value = 0
-      ..upZ.value = 1;
+    final AudioContext audio = AudioContext()
+      ..listener.upZ.value = 1;
+    sounds = SoundPool(audio, showMessage: (String text) => showMessage(text, important: false));
     sounds.playSound('sounds/general/start.wav');
     startDiv.hidden = true;
     mainDiv.hidden = false;
-    final CheckboxInputElement tls = querySelector('#tls') as CheckboxInputElement;
-    String prefix;
-    if (tls.checked == true) {
-      prefix = 'wss';
-    } else {
-      prefix = 'ws';
-    }
-    final WebSocket socket = WebSocket('$prefix://${window.location.hostname}:8888/ws');
+    bookOptions = BookOptions(sounds, (String text) => showMessage(text, important: false));
     setTitle(state: 'Connecting');
-    socket.onOpen.listen((Event e) {
-      authenticationStage = AuthenticationStages.anonymous;
-      keyboardArea.focus();
-      keyboard.releaseAll();
-      commandContext = CommandContext(socket, showMessage, sounds);
-      bookOptions = BookOptions(sounds, (String text) => showMessage(text, important: false));
-      commandContext.book = Book(bookOptions)
-        ..push(mainMenu());
-      setTitle(state: 'Connected');
-    });
-    socket.onClose.listen((CloseEvent e) {
-      startButton.innerText = 'Reconnect';
-      document.exitPointerLock();
-      showMessage('Connection lost: ${e.reason.isNotEmpty ? e.reason : "No reason given."} (${e.code})');
-      authenticationStage = null;
-      setTitle(state: 'Disconnected');
-      if (commandContext?.map != null) {
-        commandContext.map.stop();
-      }
-      commandContext = null;
-      mainDiv.hidden = true;
-      startDiv.hidden = false;
-      startButton.focus();
-    });
-    socket.onMessage.listen((MessageEvent e) async {
-      final List<dynamic> data = jsonDecode(e.data as String) as List<dynamic>;
-      final String commandName = data[0] as String;
-      final List<dynamic> commandArgs = data[1] as List<dynamic>;
-      if (commands.containsKey(commandName)) {
-        commandContext.args = commandArgs;
-        final CommandType command = commands[commandName];
-        try {
-          command(commandContext);
-        }
-        catch (e, s) {
-          commandContext.message('${e.toString()}\n${s.toString()}');
-        }
-      } else {
-        commandContext.message('Unrecognised command: $commandName.');
-      }
-    });
+    createSocket('wss://$socketUrl');
     resetFocus();
-    keyboardArea.requestPointerLock();
   });
   document.onMouseDown.listen((MouseEvent e) {
     e.stopPropagation();
