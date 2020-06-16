@@ -46,6 +46,7 @@ Map<String, Command> commands = <String, Command>{
   'setPopCoordinates': Command(setPopCoordinates, authenticationType: AuthenticationTypes.staff),
   'addMapSectionAction': Command(addMapSectionAction, authenticationType: AuthenticationTypes.staff),
   'removeMapSectionAction': Command(removeMapSectionAction, authenticationType: AuthenticationTypes.staff),
+  'editMapSectionAction': Command(editMapSectionAction, authenticationType: AuthenticationTypes.staff),
   'addExit': Command(addExit, authenticationType: AuthenticationTypes.staff),
   'editExit': Command(editExit, authenticationType: AuthenticationTypes.staff),
   'deleteExit': Command(deleteExit, authenticationType: AuthenticationTypes.staff),

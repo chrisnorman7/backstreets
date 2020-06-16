@@ -4,17 +4,16 @@ library building;
 import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
-import 'package:backstreets/game/npc.dart';
+
 import '../actions/actions.dart';
+import '../game/npc.dart';
 import '../model/exit.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/map_section_action.dart';
 import '../model/map_wall.dart';
-
 import '../sound.dart';
-
 import 'command_context.dart';
 
 /// Renames the map the connected object is on.
@@ -222,10 +221,7 @@ Future<void> setPopCoordinates(CommandContext ctx) async {
 Future<void> addMapSectionAction(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final String name = ctx.args[1] as String;
-  if (!actions.containsKey(name)) {
-    return ctx.sendError('Invalid action name.');
-  }
-  final MapSection s = await ctx.db.fetchObjectWithID(id);
+  final MapSection s = await ctx.db.fetchObjectWithID<MapSection>(id);
   if (s == null) {
     return ctx.sendError('Invalid map section ID.');
   }
@@ -234,23 +230,59 @@ Future<void> addMapSectionAction(CommandContext ctx) async {
     ..values.name = name;
   final MapSectionAction a = await q.insert();
   final GameMap m = await ctx.getMap();
-  await m.broadcastCommand(ctx.db, 'addMapSectionAction', <dynamic>[a.section.id, a.name]);
+  await m.broadcastCommand(ctx.db, 'addMapSectionAction', <Map<String, dynamic>>[a.toJson()]);
   ctx.message('Action added.');
 }
 
 Future<void> removeMapSectionAction(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final String name = ctx.args[1] as String;
+  final int sectionId = ctx.args[0] as int;
+  final int actionId = ctx.args[1] as int;
   final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
-    ..where((MapSectionAction a) => a.section).identifiedBy(id)
-    ..where((MapSectionAction a) => a.name).equalTo(name);
+    ..where((MapSectionAction a) => a.section).identifiedBy(sectionId)
+    ..where((MapSectionAction a) => a.id).equalTo(actionId);
   final int deleted = await q.delete();
   if (deleted == 0) {
     return ctx.sendError('No such action.');
   }
-  final GameMap m = await ctx.getMap();
-  await m.broadcastCommand(ctx.db, 'removeMapSectionAction', <dynamic>[id, name]);
+  final MapSection s = await ctx.db.fetchObjectWithID<MapSection>(sectionId);
+  final GameMap m = await ctx.db.fetchObjectWithID<GameMap>(s.location.id);
+  await m.broadcastCommand(ctx.db, 'removeMapSectionAction', <dynamic>[sectionId, actionId]);
   ctx.message('Actions removed: $deleted.');
+}
+
+Future<void> editMapSectionAction(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int sectionId = data['sectionId'] as int;
+  final Query<MapSection> mapSectionQuery = Query<MapSection>(ctx.db)
+    ..where((MapSection s) => s.id).equalTo(sectionId)
+    ..where((MapSection s) => s.location).identifiedBy(ctx.mapId);
+  final MapSection s = await mapSectionQuery.fetchOne();
+  if (s == null) {
+    return ctx.sendError('Invalid section ID.');
+  }
+  final String functionName = data['functionName'] as String;
+  if (functionName != null && !actions.containsKey(functionName)) {
+    return ctx.sendError('Invalid function name.');
+  }
+  final String sound = data['sound'] as String;
+  if (sound != null && !actionSounds.containsKey(sound)) {
+    return ctx.sendError('Invalid sound.');
+  }
+  final int id = data['id'] as int;
+  final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
+    ..where((MapSectionAction a) => a.id).equalTo(id)
+    ..values.section = s
+    ..values.name = data['name'] as String
+    ..values.functionName = functionName
+    ..values.social = data['social'] as String
+    ..values.sound = sound;
+  final MapSectionAction a = await q.updateOne();
+  if (a == null) {
+    return ctx.sendError('Invalid section ID.');
+  }
+  final GameMap m = await ctx.getMap();
+await m.broadcastCommand(ctx.db, 'addMapSectionAction', <Map<String, dynamic>>[a.toJson()]);
+ctx.message('Action updated.');
 }
 
 Future<void> addExit(CommandContext ctx) async {

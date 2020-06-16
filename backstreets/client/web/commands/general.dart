@@ -96,8 +96,17 @@ void listOfObjects(CommandContext ctx) {
   }
 }
 
-void addAction(CommandContext ctx) {
+void actionFunctions(CommandContext ctx) {
+  ctx.actionFunctions.clear();
+  for (final dynamic name in ctx.args[0] as List<dynamic>) {
+    ctx.actionFunctions.add(name as String);
+  }
+}
+
+void actionSounds(CommandContext ctx) {
   final String name = ctx.args[0] as String;
-  final String description = ctx.args[1] as String;
-  ctx.actions[name] = description;
+  ctx.actionSounds[name] = <String>[];
+  for (final dynamic filename in ctx.args[1] as List<dynamic>) {
+    ctx.actionSounds[name].add(filename as String);
+  }
 }

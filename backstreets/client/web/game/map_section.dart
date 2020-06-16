@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:game_utils/game_utils.dart';
 
+import 'action.dart';
 import 'ambience.dart';
 import 'convolver.dart';
 
@@ -48,7 +49,7 @@ class MapSection {
   Ambience ambience;
 
   /// The actions that this section can call.
-  List<String> actions = <String>[];
+  Map<int, Action> actions = <int, Action>{};
 
   /// The bounding coordinates.
   Rectangle<int> get rect => Rectangle<int>.fromPoints(startCoordinates, endCoordinates);

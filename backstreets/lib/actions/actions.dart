@@ -7,16 +7,20 @@
 /// ```
 library actions;
 
+import 'package:aqueduct/aqueduct.dart';
+
 import '../commands/command_context.dart';
+import '../game/util.dart';
+import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
-import 'action.dart';
 
 /// The actions dictionary.
-Map<String, Action> actions = <String, Action>{
-  'splash': Action('Splash in the water', (MapSection s , CommandContext ctx) async {
+Map<String, void Function(MapSection, CommandContext)> actions = <String, void Function(MapSection, CommandContext)>{
+  'Random Teleport': (MapSection s, CommandContext ctx) async {
     final GameObject c = await ctx.getCharacter();
-    await c.doSocial(ctx.db, '%1N splash%1es in ${s.name.toLowerCase()}.');
-  }),
-  'look': Action('Look around', (MapSection s, CommandContext ctx) async => ctx.message('You look around.')),
+    final Query<GameMap> q = Query<GameMap>(ctx.db);
+    final GameMap m = randomElement<GameMap>(await q.fetch());
+    await c.move(ctx.db, m.popX.toDouble(), m.popY.toDouble(), destination: m);
+  }
 };

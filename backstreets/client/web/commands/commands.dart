@@ -17,7 +17,8 @@ Map<String, CommandType> commands = <String, CommandType>{
   'error': error,
   'playerOptions': playerOptions,
   'listOfObjects': listOfObjects,
-  'addAction': addAction,
+  'actionFunctions': actionFunctions,
+  'actionSounds': actionSounds,
 
   // Login commands:
   'account': account,

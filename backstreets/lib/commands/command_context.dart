@@ -239,16 +239,16 @@ class CommandContext{
       'sections': <Map<String, dynamic>>[],
       'walls': <Map<String, dynamic>>[],
       'exits': <Map<String, dynamic>>[],
+      'actions': <Map<String, dynamic>>[],
     };
     final Query<MapSection> sectionsQuery = Query<MapSection>(db)
       ..where((MapSection s) => s.location).identifiedBy(mapId);
     for (final MapSection s in await sectionsQuery.fetch()) {
       final Map<String, dynamic> data = s.toJson();
-      data['actions'] = <String>[];
       final Query<MapSectionAction> actionQuery = Query<MapSectionAction>(db)
         ..where((MapSectionAction msa) => msa.section).identifiedBy(s.id);
       for (final MapSectionAction msa in await actionQuery.fetch()) {
-        data['actions'].add(msa.name);
+        mapData['actions'].add(msa.toJson());
       }
       mapData['sections'].add(data);
     }
@@ -268,6 +268,7 @@ class CommandContext{
     for (final Exit e in await exitsQuery.fetch()) {
       mapData['exits'].add(e.toJson());
     }
+    print(mapData);
     send('mapData', <Map<String, dynamic>>[mapData]);
     final int total = DateTime.now().millisecondsSinceEpoch - started;
     logger.info('Sent map data in ${(total / 1000).toStringAsFixed(2)} seconds.');

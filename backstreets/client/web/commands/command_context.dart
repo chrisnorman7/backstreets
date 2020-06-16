@@ -212,7 +212,10 @@ class CommandContext {
   Map<String, String> echoSounds = <String, String>{};
 
   /// All the actions that have been sent by the server.
-  Map<String, String> actions = <String, String>{};
+  List<String> actionFunctions = <String>[];
+
+  /// The possible action sounds.
+  Map<String, List<String>> actionSounds = <String, List<String>>{};
 
   /// An exit which is in the process of being made.
   Exit exit;
@@ -287,9 +290,9 @@ class CommandContext {
   void updateLastMoved() => lastMoved = timestamp();
 
   /// Used to call a map action to the server.
-  void sendAction(String action) {
+  void sendAction(int id) {
     if (canMove) {
-      send('action', <String>[action]);
+      send('action', <int>[id]);
       updateLastMoved();
     }
   }

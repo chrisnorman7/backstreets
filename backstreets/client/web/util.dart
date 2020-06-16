@@ -6,7 +6,7 @@ import 'dart:html';
 import 'dart:math';
 import 'dart:web_audio';
 
-import 'package:game_utils/game_utils.dart' show randomElement, Sound, FormBuilder;
+import 'package:game_utils/game_utils.dart';
 
 import 'constants.dart';
 import 'directions.dart';
@@ -340,6 +340,31 @@ void getInt(
     resetFocus();
   }, showMessage, onCancel: resetFocus)
     ..addElement('value', element: e, value: getValue().toString(), label: title)
+    ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+}
+
+/// How to handle the empty string with [getString].
+enum EmptyStringHandler {
+  /// Allow empty strings.
+  allow,
+
+  /// Empty strings mean null.
+  makeNull,
+
+  /// Strings must not be empty.
+  disallow,
+}
+
+/// Get a String.
+void getString(String title, String Function() getValue, void Function(String) setValue, {EmptyStringHandler emptyString = EmptyStringHandler.makeNull}) {
+  FormBuilder(title, (Map<String, String> data) {
+    String value = data['value'];
+    if (value.isEmpty && emptyString == EmptyStringHandler.makeNull) {
+      value = null;
+    }
+    setValue(value);
+  }, showMessage, onCancel: resetFocus)
+    ..addElement('value', value: getValue(), validator: emptyString == EmptyStringHandler.disallow ? notEmptyValidator : null)
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
 }
 

@@ -4,14 +4,15 @@ library general;
 import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
+import 'package:backstreets/model/map_section_action.dart';
 
-import '../actions/action.dart';
-import '../actions/actions.dart';
 import '../game/util.dart';
 import '../model/account.dart';
+import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/player_options.dart';
+import '../sound.dart';
 import 'command_context.dart';
 
 /// Shows the server time.
@@ -59,19 +60,33 @@ Future<void> playerOption(CommandContext ctx) async {
 }
 
 Future<void> action(CommandContext ctx) async {
-  final String name = ctx.args[0] as String;
+  final int id = ctx.args[0] as int;
   final GameObject c = await ctx.getCharacter();
   final int x = c.x.floor();
   final int y = c.y.floor();
-  final MapSection s = await c.location.getCurrentSection(ctx.db, Point<int>(x, y));
+  final GameMap m = await ctx.getMap();
+  final MapSection s = await m.getCurrentSection(ctx.db, Point<int>(x, y));
   if (s == null) {
-    return ctx.sendError('Invalid section ID.');
+    return ctx.sendError('You are not on a section.');
   }
-  final Action a = actions[name];
+  final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
+    ..where((MapSectionAction a) => a.section).identifiedBy(s.id)
+    ..where((MapSectionAction a) => a.id).equalTo(id);
+  final MapSectionAction a = await q.fetchOne();
   if (a == null) {
-      return ctx.sendError('Invalid action name.');
+    return ctx.sendError('Invalid action name.');
   }
-  await a.func(s, ctx);
+  if (a.social != null) {
+    final GameObject pretend = GameObject()
+      ..name = s.name;
+    await m.handleSocial(ctx.db, a.social, <GameObject>[c, pretend]);
+  }
+  if (a.sound != null) {
+    await m.broadcastSound(ctx.db, randomElement<Sound>(actionSounds[a.sound]), c.coordinates, objectId: c.id);
+  }
+  if (a.functionName != null) {
+    await a.func(s, ctx);
+  }
 }
 
 Future<void> resetPassword(CommandContext ctx) async {

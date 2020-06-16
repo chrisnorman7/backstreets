@@ -7,6 +7,7 @@ import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
 import '../directions.dart';
+import '../game/action.dart';
 import '../game/exit.dart';
 import '../game/map_section.dart';
 import '../main.dart';
@@ -209,15 +210,15 @@ void enterKey() {
       final MapSection s = commandContext.getCurrentSection();
       if (s.actions.length == 1) {
         clearBook();
-        commandContext.sendAction(s.actions[0]);
+        commandContext.sendAction(s.actions.values.first.id);
       } else {
         final List<Line> lines = <Line>[];
-        for (final String name in s.actions) {
+        for (final Action a in s.actions.values) {
           lines.add(
             Line(b, () {
               clearBook();
-              commandContext.sendAction(name);
-            }, titleString: commandContext.actions[name])
+              commandContext.sendAction(a.id);
+            }, titleString: a.name)
           );
         }
         b.push(Page(lines: lines, titleString: 'Actions', onCancel: doCancel));
@@ -291,10 +292,7 @@ void showActions() {
   } else if (s.actions.isEmpty) {
     showMessage('There is nothing special here.');
   } else {
-    final List<String> actions = <String>[];
-    for (final String action in s.actions) {
-      actions.add(commandContext.actions[action]);
-    }
+    final List<String> actions = <String>[for (final Action a in s.actions.values) a.name];
     showMessage('Actions: ${englishList(actions)}.');
   }
 }

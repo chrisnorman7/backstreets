@@ -8,11 +8,13 @@ import 'package:game_utils/game_utils.dart';
 import '../commands/command_context.dart';
 
 import '../constants.dart';
+import '../game/action.dart';
 import '../game/map_section.dart';
 
 import '../main.dart';
 import '../util.dart';
 
+import 'action_page.dart';
 import 'edit_convolver_page.dart';
 import 'select_tile_page.dart';
 
@@ -121,32 +123,23 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
     }, titleFunc: () => 'Ambience Distance (${s.ambience.distance})'),
     Line(b, () => b.push(editConvolverPage(b, s.convolver)), titleString: 'Convolver'),
     Line(b, () {
-      final List<Line> lines = <Line>[];
-      for (final String name in s.actions) {
-        lines.add(
-          Line(
-            b, () {
-              b.pop();
-              commandContext.send('removeMapSectionAction', <dynamic>[s.id, name]);
-            },
-            titleString: '${commandContext.actions[name]} (*)'
-          )
-        );
+      final List<Line> lines = <Line>[
+        Line(b, () {
+          FormBuilder('Add Action', (Map<String, String> data) {
+            b.pop();
+            commandContext.send('addMapSectionAction', <dynamic>[s.id, data['name']]);
+            resetFocus();
+          }, showMessage, onCancel: resetFocus)
+            ..addElement('name', validator: notEmptyValidator)
+            ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+        }, titleString: 'Add Action')
+      ];
+      for (final Action a in s.actions.values) {
+        lines.add(Line(b, () {
+          b.push(actionPage(b, a));
+        }, titleFunc: () => a.name));
       }
-      commandContext.actions.forEach((String name, String description) {
-        if (!s.actions.contains(name)) {
-          lines.add(
-            Line(
-              b, () {
-                b.pop();
-                commandContext.send('addMapSectionAction', <dynamic>[s.id, name]);
-              },
-              titleString: '$description ( )'
-            )
-          );
-        }
-      });
-      b.push(Page(lines: lines, titleString: 'Actions'));
+      b.push(Page(lines: lines, titleString: 'Actions', onCancel: b.pop));
     }, titleFunc: () => 'Actions (${s.actions.length})'),
     Line(b, () {
       clearBook();

@@ -8,7 +8,6 @@ import 'package:aqueduct/aqueduct.dart';
 import 'package:emote_utils/emote_utils.dart';
 import 'package:path/path.dart' as path;
 
-import 'actions/action.dart';
 import 'actions/actions.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';
@@ -100,6 +99,14 @@ class BackstreetsChannel extends ApplicationChannel {
         phrases[path.basename(path.dirname(entity.path))].add(Sound(entity.path));
       }
     }
+    for (final FileSystemEntity entity in actionsDirectory.listSync(recursive: true)) {
+      final String name = path.basenameWithoutExtension(entity.path);
+      if (entity is Directory) {
+        actionSounds[name] = <Sound>[];
+      } else {
+        actionSounds[path.basename(path.dirname(entity.path))].add(Sound(entity.path));
+      }
+    }
     final Query<GameMap> q = Query<GameMap>(databaseContext);
     if (await q.reduce.count() == 0) {
       q.values.name = 'Map 1';
@@ -153,7 +160,10 @@ class BackstreetsChannel extends ApplicationChannel {
       for (final GameMap m in await q.fetch()) {
         ctx.send('addGameMap', <Map<String, dynamic>>[m.minimalData]);
       }
-      actions.forEach((String name, Action a) => ctx.send('addAction', <String>[name, a.description]));
+      ctx.send('actionFunctions', <List<String>>[actions.keys.toList()]);
+      actionSounds.forEach((String name, List<Sound> sounds) {
+        ctx.send('actionSounds', <dynamic>[name, <String>[for (final Sound s in sounds) s.url]]);
+      });
       ctx.send('phrases', <List<String>>[phrases.keys.toList()]);
       socket.listen((dynamic payload) async {
         if (payload is! String) {

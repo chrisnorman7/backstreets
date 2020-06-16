@@ -66,6 +66,12 @@ final Directory phrasesDirectory = Directory(_path.join(soundsDirectory, 'phrase
 /// All the loaded phrase sounds.
 Map<String, List<Sound>> phrases = <String, List<Sound>>{};
 
+/// The directory where action sounds are sotred.
+final Directory actionsDirectory = Directory(_path.join(soundsDirectory, 'actions'));
+
+/// All the loaded action sounds.
+final Map<String, List<Sound>> actionSounds = <String, List<Sound>>{};
+
 /// A sound object.
 ///
 /// Passed a path, it will give you a URL, with appropriate get params.
