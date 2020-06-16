@@ -13,7 +13,8 @@ Future<void> adminPlayerList(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..join(object: (GameObject o) => o.account)
     ..join(object: (GameObject o) => o.location)
-    ..where((GameObject o) => o.account).isNotNull();
+    ..where((GameObject o) => o.account).isNotNull()
+    ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
   await ctx.sendObjects(await q.fetch());
 }
 
