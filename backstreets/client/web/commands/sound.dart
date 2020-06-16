@@ -4,6 +4,7 @@ library sound;
 import 'dart:math';
 
 import '../directory.dart';
+import '../run_conditions.dart';
 import '../util.dart';
 
 import 'command_context.dart';
@@ -20,6 +21,9 @@ void interfaceSound(CommandContext ctx) {
 ///
 /// The sound should play at specific coordinates (which could be the same as those of the character), and with fx applied.
 void sound(CommandContext ctx) {
+  if (!validMap()) {
+    return; // There is no map or anything.
+  }
   final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
   final String url = data['url'] as String;
   final double volume = (data['volume'] as num).toDouble();
