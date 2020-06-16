@@ -8,7 +8,6 @@ import 'package:game_utils/game_utils.dart';
 import '../constants.dart';
 import '../game/exit.dart';
 import '../game/map_section.dart';
-
 import '../main.dart';
 import '../util.dart';
 
@@ -111,7 +110,7 @@ void nearestExit() {
     if (x == null) {
       commandContext.message('There are no visible exits.');
     } else {
-      playSoundAtCoordinates(commandContext.echoSounds[commandContext.options.echoSound], coordinates: Point<double>(x.x.toDouble(), x.y.toDouble()), dry: true);
+      playSoundAtCoordinates(exitSoundUrl, coordinates: Point<double>(x.x.toDouble(), x.y.toDouble()), dry: true);
       commandContext.message('The nearest exit is ${x.name}: ${relativeDirections(coordinates, x.coordinates)}.');
     }
   }

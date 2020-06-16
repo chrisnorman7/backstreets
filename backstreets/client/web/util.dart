@@ -10,6 +10,7 @@ import 'package:game_utils/game_utils.dart';
 
 import 'constants.dart';
 import 'directions.dart';
+import 'game/exit.dart';
 import 'game/map_section.dart';
 import 'game/panned_sound.dart';
 import 'game/wall.dart';
@@ -307,6 +308,13 @@ void echoLocate() {
       Timer(Duration(milliseconds: (distance * commandContext.options.echoLocationDistanceMultiplier).round()), () => playSoundAtCoordinates(url, coordinates: Point<double>(coordinates.x.toDouble(), coordinates.y.toDouble()), dry: true));
     }
   });
+  for (final Exit e in commandContext.map.exits.values) {
+    final Point<int> coordinates = Point<int>(e.x, e.y);
+    final double distance = startCoordinates.distanceTo(coordinates);
+    if (distance <= commandContext.options.echoLocationDistance) {
+      Timer(Duration(milliseconds: (distance * commandContext.options.echoLocationDistanceMultiplier).round()), () => playSoundAtCoordinates(exitSoundUrl, coordinates: Point<double>(coordinates.x.toDouble(), coordinates.y.toDouble()), dry: true));
+    }
+  }
 }
 
 /// Get an integer from the user, and send it with a command.

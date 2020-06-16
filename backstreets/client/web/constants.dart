@@ -18,6 +18,9 @@ import 'run_conditions.dart';
 /// The first part of any sound URL.
 const String soundsDirectory = 'sounds/';
 
+/// The sound to play for exits.
+const String exitSoundUrl = soundsDirectory + 'general/exit.wav';
+
 /// Character data, as sent to the [account] command.
 List<dynamic> characterList;
 
