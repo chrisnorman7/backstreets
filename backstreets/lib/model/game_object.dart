@@ -264,4 +264,21 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'canLeaveMap': canLeaveMap,
     };
   }
+
+  /// Notify all connected admins of something.
+  static Future<void> notifyAdmins(ManagedContext db, String message, {Sound sound}) async {
+    final Query<GameObject> q = Query<GameObject>(db)
+      ..where((GameObject o) => o.connected).equalTo(true)
+      ..where((GameObject o) => o.admin).equalTo(true);
+    for (final GameObject o in await q.fetch()) {
+      final CommandContext ctx = commandContexts[o.id];
+      print(o.id);
+      if (ctx != null) {
+        ctx.message(message);
+        if (sound != null) {
+          ctx.sendInterfaceSound(sound);
+        }
+      }
+    }
+  }
 }

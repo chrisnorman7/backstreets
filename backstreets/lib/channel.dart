@@ -135,6 +135,7 @@ class BackstreetsChannel extends ApplicationChannel {
       socketLogger.info('Connection established.');
       final File motdFile = File('motd.txt');
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
+      await GameObject.notifyAdmins(ctx.db, 'Incoming conection from ${socketLogger.name}.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')));
       CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
       ctx.message(motd);
@@ -213,6 +214,7 @@ class BackstreetsChannel extends ApplicationChannel {
       }, onError: (dynamic error) => logger.warning(error),
       onDone: () async {
         CommandContext.instances.remove(ctx);
+        await GameObject.notifyAdmins(ctx.db, '${socketLogger.name} has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')));
         if (ctx.characterId != null) {
           final GameObject c = await ctx.setConnected(false);
           await c.doSocial(ctx.db, c.disconnectSocial);
