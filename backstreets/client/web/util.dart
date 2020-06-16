@@ -298,8 +298,8 @@ PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, doubl
 }
 
 /// Ping the objects nearby.
-void echoLocate([String url]) {
-  url ??= commandContext.echoSounds[commandContext.options.echoSound];
+void echoLocate() {
+  final String url = commandContext.echoSounds[commandContext.options.echoSound];
   final Point<int> startCoordinates = getIntCoordinates();
   commandContext.map.walls.forEach((Point<int> coordinates, Wall w) {
     final double distance = startCoordinates.distanceTo(coordinates);
