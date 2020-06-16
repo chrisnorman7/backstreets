@@ -220,6 +220,9 @@ class CommandContext {
   /// An exit which is in the process of being made.
   Exit exit;
 
+  /// The last exit to be stumbled across.
+  Exit lastExit;
+
   /// All the possible exit sounds.
   Map<String, String> exitSounds = <String, String>{};
 

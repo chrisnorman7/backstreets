@@ -185,6 +185,20 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
   }
   commandContext.coordinates = coordinates;
   if (mode != MoveModes.silent) {
+    bool found = false;
+    for (final Exit e in commandContext.map.exits.values) {
+      if (e.x == tileCoordinates.x && e.y == tileCoordinates.y) {
+        if (e != commandContext.lastExit) {
+          sounds.playSound(exitSoundUrl);
+          commandContext.lastExit = e;
+        }
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      commandContext.lastExit = null;
+    }
     final String tileName = newSection?.tileName;
     if (tileName != null) {
       final String url = getFootstepSound(tileName);
