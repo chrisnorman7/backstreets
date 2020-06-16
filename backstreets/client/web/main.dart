@@ -42,7 +42,8 @@ bool rememberLastMessage;
 void showMessage(String text, {bool important = true}) {
   if (rememberLastMessage == true && messageArea.innerText != text) {
     final ParagraphElement p = ParagraphElement()
-      ..innerText = messageArea.innerText;
+      ..innerText = messageArea.innerText
+      ..tabIndex = 0;
     messagesDiv.append(p);
     messagesDiv.scroll();
   }
