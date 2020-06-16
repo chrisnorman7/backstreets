@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
+import '../game/action.dart';
 import '../game/ambience.dart';
 import '../game/exit.dart';
 import '../game/game_map.dart';
@@ -102,6 +103,11 @@ void mapData(CommandContext ctx) {
     ctx.args[0] = exitData;
     addExit(ctx);
   }
+  final List<dynamic> actionsData = data['actions'] as List<dynamic>;
+  for (final dynamic actionData in actionsData) {
+    ctx.args[0] = actionData;
+    addMapSectionAction(ctx);
+  }
 }
 
 /// The speed the character can move at.
@@ -148,7 +154,6 @@ void mapSection(CommandContext ctx) {
   final double convolverVolume = (data['convolverVolume'] as num).toDouble();
   String ambienceUrl = data['ambienceUrl'] as String;
   final int ambienceDistance = data['ambienceDistance'] as int;
-  final List<dynamic> actions = data['actions'] as List<dynamic>;
   if (ctx.map.sections.containsKey(id)) {
     ctx.map.sections[id]
       ..startX = startX
@@ -172,11 +177,6 @@ void mapSection(CommandContext ctx) {
       ctx.sounds, id, startX, startY, endX, endY, name, tileName, tileSize,
       convolverUrl, convolverVolume, ambienceUrl, ambienceDistance
     );
-  }
-  if (actions != null) {
-    for (final dynamic action in actions) {
-      ctx.map.sections[id].actions.add(action as String);
-    }
   }
   if (id == ctx.sectionResetId) {
     ctx.message('Section reset.');
@@ -275,15 +275,22 @@ void setPlayersCanCreate(CommandContext ctx) {
 }
 
 void addMapSectionAction(CommandContext ctx) {
-  final int id = ctx.args[0] as int;
-  final String name = ctx.args[1] as String;
-  ctx.map.sections[id].actions.add(name);
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final int sectionId = data['sectionId'] as int;
+  ctx.map.sections[sectionId].actions[id] = Action()
+    ..id = id
+    ..sectionId = sectionId
+    ..name = data['name'] as String
+    ..functionName = data['functionName'] as String
+    ..social = data['social'] as String
+    ..sound = data['sound'] as String;
 }
 
 void removeMapSectionAction(CommandContext ctx) {
-  final int id = ctx.args[0] as int;
-  final String name = ctx.args[1] as String;
-  ctx.map.sections[id].actions.removeWhere((String e) => e == name);
+  final int sectionId = ctx.args[0] as int;
+  final int actionId = ctx.args[1] as int;
+  ctx.map.sections[sectionId].actions.remove(actionId);
 }
 
 void addExit(CommandContext ctx) {
@@ -321,11 +328,13 @@ void objectMoved(CommandContext ctx) {
   final double x = (ctx.args[1] as num).toDouble();
   final double y = (ctx.args[2] as num).toDouble();
   ctx.objectCoordinates[id] = Point<double>(x, y);
-  for (final PannedSound s in ctx.map.pannedSounds) {
-    if (s.id == id && s.panner != null) {
-      s.panner
-        ..positionX.value = x
-        ..positionY.value = y;
+  if (ctx.map != null) {
+    for (final PannedSound s in ctx.map.pannedSounds) {
+      if (s.id == id && s.panner != null) {
+        s.panner
+          ..positionX.value = x
+          ..positionY.value = y;
+      }
     }
   }
 }
