@@ -18,7 +18,6 @@ Map<String, CommandType> commands = <String, CommandType>{
   'playerOptions': playerOptions,
   'listOfObjects': listOfObjects,
   'actionFunctions': actionFunctions,
-  'actionSounds': actionSounds,
   'confirmAction': confirmAction,
 
   // Login commands:
@@ -61,4 +60,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'echoSounds': echoSounds,
   'exitSound': exitSound,
   'phrases': phrases,
+  'actionSounds': actionSounds,
 };

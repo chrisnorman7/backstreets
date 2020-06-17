@@ -103,14 +103,6 @@ void actionFunctions(CommandContext ctx) {
   }
 }
 
-void actionSounds(CommandContext ctx) {
-  final String name = ctx.args[0] as String;
-  ctx.actionSounds[name] = <String>[];
-  for (final dynamic filename in ctx.args[1] as List<dynamic>) {
-    ctx.actionSounds[name].add(filename as String);
-  }
-}
-
 void confirmAction(CommandContext ctx) {
   final int sectionId = ctx.args[0] as int;
   final int actionId = ctx.args[1] as int;

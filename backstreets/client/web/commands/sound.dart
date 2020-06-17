@@ -69,3 +69,11 @@ void phrases(CommandContext ctx) {
     ctx.phrases.add(phrase as String);
   }
 }
+
+void actionSounds(CommandContext ctx) {
+  final String name = ctx.args[0] as String;
+  ctx.actionSounds[name] = <String>[];
+  for (final dynamic filename in ctx.args[1] as List<dynamic>) {
+    ctx.actionSounds[name].add(filename as String);
+  }
+}
