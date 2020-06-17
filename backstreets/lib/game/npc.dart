@@ -92,13 +92,6 @@ Future<void> npcStartTasks(ManagedContext db) async {
   logger.info('Phrased objects: ${phraseTimers.length}.');
 }
 
-/// Start an NPC moving if it's not already moving.Number
-Future<void> npcMaybeMove(ManagedContext db, int id) async {
-  if (!moveTimers.containsKey(id)) {
-    await npcMove(db, id);
-  }
-}
-
 /// Make an object emit a phrase from its collection.
 Future<void> npcPhrase(ManagedContext db, int id) async {
   Logger logger = Logger('Object #$id');
@@ -127,12 +120,5 @@ Future<void> npcPhrase(ManagedContext db, int id) async {
   }
   finally {
     phraseTimers[id] = Timer(Duration(milliseconds: nextRun), () async => await npcPhrase(db, id));
-  }
-}
-
-/// Start an NPC making phrases if it's not already moving.Number
-Future<void> npcMaybePhrase(ManagedContext db, int id) async {
-  if (!phraseTimers.containsKey(id)) {
-    await npcPhrase(db, id);
   }
 }
