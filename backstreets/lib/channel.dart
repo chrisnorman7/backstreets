@@ -6,6 +6,7 @@ import 'dart:io';
 
 import 'package:aqueduct/aqueduct.dart';
 import 'package:emote_utils/emote_utils.dart';
+import 'package:git/git.dart';
 import 'package:path/path.dart' as path;
 
 import 'actions/actions.dart';
@@ -34,6 +35,9 @@ class BackstreetsChannel extends ApplicationChannel {
   /// Enables communication to and from the database.
   ManagedContext databaseContext;
 
+  /// Allows us to get a number of commits, to use as a get argument.
+  GitDir git;
+
   /// All the loaded impulses.
   Map<String, dynamic> impulses;
 
@@ -46,6 +50,7 @@ class BackstreetsChannel extends ApplicationChannel {
   @override
   Future<void> prepare() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
+    git = await GitDir.fromExisting(path.current, allowSubdirectory: true);
     final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
     final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final PostgreSQLPersistentStore psc = PostgreSQLPersistentStore.fromConnectionInfo(
@@ -129,13 +134,21 @@ class BackstreetsChannel extends ApplicationChannel {
   Controller get entryPoint {
     final Router router = Router();
 
+    // Serve up "index.html".
+    router.route('/').linkFunction((Request req) async {
+      final File f = File('client/build/index.html');
+      String contents = f.readAsStringSync();
+      contents = contents.replaceAll('%version%', (await git.commitCount()).toString());
+      return Response.ok(contents, headers: <String, dynamic>{'Content-Type': 'text/html; charset=UTF-8'});
+    });
+
     // Serve out of build.
     router.route('/*').link(() => FileController('client/build/'));
 
     // Serve API docs.
     router.route('/doc/api/*').link(() => FileController('doc/api/'));
 
-    // Setup the websocket first.
+    // Setup the websocket.
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
       final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
