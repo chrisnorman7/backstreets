@@ -39,6 +39,7 @@ void account(CommandContext ctx) {
       commandContext.book, () {
         FormBuilder(
           'New Character', (Map<String, String> data) {
+            resetFocus();
             ctx.book = Book(bookOptions)
               ..push(
                 mapReferencePage('Create Character', (MapReference m) {
