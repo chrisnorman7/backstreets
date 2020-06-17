@@ -69,10 +69,8 @@ class BackstreetsChannel extends ApplicationChannel {
         tiles[name] = tile;
       }
     }
-    socials.addSuffix(
-      <String>['name', 'n'],
-      (GameObject o) => SuffixResult('you', o.name)
-    );
+    socials.addSuffix(<String>['name', 'n'], (GameObject o) => SuffixResult('you', o.name));
+    socials.addSuffix(<String>['ss'], (GameObject o) => SuffixResult('your', "${o.name}'s"));
     for (final FileSystemEntity entity in socialSoundsDirectory.listSync()) {
       if (entity is File) {
         final String socialName = path.basenameWithoutExtension(entity.path);
