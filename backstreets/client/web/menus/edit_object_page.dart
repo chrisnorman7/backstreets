@@ -35,6 +35,13 @@ Page editObjectPage(Book b, GameObject o) {
         }));
       }, titleString: 'Revoke All Builder Permissions'),
     ]);
+    if (commandContext.permissions.admin == true) {
+      lines.add(Line(b, () {
+        getString('Boot Player', () => 'You have been booted.', (String value) {
+          commandContext.send('bootPlayer', <dynamic>[o.id, value]);
+        }, emptyString: EmptyStringHandler.disallow);
+      }, titleString: 'Boot Player'));
+    }
   }
   lines.addAll(
     <Line>[

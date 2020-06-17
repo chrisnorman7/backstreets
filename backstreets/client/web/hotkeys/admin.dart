@@ -20,7 +20,7 @@ void adminMenu() {
         Line(commandContext.book, () {
           clearBook();
           commandContext.getObjectList(editObjects, 'adminPlayerList');
-        }, titleString: 'Edit Player'),
+        }, titleString: 'Player List'),
         Line(commandContext.book, () {
           commandContext.book.push(
             mapReferencePage('Delete Map', (MapReference m) {

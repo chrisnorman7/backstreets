@@ -1,6 +1,8 @@
 /// Provides admin related commands.
 library admin;
 
+import 'dart:io';
+
 import 'package:aqueduct/aqueduct.dart';
 import 'package:backstreets/model/builder_permission.dart';
 
@@ -93,4 +95,14 @@ Future<void> getPossibleOwners(CommandContext ctx) async {
     ..join(object: (GameObject o) => o.owner)
     ..where((GameObject o) => o.account).isNotNull();
   await ctx.sendObjects(await q.fetch());
+}
+
+Future<void> bootPlayer(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final CommandContext c = CommandContext.instances.firstWhere((CommandContext e) => e.characterId == id, orElse: () => null);
+  if (c == null) {
+    return ctx.sendError('Not connected.');
+  }
+  await c.socket.close(WebSocketStatus.normalClosure, ctx.args[1] as String);
+  ctx.message('Done.');
 }
