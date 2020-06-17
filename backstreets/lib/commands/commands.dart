@@ -32,6 +32,8 @@ Map<String, Command> commands = <String, Command>{
   'revokeBuilderPermissions': Command(revokeBuilderPermissions, authenticationType: AuthenticationTypes.admin),
   'getPossibleOwners': Command(getPossibleOwners, authenticationType: AuthenticationTypes.admin),
   'bootPlayer': Command(bootPlayer, authenticationType: AuthenticationTypes.admin),
+  'lockAccount': Command(lockAccount, authenticationType: AuthenticationTypes.admin),
+  'accounts': Command(accounts, authenticationType: AuthenticationTypes.admin),
 
   // Building commands (marked as "Staff-only"):
   'renameMap': Command(renameMap, authenticationType: AuthenticationTypes.staff),

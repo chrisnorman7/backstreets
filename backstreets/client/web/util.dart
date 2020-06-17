@@ -390,3 +390,15 @@ Point<int> getIntCoordinates([Point<double> c]) {
   c ??= commandContext.coordinates;
   return Point<int>(c.x.floor(), c.y.floor());
 }
+
+/// Used to lock and unlock accounts.
+void lockAccount(int id, [bool unlock = false]) {
+  if (unlock) {
+    commandContext.send('lockAccount', <dynamic>[id, null]);
+  } else {
+    getString('Lock Message', () => 'Your account has been locked by ${commandContext.characterName}.', (String value) {
+      commandContext.send('lockAccount', <dynamic>[id, value]);
+    }, emptyString: EmptyStringHandler.disallow);
+  }
+  clearBook();
+}

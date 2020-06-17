@@ -9,6 +9,7 @@ import '../authentication.dart';
 import '../constants.dart';
 import '../game/game_object.dart';
 import '../menus/main_menu.dart';
+import '../util.dart';
 import 'command_context.dart';
 import 'login.dart';
 
@@ -108,4 +109,32 @@ void confirmAction(CommandContext ctx) {
   final int sectionId = ctx.args[0] as int;
   final int actionId = ctx.args[1] as int;
   ctx.map.sections[sectionId].actions[actionId].confirm();
+}
+
+void accounts(CommandContext ctx) {
+  final List<dynamic> accounts = ctx.args[0] as List<dynamic>;
+  final Book b = Book(bookOptions);
+  final List<Line> lines = <Line>[];
+  for (final dynamic data in accounts) {
+    final int id = data['id'] as int;
+    final String username = data['username'] as String;
+    final String lockedMessage = data['lockedMessage'] as String;
+    lines.add(Line(b, () {
+      final List<Line> lines = <Line>[
+        Line(b, resetFocus, titleString: 'Username: $username'),
+        Line(b, resetFocus, titleString: 'ID: $id'),
+      ];
+      if (lockedMessage == null) {
+        lines.add(Line(b, () => lockAccount(id), titleString: 'Lock Account'));
+      } else {
+        lines.addAll(<Line>[
+          Line(b, resetFocus, titleString: 'Lock Reason: $lockedMessage'),
+          Line(b, () => lockAccount(id, true), titleString: 'Unlock Account')
+        ]);
+      }
+      b.push(Page(lines: lines, titleString: username));
+    }, titleString: '$username${lockedMessage == null ? "" : " (Locked)"}'));
+  }
+  commandContext.book = b
+    ..push(Page(lines: lines, titleString: 'Accounts (${accounts.length})', onCancel: doCancel));
 }

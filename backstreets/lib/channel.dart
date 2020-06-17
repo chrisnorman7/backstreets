@@ -234,7 +234,6 @@ class BackstreetsChannel extends ApplicationChannel {
         }
       }, onError: (dynamic error) => logger.warning(error),
       onDone: () async {
-        CommandContext.instances.remove(ctx);
         await GameObject.notifyAdmins(ctx.db, '${socketLogger.name} has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')));
         if (ctx.characterId != null) {
           final GameObject c = await ctx.setConnected(false);
@@ -246,6 +245,7 @@ class BackstreetsChannel extends ApplicationChannel {
             ..where((ConnectionRecord c) => c.disconnected).isNull();
           await q.update();
         }
+        CommandContext.instances.remove(ctx);
         socketLogger.info('Websocket closed.');
       });
       return null;

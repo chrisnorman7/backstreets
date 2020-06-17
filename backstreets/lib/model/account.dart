@@ -30,6 +30,12 @@ class _Account with PrimaryKeyMixin {
 
   /// The list of [GameObject] instances.
   ManagedSet<GameObject> objects;
+
+  /// The reason for this account being locked.
+  ///
+  /// If this value is null, the account is considered unlocked.
+  @Column(nullable: true)
+  String lockedMessage;
 }
 
 /// An account, which is linked to 0 or more [GameObject] instances.
@@ -74,4 +80,7 @@ class Account extends ManagedObject<_Account> implements _Account {
   bool verify(String guess) {
     return Password.verify(guess, password);
   }
+
+  /// Returns true if this account is locked, flase otherwise.
+  bool get locked => lockedMessage != null;
 }

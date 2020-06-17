@@ -16,11 +16,15 @@ void adminMenu() {
         Line(commandContext.book, () {
           commandContext.send('addMap', <String>[]);
           clearBook();
-        }, titleString: 'Add Map'),
+        }, titleString: 'New Map'),
         Line(commandContext.book, () {
           clearBook();
           commandContext.getObjectList(editObjects, 'adminPlayerList');
         }, titleString: 'Player List'),
+        Line(commandContext.book, () {
+          clearBook();
+          commandContext.send('accounts', null);
+        }, titleString: 'Accounts'),
         Line(commandContext.book, () {
           commandContext.book.push(
             mapReferencePage('Delete Map', (MapReference m) {

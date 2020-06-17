@@ -6,9 +6,9 @@ import 'dart:io';
 import 'package:aqueduct/aqueduct.dart';
 import 'package:backstreets/model/builder_permission.dart';
 
+import '../model/account.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
-
 import 'command_context.dart';
 
 Future<void> adminPlayerList(CommandContext ctx) async {
@@ -105,4 +105,39 @@ Future<void> bootPlayer(CommandContext ctx) async {
   }
   await c.socket.close(WebSocketStatus.normalClosure, ctx.args[1] as String);
   ctx.message('Done.');
+}
+
+Future<void> lockAccount(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final Query<Account> q = Query<Account>(ctx.db)
+    ..values.lockedMessage = ctx.args[1] as String
+    ..where((Account a) => a.id).notEqualTo(ctx.accountId)
+    ..where((Account a) => a.id).equalTo(id);
+  final Account a = await q.updateOne();
+  if (a == null) {
+    return ctx.sendError('Invalid account ID.');
+  }
+  if (a.locked) {
+    final Query<GameObject> connectedQuery = Query<GameObject>(ctx.db)
+      ..where((GameObject o) => o.connected).equalTo(true)
+      ..where((GameObject o) => o.account).identifiedBy(a.id);
+    for (final GameObject o in await connectedQuery.fetch()) {
+      await o.commandContext.socket.close(WebSocketStatus.normalClosure, 'Your account has been locked: ${a.lockedMessage}');
+      ctx.message('Disconnecting ${o.name}.');
+    }
+  }
+  ctx.message('Account ${a.locked ? "locked" : "unlocked"}.');
+}
+
+Future<void> accounts(CommandContext ctx) async {
+  final Query<Account> q = Query<Account>(ctx.db);
+  final List<Map<String, dynamic>> accounts = <Map<String, dynamic>>[];
+  for (final Account a in await q.fetch()) {
+    accounts.add(<String, dynamic>{
+      'id': a.id,
+      'username': a.username,
+      'lockedMessage': a.lockedMessage
+    });
+  }
+  ctx.send('accounts', <List<Map<String, dynamic>>>[accounts]);
 }

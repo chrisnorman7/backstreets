@@ -25,7 +25,23 @@ Page editObjectPage(Book b, GameObject o) {
       })
     ]);
   }
-  if (o.account != null) {
+  if (o.account == null) {
+    lines.add(
+      Line(b, () {
+        commandContext.getObjectList(() {
+          final List<Line> lines = <Line>[];
+          for (final GameObject possible in commandContext.objects) {
+            lines.add(Line(b, () {
+              o.ownerId = possible.id;
+              o.ownerName  = possible.name;
+              b.pop();
+            }, titleString: possible.name));
+          }
+          b.push(Page(lines: lines, titleString: 'Change Owner'));
+        }, 'getPossibleOwners');
+      }, titleFunc: () => 'Change Owner (${o.ownerName} (#${o.ownerId}))')
+    );
+  } else {
     lines.addAll(<Line>[
       Line(b, () => commandContext.send('addBuilderPermission', <int>[o.id, commandContext.map.id]), titleString: 'Allow Building Here'),
       Line(b, () {
@@ -41,6 +57,12 @@ Page editObjectPage(Book b, GameObject o) {
           commandContext.send('bootPlayer', <dynamic>[o.id, value]);
         }, emptyString: EmptyStringHandler.disallow);
       }, titleString: 'Boot Player'));
+      if (o.account != null) {
+        lines.addAll(<Line>[
+          Line(b, () => lockAccount(o.account.id), titleString: 'Lock Account'),
+          Line(b, () => lockAccount(o.account.id, true), titleString: 'Unlock Account'),
+        ]);
+      }
     }
   }
   lines.addAll(
@@ -101,19 +123,6 @@ Page editObjectPage(Book b, GameObject o) {
         commandContext.send('editObject', <Map<String, dynamic>>[o.toJson()]);
         clearBook();
       }, titleString: 'Upload'),
-      Line(b, () {
-        commandContext.getObjectList(() {
-          final List<Line> lines = <Line>[];
-          for (final GameObject possible in commandContext.objects) {
-            lines.add(Line(b, () {
-              o.ownerId = possible.id;
-              o.ownerName  = possible.name;
-              b.pop();
-            }, titleString: possible.name));
-          }
-          b.push(Page(lines: lines, titleString: 'Change Owner'));
-        }, 'getPossibleOwners');
-      }, titleFunc: () => 'Change Owner (${o.ownerName} (#${o.ownerId}))')
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');

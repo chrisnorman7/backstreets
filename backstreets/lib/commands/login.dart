@@ -1,6 +1,8 @@
 /// Provides login commands.
 library login;
 
+import 'dart:io';
+
 import 'package:aqueduct/aqueduct.dart';
 
 import '../model/account.dart';
@@ -44,6 +46,10 @@ Future<void> login(CommandContext ctx) async {
     ..where((Account a) => a.username).equalTo(username);
   final Account a = await q.fetchOne();
   if (a != null && a.verify(password)) {
+    if (a.locked) {
+      ctx.logger.info('Blocked access to locked account $username.');
+      return ctx.socket.close(WebSocketStatus.normalClosure, a.lockedMessage);
+    }
     ctx.logger.info('Authenticated as $username.');
     ctx.account = a;
     await ctx.sendAccount();

@@ -127,7 +127,12 @@ class CommandContext{
   /// ```
   void send(String name, List<dynamic> arguments) {
     final String data = jsonEncode(<dynamic>[name, arguments]);
-    socket.add(data);
+    try {
+      socket.add(data);
+    }
+    catch(e, s) {
+      logger.severe('$e\n$s');
+    }
   }
 
   /// Send a message to the player.
