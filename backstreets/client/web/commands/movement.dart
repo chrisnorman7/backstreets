@@ -284,7 +284,12 @@ void addMapSectionAction(CommandContext ctx) {
     ..name = data['name'] as String
     ..functionName = data['functionName'] as String
     ..social = data['social'] as String
-    ..sound = data['sound'] as String;
+    ..sound = data['sound'] as String
+    ..confirmMessage = data['confirmMessage'] as String
+    ..confirmSocial = data['confirmSocial'] as String
+    ..okLabel = data['okLabel'] as String
+    ..cancelLabel = data['cancelLabel'] as String
+    ..cancelSocial = data['cancelSocial'] as String;
 }
 
 void removeMapSectionAction(CommandContext ctx) {

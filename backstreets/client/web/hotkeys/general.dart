@@ -209,15 +209,13 @@ void enterKey() {
     lines.add(Line(b, () {
       final MapSection s = commandContext.getCurrentSection();
       if (s.actions.length == 1) {
-        clearBook();
-        commandContext.sendAction(s.actions.values.first.id);
+        s.actions.values.first.use();
       } else {
         final List<Line> lines = <Line>[];
         for (final Action a in s.actions.values) {
           lines.add(
             Line(b, () {
-              clearBook();
-              commandContext.sendAction(a.id);
+              a.use();
             }, titleString: a.name)
           );
         }

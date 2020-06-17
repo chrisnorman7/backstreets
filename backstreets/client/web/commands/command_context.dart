@@ -10,6 +10,7 @@ import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
 import '../directory.dart';
+import '../game/action.dart';
 import '../game/exit.dart';
 import '../game/game_map.dart';
 import '../game/game_object.dart';
@@ -293,9 +294,9 @@ class CommandContext {
   void updateLastMoved() => lastMoved = timestamp();
 
   /// Used to call a map action to the server.
-  void sendAction(int id) {
+  void sendAction(Action a) {
     if (canMove) {
-      send('action', <int>[id]);
+      send('action', <int>[a.id]);
       updateLastMoved();
     }
   }

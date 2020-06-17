@@ -27,6 +27,26 @@ class _MapSectionAction with PrimaryKeyMixin, NameMixin {
   /// The function to be called when this action is used.
   @Column(nullable: true)
   String functionName;
+
+  /// The message that client will show if this action needs confirming.
+  @Column(nullable: true)
+  String confirmMessage;
+
+  /// The confirm social to use when a player is in the process of confirming.
+  @Column(nullable: true)
+  String confirmSocial;
+
+  /// The "OK" button label.
+  @Column(nullable: true)
+  String okLabel;
+
+  /// The "Cancel" button label.
+  @Column(nullable: true)
+  String cancelLabel;
+
+  /// The social which is used if the player cancels.
+  @Column(nullable: true)
+  String cancelSocial;
 }
 
 /// An action on a section of a map, which can be triggered with the enter key.
@@ -42,11 +62,16 @@ class MapSectionAction extends ManagedObject<_MapSectionAction> implements _MapS
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
-      'sectionId': section.id,
       'name': name,
-      'functionName': functionName,
+      'sectionId': section.id,
       'social': social,
-      'sound': sound
+      'sound': sound,
+      'functionName': functionName,
+      'confirmMessage': confirmMessage,
+      'confirmSocial': confirmSocial,
+      'okLabel': okLabel,
+      'cancelLabel': cancelLabel,
+      'cancelSocial': cancelSocial,
     };
   }
 }

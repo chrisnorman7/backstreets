@@ -53,6 +53,36 @@ Page actionPage(Book b, Action a) {
       b.push(Page(lines: lines, titleFunc: () => 'Functions (${commandContext.actionFunctions.length})'));
     }, titleFunc: () => 'Function (${a.functionName})'),
     Line(b, () {
+      getString('Confirm Message', () => a.confirmMessage, (String value) {
+        resetFocus();
+        a.confirmMessage = value;
+      });
+    }, titleFunc: () => 'Confirm Message (${a.confirmMessage}'),
+    Line(b, () {
+      getString('Confirm Social', () => a.confirmSocial, (String value) {
+        resetFocus();
+        a.confirmSocial = value;
+      });
+    }, titleFunc: () => 'Confirm Social (${a.confirmSocial}'),
+    Line(b, () {
+      getString('OK Label', () => a.okLabel, (String value) {
+        resetFocus();
+        a.okLabel = value;
+      });
+    }, titleFunc: () => 'OK Label (${a.okLabel}'),
+    Line(b, () {
+      getString('Cancel Label', () => a.cancelLabel, (String value) {
+        resetFocus();
+        a.cancelLabel = value;
+      });
+    }, titleFunc: () => 'Cancel Label (${a.cancelLabel}'),
+    Line(b, () {
+      getString('Cancel Social', () => a.cancelSocial, (String value) {
+        resetFocus();
+        a.cancelSocial = value;
+      });
+    }, titleFunc: () => 'Cancel Social (${a.cancelSocial}'),
+    Line(b, () {
       a.upload(commandContext);
       clearBook();
     }, titleString: 'Upload'),

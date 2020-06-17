@@ -126,3 +126,52 @@ Future<void> who(CommandContext ctx) async {
   }
   ctx.message('There ${pluralise(here.length, "is", "are")} ${here.length} ${pluralise(here.length, "player")} on your map: ${englishList(here)}.\nThere ${pluralise(elsewhere.length, "is", "are")} ${elsewhere.length} ${pluralise(elsewhere.length, "player")} on other maps: ${englishList(elsewhere, emptyString: "Nobody")}.');
 }
+
+Future<void> confirmAction(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final GameObject c = await ctx.getCharacter();
+  final int x = c.x.floor();
+  final int y = c.y.floor();
+  final GameMap m = await ctx.getMap();
+  final MapSection s = await m.getCurrentSection(ctx.db, Point<int>(x, y));
+  if (s == null) {
+    return ctx.sendError('You are not on a section.');
+  }
+  final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
+    ..where((MapSectionAction a) => a.section).identifiedBy(s.id)
+    ..where((MapSectionAction a) => a.id).equalTo(id);
+  final MapSectionAction a = await q.fetchOne();
+  if (a == null) {
+    return ctx.sendError('Invalid action name.');
+  }
+  if (a.confirmSocial != null) {
+    final GameObject pretend = GameObject()
+      ..name = s.name;
+    await m.handleSocial(ctx.db, a.confirmSocial, <GameObject>[c, pretend]);
+    ctx.send('confirmAction', <int>[s.id, a.id]);
+  }
+}
+
+Future<void> cancelAction(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final GameObject c = await ctx.getCharacter();
+  final int x = c.x.floor();
+  final int y = c.y.floor();
+  final GameMap m = await ctx.getMap();
+  final MapSection s = await m.getCurrentSection(ctx.db, Point<int>(x, y));
+  if (s == null) {
+    return ctx.sendError('You are not on a section.');
+  }
+  final Query<MapSectionAction> q = Query<MapSectionAction>(ctx.db)
+    ..where((MapSectionAction a) => a.section).identifiedBy(s.id)
+    ..where((MapSectionAction a) => a.id).equalTo(id);
+  final MapSectionAction a = await q.fetchOne();
+  if (a == null) {
+    return ctx.sendError('Invalid action name.');
+  }
+  if (a.cancelSocial != null) {
+    final GameObject pretend = GameObject()
+      ..name = s.name;
+    await m.handleSocial(ctx.db, a.cancelSocial, <GameObject>[c, pretend]);
+  }
+}

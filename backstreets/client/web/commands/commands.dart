@@ -19,6 +19,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'listOfObjects': listOfObjects,
   'actionFunctions': actionFunctions,
   'actionSounds': actionSounds,
+  'confirmAction': confirmAction,
 
   // Login commands:
   'account': account,

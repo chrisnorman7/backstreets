@@ -275,7 +275,12 @@ Future<void> editMapSectionAction(CommandContext ctx) async {
     ..values.name = data['name'] as String
     ..values.functionName = functionName
     ..values.social = data['social'] as String
-    ..values.sound = sound;
+    ..values.sound = sound
+    ..values.confirmMessage = data['confirmMessage'] as String
+    ..values.confirmSocial = data['confirmSocial'] as String
+    ..values.okLabel = data['okLabel'] as String
+    ..values.cancelLabel = data['cancelLabel'] as String
+    ..values.cancelSocial = data['cancelSocial'] as String;
   final MapSectionAction a = await q.updateOne();
   if (a == null) {
     return ctx.sendError('Invalid section ID.');

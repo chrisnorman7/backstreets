@@ -110,3 +110,9 @@ void actionSounds(CommandContext ctx) {
     ctx.actionSounds[name].add(filename as String);
   }
 }
+
+void confirmAction(CommandContext ctx) {
+  final int sectionId = ctx.args[0] as int;
+  final int actionId = ctx.args[1] as int;
+  ctx.map.sections[sectionId].actions[actionId].confirm();
+}
