@@ -65,7 +65,7 @@ Future<void> npcMove(ManagedContext db, int id) async {
     logger.severe(s.toString());
   }
   finally {
-    moveTimers[id] = Timer(Duration(milliseconds: nextRun), () => npcMove(db, id));
+    moveTimers[id] = Timer(Duration(milliseconds: nextRun), () async => await npcMove(db, id));
   }
 }
 
@@ -126,6 +126,13 @@ Future<void> npcPhrase(ManagedContext db, int id) async {
     logger.severe(s.toString());
   }
   finally {
-    phraseTimers[id] = Timer(Duration(milliseconds: nextRun), () => npcPhrase(db, id));
+    phraseTimers[id] = Timer(Duration(milliseconds: nextRun), () async => await npcPhrase(db, id));
+  }
+}
+
+/// Start an NPC making phrases if it's not already moving.Number
+Future<void> npcMaybePhrase(ManagedContext db, int id) async {
+  if (!phraseTimers.containsKey(id)) {
+    await npcPhrase(db, id);
   }
 }

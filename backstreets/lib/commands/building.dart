@@ -440,7 +440,7 @@ Future<void> objectPhrase(CommandContext ctx) async {
       phraseTimers[o.id].cancel();
     }
   }else {
-    await npcPhrase(ctx.db, o.id);
+    await npcMaybePhrase(ctx.db, o.id);
   }
 }
 
@@ -455,6 +455,9 @@ Future<void> objectMinPhraseTime(CommandContext ctx) async {
     return ctx.sendError('Invalid object ID.');
   }
   ctx.message('Min phrase time updated.');
+  if (o.maxPhraseTime != null) {
+    await npcMaybePhrase(ctx.db, o.id);
+  }
 }
 
 Future<void> objectMaxPhraseTime(CommandContext ctx) async {
@@ -468,6 +471,9 @@ Future<void> objectMaxPhraseTime(CommandContext ctx) async {
     return ctx.sendError('Invalid object ID.');
   }
   ctx.message('Max phrase time updated.');
+  if (o.maxPhraseTime != null) {
+    await npcMaybePhrase(ctx.db, o.id);
+  }
 }
 
 Future<void> objectFlying(CommandContext ctx) async {
@@ -520,6 +526,11 @@ Future<void> deleteObject(CommandContext ctx) async {
   }
   ctx.message('Object deleted.');
   if (moveTimers.containsKey(id)) {
+    moveTimers[id].cancel();
     moveTimers.remove(id);
+  }
+  if (phraseTimers.containsKey(id)) {
+    phraseTimers[id].cancel();
+    phraseTimers.remove(id);
   }
 }
