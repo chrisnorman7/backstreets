@@ -77,7 +77,7 @@ void listOfObjects(CommandContext ctx) {
     ctx.objects.add(
       GameObject(
         data['id'] as int, data['name'] as String, coordinates,
-        data['locationId'] as int, data['locationName'] as String, permissions, account
+        data['locationId'] as int, data['locationName'] as String, permissions, account, data['ownerId'] as int
       )
         ..speed = data['speed'] as int
         ..maxMoveTime = data['maxMoveTime'] as int

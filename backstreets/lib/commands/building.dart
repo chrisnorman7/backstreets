@@ -371,6 +371,7 @@ Future<void> getObjects(CommandContext ctx) async {
     ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
   if (!(await ctx.getCharacter()).admin) {
     q.where((GameObject o) => o.location).identifiedBy(ctx.mapId);
+    q.where((GameObject o) => o.owner).identifiedBy(ctx.characterId);
   }
   ctx.sendObjects(await q.fetch());
 }
@@ -379,6 +380,7 @@ Future<void> addObject(CommandContext ctx) async {
   final GameMap m = await ctx.getMap();
   GameObject o = GameObject()
     ..name = 'Unnamed Object'
+    ..owner = await ctx.getCharacter()
     ..location = m
     ..x = m.popX.toDouble()
     ..y = m.popY.toDouble()
@@ -386,137 +388,6 @@ Future<void> addObject(CommandContext ctx) async {
   o = await ctx.db.insertObject(o);
   ctx.message('Created object ${o.name}.');
   npcMove(ctx.db, o.id);
-}
-
-Future<void> objectSpeed(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final int speed = ctx.args[1] as int;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.speed = speed
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  if (moveTimers.containsKey(o.id)) {
-    moveTimers[o.id].cancel();
-    moveTimers.remove(o.id);
-  }
-  await npcMaybeMove(ctx.db, o.id);
-  ctx.message('Speed updated.');
-  o.commandContext?.send('characterSpeed', <int>[o.speed]);
-}
-
-Future<void> objectMaxMoveTime(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final int maxMoveTime = ctx.args[1] as int;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.maxMoveTime = maxMoveTime
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  if (o.maxMoveTime == null) {
-    if (moveTimers.containsKey(o.id)) {
-      moveTimers[o.id].cancel();
-      moveTimers.remove(o.id);
-    }
-  } else {
-    await npcMaybeMove(ctx.db, o.id);
-  }
-  ctx.message('Max move time updated.');
-}
-
-Future<void> objectPhrase(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final String phrase = ctx.args[1] as String;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.phrase = phrase
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  ctx.message('Phrase set.');
-  if (o.phrase == null) {
-    if (phraseTimers.containsKey(o.id)) {
-      phraseTimers[o.id].cancel();
-    }
-  }else {
-    await npcMaybePhrase(ctx.db, o.id);
-  }
-}
-
-Future<void> objectMinPhraseTime(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final int value = ctx.args[1] as int;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.minPhraseTime = value
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  ctx.message('Min phrase time updated.');
-  if (o.maxPhraseTime != null) {
-    await npcMaybePhrase(ctx.db, o.id);
-  }
-}
-
-Future<void> objectMaxPhraseTime(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final int value = ctx.args[1] as int;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.maxPhraseTime = value
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  ctx.message('Max phrase time updated.');
-  if (o.maxPhraseTime != null) {
-    await npcMaybePhrase(ctx.db, o.id);
-  }
-}
-
-Future<void> objectFlying(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final bool flying = ctx.args[1] as bool;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.flying = flying
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  ctx.message('Object is ${o.flying ? "now" : "no longer"} flying.');
-}
-
-Future<void> objectUseExitChance(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final int value = ctx.args[1] as int;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.useExitChance = value
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  ctx.message('${o.name} now has a 1 in ${o.useExitChance} chance of going through exits.');
-}
-
-Future<void> objectCanLeaveMap(CommandContext ctx) async {
-  final int id = ctx.args[0] as int;
-  final bool value = ctx.args[1] as bool;
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.canLeaveMap = value
-    ..where((GameObject o) => o.id).equalTo(id);
-  final GameObject o = await q.updateOne();
-  if (o == null) {
-    return ctx.sendError('Invalid object ID.');
-  }
-  ctx.message('Object ${o.canLeaveMap ? "can" : "cannot"} leave this map.');
 }
 
 Future<void> deleteObject(CommandContext ctx) async {
@@ -537,4 +408,48 @@ Future<void> deleteObject(CommandContext ctx) async {
     phraseTimers[id].cancel();
     phraseTimers.remove(id);
   }
+}
+
+Future<void> editObject(CommandContext ctx) async {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final String phrase = data['phrase'] as String;
+  if (phrase != null && !phrases.containsKey(phrase)) {
+    return ctx.sendError('Invalid phrase.');
+  }
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.id).equalTo(id)
+    ..values.name = data['name'] as String
+    ..values.speed = data['speed'] as int
+    ..values.maxMoveTime = data['maxMoveTime'] as int
+    ..values.phrase = phrase
+    ..values.minPhraseTime = data['minPhraseTime'] as int
+    ..values.maxPhraseTime = data['maxPhraseTime'] as int
+    ..values.flying = data['flying'] as bool
+    ..values.useExitChance = data['useExitChance'] as int
+    ..values.canLeaveMap = data['canLeaveMap'] as bool;
+  final bool admin = data['admin'] as bool;
+  if ((await ctx.getCharacter()).admin && admin != null) {
+    q.values.admin = admin;
+  }
+  final GameObject o = await q.updateOne();
+  if (o == null) {
+    return ctx.sendError('Invalid object ID.');
+  }
+  if (phraseTimers.containsKey(o.id)){
+    phraseTimers[o.id].cancel();
+    phraseTimers.remove(o.id);
+  }
+  if (o.phrase != null && o.minPhraseTime != null && o.maxPhraseTime != null) {
+    await npcPhrase(ctx.db, o.id);
+  }
+  if (moveTimers.containsKey(o.id)) {
+    moveTimers[o.id].cancel();
+    moveTimers.remove(o.id);
+  }
+  if (o.speed != null && o.maxMoveTime != null) {
+    await npcMove(ctx.db, o.id);
+  }
+  ctx.message('Object updated.');
+  o.commandContext?.send('admin', <bool>[o.admin]);
 }

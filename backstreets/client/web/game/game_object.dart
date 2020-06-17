@@ -38,7 +38,7 @@ class Permissions {
 /// As created by the [playerList] command.
 class GameObject {
   /// Create a player or other object.
-  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account);
+  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId);
 
   /// The id of the Character.
   int id;
@@ -88,7 +88,31 @@ class GameObject {
   /// The name of this map this object is on.
   String locationName;
 
+  /// The owner of this object.
+  int ownerId;
+
   /// Return a name and an object number.
   @override
   String toString() => '$name (#$id) [$locationName ${coordinates.x.toStringAsFixed(2)}, ${coordinates.y.toStringAsFixed(2)}]';
-}
+
+  /// Return this object as a map, so it can be sent to the server.
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'x': coordinates.x,
+      'y': coordinates.y,
+      'admin': permissions?.admin,
+      'speed': speed,
+      'maxMoveTime': maxMoveTime,
+      'phrase': phrase,
+      'minPhraseTime': minPhraseTime,
+      'maxPhraseTime': maxPhraseTime,
+      'flying': flying,
+      'useExitChance': useExitChance,
+      'canLeaveMap': canLeaveMap,
+      'locationId': locationId,
+      'ownerId': ownerId,
+    };
+  }
+  }

@@ -11,16 +11,10 @@ import '../util.dart';
 Page actionPage(Book b, Action a) {
   final List<Line> lines = <Line>[
     Line(b, () {
-      getString('Rename', () => a.name, (String value) {
-        a.name = value;
-        resetFocus();
-      }, emptyString: EmptyStringHandler.disallow);
+      getString('Rename', () => a.name, (String value) => a.name = value, emptyString: EmptyStringHandler.disallow);
     }, titleFunc: () => 'Rename (${a.name}'),
     Line(b, () {
-      getString('Social String', () => a.social, (String value) {
-        resetFocus();
-        a.social = value;
-      });
+      getString('Social String', () => a.social, (String value) => a.social = value);
     }, titleFunc: () => 'Social String (${a.social}'),
     Line(b, () {
       final List<Line> lines = <Line>[
@@ -53,34 +47,19 @@ Page actionPage(Book b, Action a) {
       b.push(Page(lines: lines, titleFunc: () => 'Functions (${commandContext.actionFunctions.length})'));
     }, titleFunc: () => 'Function (${a.functionName})'),
     Line(b, () {
-      getString('Confirm Message', () => a.confirmMessage, (String value) {
-        resetFocus();
-        a.confirmMessage = value;
-      });
+      getString('Confirm Message', () => a.confirmMessage, (String value) => a.confirmMessage = value);
     }, titleFunc: () => 'Confirm Message (${a.confirmMessage}'),
     Line(b, () {
-      getString('Confirm Social', () => a.confirmSocial, (String value) {
-        resetFocus();
-        a.confirmSocial = value;
-      });
+      getString('Confirm Social', () => a.confirmSocial, (String value) => a.confirmSocial = value);
     }, titleFunc: () => 'Confirm Social (${a.confirmSocial}'),
     Line(b, () {
-      getString('OK Label', () => a.okLabel, (String value) {
-        resetFocus();
-        a.okLabel = value;
-      });
+      getString('OK Label', () => a.okLabel, (String value) => a.okLabel = value);
     }, titleFunc: () => 'OK Label (${a.okLabel}'),
     Line(b, () {
-      getString('Cancel Label', () => a.cancelLabel, (String value) {
-        resetFocus();
-        a.cancelLabel = value;
-      });
+      getString('Cancel Label', () => a.cancelLabel, (String value) => a.cancelLabel = value);
     }, titleFunc: () => 'Cancel Label (${a.cancelLabel}'),
     Line(b, () {
-      getString('Cancel Social', () => a.cancelSocial, (String value) {
-        resetFocus();
-        a.cancelSocial = value;
-      });
+      getString('Cancel Social', () => a.cancelSocial, (String value) => a.cancelSocial = value);
     }, titleFunc: () => 'Cancel Social (${a.cancelSocial}'),
     Line(b, () {
       a.upload(commandContext);

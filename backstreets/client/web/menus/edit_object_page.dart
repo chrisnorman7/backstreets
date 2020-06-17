@@ -5,7 +5,6 @@ import 'package:game_utils/game_utils.dart';
 
 import '../constants.dart';
 import '../game/game_object.dart';
-
 import '../main.dart';
 import '../util.dart';
 
@@ -15,29 +14,19 @@ import '../util.dart';
 Page editObjectPage(Book b, GameObject o) {
   final List<Line> lines = <Line>[
     Line(b, () {
-      FormBuilder('Rename Object', (Map<String, String> data) {
-        resetFocus();
-        o.name = data['name'];
-        commandContext.send('renameObject', <dynamic>[o.id, o.name]);
-      }, showMessage, onCancel: resetFocus)
-        ..addElement(
-          'name', label: 'Object Name', value: o.name,
-          validator: notSameAsValidator(() => o.name, message: 'You cannot enter the same name.', onSuccess: notEmptyValidator)
-        )
-        ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-    }, titleString: 'Rename'),
+      getString('Rename', () => o.name, (String value) => o.name = value, emptyString: EmptyStringHandler.disallow);
+    }, titleFunc: () => 'Name (${o.name})'),
   ];
   if (o.permissions != null) {
     lines.addAll(<Line>[
       Line.checkboxLine(b, () => '${o.permissions.admin ? "Unset" : "Set"} Admin', () => o.permissions.admin, (bool value) {
         resetFocus();
         o.permissions.admin = value;
-        commandContext.send('setObjectPermission', <dynamic>[o.id, 'admin', value]);
       })
     ]);
   }
-  lines.addAll(
-    <Line>[
+  if (o.account != null) {
+    lines.addAll(<Line>[
       Line(b, () => commandContext.send('addBuilderPermission', <int>[o.id, commandContext.map.id]), titleString: 'Allow Building Here'),
       Line(b, () {
         b.push(Page.confirmPage(b, () {
@@ -45,11 +34,15 @@ Page editObjectPage(Book b, GameObject o) {
           commandContext.send('revokeBuilderPermissions', <int>[o.id]);
         }));
       }, titleString: 'Revoke All Builder Permissions'),
+    ]);
+  }
+  lines.addAll(
+    <Line>[
       Line(b, () {
-        getInt('Object Speed', () => o.speed, (int value) => o.speed = value, 'objectSpeed', id: o.id, min: 1, allowNull: false);
+        getInt('Object Speed', () => o.speed, (int value) => o.speed = value, min: 1, allowNull: false);
       }, titleFunc: () => 'Speed (${o.speed})'),
       Line(b, () {
-        getInt('Maximum Move Time', () => o.maxMoveTime, (int value)=> o.maxMoveTime = value, 'objectMaxMoveTime', id: o.id);
+        getInt('Maximum Move Time', () => o.maxMoveTime, (int value)=> o.maxMoveTime = value);
       }, titleFunc: () => 'Max Move Time (${o.maxMoveTime})'),
       Line(b, () {
         final List<Line> lines = <Line>[
@@ -67,17 +60,14 @@ Page editObjectPage(Book b, GameObject o) {
         b.push(Page(lines: lines, titleString: 'Phrases', onCancel: doCancel));
       }, titleFunc: () => 'Phrase (${o.phrase})'),
       Line(b, () {
-        getInt('Minimum time between phrases', () => o.minPhraseTime, (int value) => o.minPhraseTime = value, 'objectMinPhraseTime', id: o.id, min: 1000, step: 100, allowNull: false);
+        getInt('Minimum time between phrases', () => o.minPhraseTime, (int value) => o.minPhraseTime = value, min: 1000, step: 100, allowNull: false);
       }, titleFunc: () => 'Minimum time between phrases (${o.minPhraseTime})'),
       Line(b, () {
-        getInt('Maximum time between phrases', () => o.maxPhraseTime, (int value) => o.maxPhraseTime = value, 'objectMaxPhraseTime', id: o.id, min: 1000, step: 100, allowNull: false);
+        getInt('Maximum time between phrases', () => o.maxPhraseTime, (int value) => o.maxPhraseTime = value, min: 1000, step: 100, allowNull: false);
       }, titleFunc: () => 'Maximum time between phrases (${o.maxPhraseTime})'),
-      Line.checkboxLine(b, () => '${o.flying ? "Unset" : "Set"} Object Flying', () => o.flying, (bool value) {
-        o.flying = value;
-        commandContext.send('objectFlying', <dynamic>[o.id, o.flying]);
-      }),
+      Line.checkboxLine(b, () => '${o.flying ? "Unset" : "Set"} Object Flying', () => o.flying, (bool value) => o.flying = value),
       Line(b, () {
-        getInt('Use Exit Chance', () => o.useExitChance, (int value) => o.useExitChance = value, 'objectUseExitChance', id: o.id);
+        getInt('Use Exit Chance', () => o.useExitChance, (int value) => o.useExitChance = value);
       }, titleFunc: () => 'Exit Use Chance (${o.useExitChance == null ? "Will not use exits" : "1 in ${o.useExitChance}"})'),
       Line.checkboxLine(b, () => '${o.canLeaveMap ? "Don't allow" : "Allow"} Object Leave Map', () => o.canLeaveMap, (bool value) {
         o.canLeaveMap = value;
@@ -99,7 +89,11 @@ Page editObjectPage(Book b, GameObject o) {
           clearBook();
           commandContext.send('deleteObject', <int>[o.id]);
         }));
-      }, titleString: 'Delete')
+      }, titleString: 'Delete'),
+      Line(b, () {
+        commandContext.send('editObject', <Map<String, dynamic>>[o.toJson()]);
+        clearBook();
+      }, titleString: 'Upload')
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');

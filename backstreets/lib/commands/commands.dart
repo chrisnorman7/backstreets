@@ -52,15 +52,8 @@ Map<String, Command> commands = <String, Command>{
   'deleteExit': Command(deleteExit, authenticationType: AuthenticationTypes.staff),
   'getObjects': Command(getObjects, authenticationType: AuthenticationTypes.staff),
   'addObject': Command(addObject, authenticationType: AuthenticationTypes.staff),
-  'objectSpeed': Command(objectSpeed, authenticationType: AuthenticationTypes.staff),
-  'objectMaxMoveTime': Command(objectMaxMoveTime, authenticationType: AuthenticationTypes.staff),
-  'objectPhrase': Command(objectPhrase, authenticationType: AuthenticationTypes.staff),
-  'objectMinPhraseTime': Command(objectMinPhraseTime, authenticationType: AuthenticationTypes.staff),
-  'objectMaxPhraseTime': Command(objectMaxPhraseTime, authenticationType: AuthenticationTypes.staff),
-  'objectFlying': Command(objectFlying, authenticationType: AuthenticationTypes.staff),
-  'objectUseExitChance': Command(objectUseExitChance, authenticationType: AuthenticationTypes.staff),
-  'objectCanLeaveMap': Command(objectCanLeaveMap, authenticationType: AuthenticationTypes.staff),
   'deleteObject': Command(deleteObject, authenticationType: AuthenticationTypes.staff),
+  'editObject': Command(editObject, authenticationType: AuthenticationTypes.staff),
 
   // General commands:
   'serverTime': Command(serverTime, authenticationType: AuthenticationTypes.any),

@@ -333,8 +333,8 @@ void echoLocate() {
 
 /// Get an integer from the user, and send it with a command.
 void getInt(
-  String title, int Function() getValue, void Function(int) setValue, String command, {
-    int id, int min = 0, int max, int step = 1, bool allowNull = true
+  String title, int Function() getValue, void Function(int) setValue, {
+    int min = 0, int max, int step = 1, bool allowNull = true
   }
 ) {
   final NumberInputElement e = NumberInputElement();
@@ -353,12 +353,6 @@ void getInt(
       value = null;
     }
     setValue(value);
-    final List<int> args = <int>[];
-    if (id != null) {
-      args.add(id);
-    }
-    args.add(value);
-    commandContext.send(command, args);
     resetFocus();
   }, showMessage, onCancel: resetFocus)
     ..addElement('value', element: e, value: getValue().toString(), label: title)
@@ -384,6 +378,7 @@ void getString(String title, String Function() getValue, void Function(String) s
     if (value.isEmpty && emptyString == EmptyStringHandler.makeNull) {
       value = null;
     }
+    resetFocus();
     setValue(value);
   }, showMessage, onCancel: resetFocus)
     ..addElement('value', value: getValue(), validator: emptyString == EmptyStringHandler.disallow ? notEmptyValidator : null)

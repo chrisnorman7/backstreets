@@ -104,6 +104,13 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   /// Whether or not this object is connected.
   @Column(defaultValue: 'false')
   bool connected;
+
+  /// The object that owns this object.
+  @Relate(#ownedObjects)
+  GameObject owner;
+
+  /// All the objects this object owns.
+  ManagedSet<GameObject> ownedObjects;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.
@@ -262,6 +269,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'username': account?.username,
       'useExitChance': useExitChance,
       'canLeaveMap': canLeaveMap,
+      'ownerId': owner?.id,
     };
   }
 
