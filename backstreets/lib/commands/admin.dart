@@ -86,3 +86,11 @@ Future<void> revokeBuilderPermissions(CommandContext ctx) async {
     GameObject.commandContexts[id].send('builder', <bool>[false]);
   }
 }
+
+Future<void> getPossibleOwners(CommandContext ctx) async {
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..join(object: (GameObject o) => o.location)
+    ..join(object: (GameObject o) => o.owner)
+    ..where((GameObject o) => o.account).isNotNull();
+  await ctx.sendObjects(await q.fetch());
+}

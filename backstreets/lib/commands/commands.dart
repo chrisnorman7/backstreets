@@ -30,6 +30,7 @@ Map<String, Command> commands = <String, Command>{
   'addMap': Command(addMap, authenticationType: AuthenticationTypes.admin),
   'deleteGameMap': Command(deleteGameMap, authenticationType: AuthenticationTypes.admin),
   'revokeBuilderPermissions': Command(revokeBuilderPermissions, authenticationType: AuthenticationTypes.admin),
+  'getPossibleOwners': Command(getPossibleOwners, authenticationType: AuthenticationTypes.admin),
 
   // Building commands (marked as "Staff-only"):
   'renameMap': Command(renameMap, authenticationType: AuthenticationTypes.staff),

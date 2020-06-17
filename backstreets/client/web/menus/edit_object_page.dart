@@ -93,7 +93,20 @@ Page editObjectPage(Book b, GameObject o) {
       Line(b, () {
         commandContext.send('editObject', <Map<String, dynamic>>[o.toJson()]);
         clearBook();
-      }, titleString: 'Upload')
+      }, titleString: 'Upload'),
+      Line(b, () {
+        commandContext.getObjectList(() {
+          final List<Line> lines = <Line>[];
+          for (final GameObject possible in commandContext.objects) {
+            lines.add(Line(b, () {
+              o.ownerId = possible.id;
+              o.ownerName  = possible.name;
+              b.pop();
+            }, titleString: possible.name));
+          }
+          b.push(Page(lines: lines, titleString: 'Change Owner'));
+        }, 'getPossibleOwners');
+      }, titleFunc: () => 'Change Owner (${o.ownerName} (#${o.ownerId}))')
     ]
   );
   return Page(lines: lines, titleFunc: () => 'Edit ${o.name} (#${o.id})');

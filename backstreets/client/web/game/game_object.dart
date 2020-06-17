@@ -38,7 +38,7 @@ class Permissions {
 /// As created by the [playerList] command.
 class GameObject {
   /// Create a player or other object.
-  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId);
+  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId, this.ownerName);
 
   /// The id of the Character.
   int id;
@@ -91,6 +91,9 @@ class GameObject {
   /// The owner of this object.
   int ownerId;
 
+  /// The name of the object that owns this object.
+  String ownerName;
+
   /// Return a name and an object number.
   @override
   String toString() => '$name (#$id) [$locationName ${coordinates.x.toStringAsFixed(2)}, ${coordinates.y.toStringAsFixed(2)}]';
@@ -113,6 +116,7 @@ class GameObject {
       'canLeaveMap': canLeaveMap,
       'locationId': locationId,
       'ownerId': ownerId,
+      'ownerName': ownerName,
     };
   }
   }

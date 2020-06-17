@@ -270,6 +270,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'useExitChance': useExitChance,
       'canLeaveMap': canLeaveMap,
       'ownerId': owner?.id,
+      'ownerName': owner?.name,
     };
   }
 

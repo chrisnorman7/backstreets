@@ -367,6 +367,7 @@ Future<void> deleteExit(CommandContext ctx) async {
 Future<void> getObjects(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..join(object: (GameObject o) => o.location)
+    ..join(object: (GameObject o) => o.owner)
     ..where((GameObject o) => o.account).isNull()
     ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
   if (!(await ctx.getCharacter()).admin) {
@@ -428,9 +429,19 @@ Future<void> editObject(CommandContext ctx) async {
     ..values.flying = data['flying'] as bool
     ..values.useExitChance = data['useExitChance'] as int
     ..values.canLeaveMap = data['canLeaveMap'] as bool;
-  final bool admin = data['admin'] as bool;
-  if ((await ctx.getCharacter()).admin && admin != null) {
-    q.values.admin = admin;
+  GameObject owner;
+  if ((await ctx.getCharacter()).admin) {
+    final bool admin = data['admin'] as bool;
+    if (admin != null) {
+      q.values.admin = admin;
+    }
+    final int ownerId = data['ownerId'] as int;
+    if (ownerId == null) {
+      q.values.owner = null;
+    } else {
+      owner = await ctx.db.fetchObjectWithID<GameObject>(ownerId);
+      q.values.owner = owner;
+    }
   }
   final GameObject o = await q.updateOne();
   if (o == null) {
@@ -451,5 +462,8 @@ Future<void> editObject(CommandContext ctx) async {
     await npcMove(ctx.db, o.id);
   }
   ctx.message('Object updated.');
+  if (owner != null) {
+    owner.commandContext?.message('You now own ${o.name}.');
+  }
   o.commandContext?.send('admin', <bool>[o.admin]);
 }
