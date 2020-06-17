@@ -209,12 +209,14 @@ void enterKey() {
     lines.add(Line(b, () {
       final MapSection s = commandContext.getCurrentSection();
       if (s.actions.length == 1) {
+        clearBook();
         s.actions.values.first.use();
       } else {
         final List<Line> lines = <Line>[];
         for (final Action a in s.actions.values) {
           lines.add(
             Line(b, () {
+              clearBook();
               a.use();
             }, titleString: a.name)
           );
