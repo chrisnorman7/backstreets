@@ -228,8 +228,7 @@ class BackstreetsChannel extends ApplicationChannel {
           }
         }
         catch(e, s) {
-          socketLogger.severe(e);
-          logger.severe(s.toString());
+          socketLogger.severe('Error parsing command.', e, s);
           ctx.sendError(e.toString());
         }
       }, onError: (dynamic error) => logger.warning(error),

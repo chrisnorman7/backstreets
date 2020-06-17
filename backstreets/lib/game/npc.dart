@@ -61,8 +61,7 @@ Future<void> npcMove(ManagedContext db, int id) async {
     nextRun = random.nextInt(o.maxMoveTime) + o.speed;
   }
   catch (e, s) {
-    logger.severe(e.toString());
-    logger.severe(s.toString());
+    logger.severe('Error in npcMove.', e, s);
   }
   finally {
     moveTimers[id] = Timer(Duration(milliseconds: nextRun), () async => await npcMove(db, id));
@@ -115,8 +114,7 @@ Future<void> npcPhrase(ManagedContext db, int id) async {
     o.location.broadcastSound(db, s, o.coordinates, airborn: o.flying, objectId: o.id);
   }
   catch (e, s) {
-    logger.severe(e.toString());
-    logger.severe(s.toString());
+    logger.severe('Error in npcPhrase.', e, s);
   }
   finally {
     phraseTimers[id] = Timer(Duration(milliseconds: nextRun), () async => await npcPhrase(db, id));
