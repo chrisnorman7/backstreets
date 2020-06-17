@@ -367,7 +367,11 @@ Future<void> deleteExit(CommandContext ctx) async {
 Future<void> getObjects(CommandContext ctx) async {
   final Query<GameObject> q = Query<GameObject>(ctx.db)
     ..join(object: (GameObject o) => o.location)
-    ..where((GameObject o) => o.account).isNull();
+    ..where((GameObject o) => o.account).isNull()
+    ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
+  if (!(await ctx.getCharacter()).admin) {
+    q.where((GameObject o) => o.location).identifiedBy(ctx.mapId);
+  }
   ctx.sendObjects(await q.fetch());
 }
 
