@@ -400,6 +400,7 @@ Future<void> objectSpeed(CommandContext ctx) async {
   }
   await npcMaybeMove(ctx.db, o.id);
   ctx.message('Speed updated.');
+  o.commandContext?.send('characterSpeed', <int>[o.speed]);
 }
 
 Future<void> objectMaxMoveTime(CommandContext ctx) async {
