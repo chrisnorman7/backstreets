@@ -68,6 +68,7 @@ Map<String, Command> commands = <String, Command>{
   'who': Command(who),
   'confirmAction': Command(confirmAction),
   'cancelAction': Command(cancelAction),
+  'stepCount': Command(stepCount),
 
   // Login commands:
   'createAccount': Command(createAccount, authenticationType: AuthenticationTypes.anonymous),

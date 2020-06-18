@@ -175,3 +175,8 @@ Future<void> cancelAction(CommandContext ctx) async {
     await m.handleSocial(ctx.db, a.cancelSocial, <GameObject>[c, pretend]);
   }
 }
+
+Future<void> stepCount(CommandContext ctx) async {
+  final GameObject c = await ctx.getCharacter();
+  ctx.message('You have walked ${c.steps} ${pluralise(c.steps, "step")}.');
+}

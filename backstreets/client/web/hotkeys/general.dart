@@ -171,6 +171,7 @@ void escapeKey() {
                 ..send('logout', null);
             }, titleString: 'Log out'),
             Line(commandContext.book, () => commandContext.send('connectedTime', null), titleString: 'Time Connected'),
+            Line(commandContext.book, () => commandContext.send('stepCount', null), titleString: 'Step Count'),
             Line(commandContext.book, () {
               FormBuilder('Reset Password', (Map<String, String> data) {
                 if (data['confirmPassword'] == data['newPassword']) {
