@@ -8,5 +8,9 @@ import 'package:aqueduct/aqueduct.dart';
 class BackstreetsConfiguration extends Configuration {
   BackstreetsConfiguration(String configPath) : super.fromFile(File(configPath));
 
+  /// The database configuration.
   DatabaseConfiguration database;
+
+  /// The maximum number of allowed connections.
+  int maxConnections;
 }

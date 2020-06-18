@@ -38,6 +38,11 @@ class BackstreetsChannel extends ApplicationChannel {
   /// All the loaded impulses.
   Map<String, dynamic> impulses;
 
+  /// The configuration object.
+  ///
+  /// Leave it here so that [entrypoint] can access it.
+  BackstreetsConfiguration config;
+
   /// Initialize services in this method.
   ///
   /// Implement this method to initialize services, read values from [options]
@@ -48,7 +53,7 @@ class BackstreetsChannel extends ApplicationChannel {
   Future<void> prepare() async {
     final int started = DateTime.now().millisecondsSinceEpoch;
     git = await GitDir.fromExisting(path.current, allowSubdirectory: true);
-    final BackstreetsConfiguration config = BackstreetsConfiguration(options.configurationFilePath);
+    config = BackstreetsConfiguration(options.configurationFilePath);
     final ManagedDataModel dataModel = ManagedDataModel.fromCurrentMirrorSystem();
     final PostgreSQLPersistentStore psc = PostgreSQLPersistentStore.fromConnectionInfo(
       config.database.username,
@@ -58,6 +63,7 @@ class BackstreetsChannel extends ApplicationChannel {
       config.database.databaseName
     );
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
+    logger.info('Maximum connections allowed: ${config.maxConnections}.');
     databaseContext = ManagedContext(dataModel, psc);
     final Query<GameObject> characterQuery = Query<GameObject>(databaseContext)
       ..where((GameObject o) => o.connected).equalTo(true)
@@ -150,6 +156,10 @@ class BackstreetsChannel extends ApplicationChannel {
 
     // Setup the websocket.
     router.route('/ws').linkFunction((Request request) async {
+      if (CommandContext.instances.length >= config.maxConnections) {
+        logger.shout('!!! MAXIMUM CONNECTIONS EXCEEDED !!!');
+        return null;
+      }
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
       final String connectionName = '${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}';
       final Logger socketLogger = Logger(connectionName);
