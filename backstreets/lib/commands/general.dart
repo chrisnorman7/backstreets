@@ -249,8 +249,8 @@ Future<void> selectRadioChannel(CommandContext ctx) async {
     if (oldChannel != null) {
       await oldChannel.transmitRaw(ctx.db, '${c.name} leaves the channel.');
     }
-    if (c.radioChannel != null) {
-      await c.radioChannel.transmitRaw(ctx.db, '${c.name} joins the channel.');
+    if (channel != null) {
+      await channel.transmitRaw(ctx.db, '${c.name} joins the channel.');
     }
   } else {
     ctx.message('Channel unchanged.');
