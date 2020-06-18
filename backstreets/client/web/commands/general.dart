@@ -141,3 +141,18 @@ void accounts(CommandContext ctx) {
   commandContext.book = b
     ..push(Page(lines: lines, titleString: 'Accounts (${accounts.length})', onCancel: doCancel));
 }
+
+void menu(CommandContext ctx) {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final String title = data['title'] as String;
+  final List<Line> lines = <Line>[];
+  final Book b = Book(bookOptions);
+  for (final dynamic itemData in data['items'] as List<dynamic>) {
+    lines.add(Line(b, () {
+      clearBook();
+      commandContext.send(itemData['command'] as String, itemData['args'] as List<dynamic>);
+    }, titleString: itemData['title'] as String));
+  }
+  commandContext.book = b
+    ..push(Page(lines: lines, titleString: title, onCancel: doCancel));
+}

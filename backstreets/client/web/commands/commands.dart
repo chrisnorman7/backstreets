@@ -20,6 +20,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'actionFunctions': actionFunctions,
   'confirmAction': confirmAction,
   'accounts': accounts,
+  'menu': menu,
 
   // Login commands:
   'account': account,
@@ -62,4 +63,5 @@ Map<String, CommandType> commands = <String, CommandType>{
   'exitSound': exitSound,
   'phrases': phrases,
   'actionSounds': actionSounds,
+  'radioSound': radioSound,
 };

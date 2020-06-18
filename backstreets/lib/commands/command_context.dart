@@ -7,6 +7,7 @@ import 'dart:math';
 
 import 'package:aqueduct/aqueduct.dart';
 
+import '../game/menu.dart';
 import '../model/account.dart';
 import '../model/connection_record.dart';
 import '../model/exit.dart';
@@ -344,5 +345,10 @@ class CommandContext{
       ..values.connected = value
       ..where((GameObject o) => o.id).equalTo(characterId);
     return q.updateOne();
+  }
+
+  /// Send a menu to the client.
+  void sendMenu(Menu m) {
+    send('menu', <Map<String, dynamic>>[m.toJson()]);
   }
 }

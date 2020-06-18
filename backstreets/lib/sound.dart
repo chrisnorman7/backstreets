@@ -72,6 +72,12 @@ final Directory actionsDirectory = Directory(_path.join(soundsDirectory, 'action
 /// All the loaded action sounds.
 final Map<String, List<Sound>> actionSounds = <String, List<Sound>>{};
 
+/// The directory where radio sounds are stored.
+final Directory radioDirectory = Directory(_path.join(soundsDirectory, 'radio'));
+
+/// All the loaded radio sounds.
+Map<String, Sound> radioSounds = <String, Sound>{};
+
 /// A sound object.
 ///
 /// Passed a path, it will give you a URL, with appropriate get params.

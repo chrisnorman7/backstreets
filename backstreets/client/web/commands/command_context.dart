@@ -236,6 +236,9 @@ class CommandContext {
   /// The ID of an object which the player wants to summon.
   int summonObjectId;
 
+  /// The possible radio sounds.
+  Map<String, String> radioSounds = <String, String>{};
+
   /// Get the section spanned by the provided coordinates.
   ///
   /// If no coordinates are provided, use [coordinates].

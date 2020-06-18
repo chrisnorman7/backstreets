@@ -170,6 +170,8 @@ void main() {
       enterHotkey,
       Hotkey(keyboard, 'z', showActions, titleString: 'Shows the possible actions for the current section of the map', runWhen: validMap),
       Hotkey(keyboard, 'e', showWho, runWhen: validMap, titleString: 'Show who is connected'),
+      Hotkey(keyboard, 'r', selectRadioChannel, runWhen: validMap, titleString: 'Select a radio channel to send and receive'),
+      Hotkey(keyboard, 't', transmit, runWhen: validMap, titleString: 'Transmit on your current radio channel'),
 
       // Menu hotkeys:
       Hotkey(keyboard, ' ', activateSpace, runWhen: validBook, titleString: 'Activate a menu item'),

@@ -16,6 +16,7 @@ import 'game_map.dart';
 import 'map_section.dart';
 import 'mixins.dart';
 import 'player_options.dart';
+import 'radio.dart';
 
 /// The game_objects table.
 ///
@@ -111,6 +112,17 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
 
   /// All the objects this object owns.
   ManagedSet<GameObject> ownedObjects;
+
+  /// The radio channel this object is currently listening and transmitting on.
+  @Relate(#listeners)
+  RadioChannel radioChannel;
+
+  /// Whether or not this object can transmit on radio channels.
+  @Column(defaultValue: 'true')
+  bool canTransmit;
+
+  /// The messages this object has transmitted.
+  ManagedSet<RadioTransmission> radioTransmissions;
 }
 
 /// An object in a game. Contained by a [GameMap] instance.

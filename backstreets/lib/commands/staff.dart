@@ -6,6 +6,8 @@ import 'package:backstreets/model/builder_permission.dart';
 
 import '../model/game_map.dart';
 import '../model/game_object.dart';
+import '../model/radio.dart';
+import '../sound.dart';
 import 'command_context.dart';
 
 Future<void> teleport(CommandContext ctx) async {
@@ -127,4 +129,17 @@ Future<void> addMapBuilder(CommandContext ctx) async {
     }
   }
   await ctx.sendObjects(objects);
+}
+
+Future<void> addRadioChannel(CommandContext ctx) async {
+  final String name = ctx.args[0] as String;
+  final String sound = ctx.args[1] as String;
+  if (!radioSounds.containsKey(sound)) {
+    return ctx.sendError('Invalid sound.');
+  }
+  RadioChannel c = RadioChannel()
+    ..name = name
+    ..transmitSound = sound;
+  c = await ctx.db.insertObject(c);
+  ctx.message('Created radio channel ${c.name}.');
 }

@@ -77,3 +77,9 @@ void actionSounds(CommandContext ctx) {
     ctx.actionSounds[name].add(filename as String);
   }
 }
+
+void radioSound(CommandContext ctx) {
+  final String name = ctx.args[0] as String;
+  final String url = ctx.args[1] as String;
+  ctx.radioSounds[name] = url;
+}

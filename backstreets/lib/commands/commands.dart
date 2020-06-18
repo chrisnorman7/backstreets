@@ -70,6 +70,9 @@ Map<String, Command> commands = <String, Command>{
   'confirmAction': Command(confirmAction),
   'cancelAction': Command(cancelAction),
   'stepCount': Command(stepCount),
+  'transmit': Command(transmit),
+  'listRadioChannels': Command(listRadioChannels),
+  'selectRadioChannel': Command(selectRadioChannel),
 
   // Login commands:
   'createAccount': Command(createAccount, authenticationType: AuthenticationTypes.anonymous),
@@ -95,4 +98,5 @@ Map<String, Command> commands = <String, Command>{
   'removeBuilderPermission': Command(removeBuilderPermission, authenticationType: AuthenticationTypes.staff),
   'getMapBuilders': Command(getMapBuilders, authenticationType: AuthenticationTypes.staff),
   'addMapBuilder': Command(addMapBuilder, authenticationType: AuthenticationTypes.staff),
+  'addRadioChannel': Command(addRadioChannel, authenticationType: AuthenticationTypes.staff),
 };

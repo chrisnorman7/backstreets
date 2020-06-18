@@ -86,7 +86,7 @@ final Hotkey sayHotkey = Hotkey(keyboard, "'", say, runWhen: validMap, titleStri
 final Hotkey builderMenuHotkey = Hotkey(keyboard, 'b', builderMenu, runWhen: staffOnly, titleString: 'Builder menu');
 final Hotkey wallMenuHotkey = Hotkey(keyboard, 'w', wallMenu, shift: true, runWhen: staffOnly, titleString: 'Wall menu');
 final Hotkey adminMenuHotkey = Hotkey(keyboard, 'backspace', adminMenu, runWhen: adminOnly, titleString: 'Admin Menu');
-final Hotkey teleportHotkey = Hotkey(keyboard, 't', teleport, runWhen: staffOnly, titleString: 'Teleport to another map');
+final Hotkey teleportHotkey = Hotkey(keyboard, 't', teleport, shift: true, runWhen: staffOnly, titleString: 'Teleport to another map');
 
 /// All the hotkeys which can be triggered by buttons in the DOM.
 final Map<String, Hotkey> buttonHotkeys = <String, Hotkey>{

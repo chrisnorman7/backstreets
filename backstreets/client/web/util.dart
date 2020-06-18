@@ -372,7 +372,7 @@ enum EmptyStringHandler {
 }
 
 /// Get a String.
-void getString(String title, String Function() getValue, void Function(String) setValue, {EmptyStringHandler emptyString = EmptyStringHandler.makeNull}) {
+void getString(String title, String Function() getValue, void Function(String) setValue, {EmptyStringHandler emptyString = EmptyStringHandler.makeNull, String label = 'Value'}) {
   FormBuilder(title, (Map<String, String> data) {
     String value = data['value'];
     if (value.isEmpty && emptyString == EmptyStringHandler.makeNull) {
@@ -381,7 +381,7 @@ void getString(String title, String Function() getValue, void Function(String) s
     resetFocus();
     setValue(value);
   }, showMessage, onCancel: resetFocus)
-    ..addElement('value', value: getValue(), validator: emptyString == EmptyStringHandler.disallow ? notEmptyValidator : null)
+    ..addElement('value', value: getValue(), validator: emptyString == EmptyStringHandler.disallow ? notEmptyValidator : null, label: label)
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
 }
 

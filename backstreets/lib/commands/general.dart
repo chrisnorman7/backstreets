@@ -6,12 +6,14 @@ import 'dart:math';
 import 'package:aqueduct/aqueduct.dart';
 import 'package:backstreets/model/map_section_action.dart';
 
+import '../game/menu.dart';
 import '../game/util.dart';
 import '../model/account.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
 import '../model/map_section.dart';
 import '../model/player_options.dart';
+import '../model/radio.dart';
 import '../sound.dart';
 import 'command_context.dart';
 
@@ -185,4 +187,66 @@ Future<void> cancelAction(CommandContext ctx) async {
 Future<void> stepCount(CommandContext ctx) async {
   final GameObject c = await ctx.getCharacter();
   ctx.message('You have walked ${c.steps} ${pluralise(c.steps, "step")}.');
+}
+
+Future<void> transmit(CommandContext ctx) async {
+  final String message = ctx.args[0] as String;
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..join(object: (GameObject o) => o.radioChannel)
+    ..where((GameObject o) => o.id).equalTo(ctx.characterId);
+  final GameObject c = await q.fetchOne();
+  if (message == null) {
+    if (c.radioChannel == null) {
+      ctx.message('Your radio is muted.');
+    } else if (c.canTransmit) {
+      ctx.message('You are allowed to transmit on the ${c.radioChannel.name} radio channel.');
+    } else {
+      ctx.message('You are banned from transmitting.');
+    }
+  } else if (c.radioChannel == null) {
+    ctx.sendError('You have not selected a radio channel to transmit on. Please do that the with the r key.');
+  } else if (c.canTransmit) {
+    await c.radioChannel.transmit(ctx.db, c, message);
+  } else {
+    ctx.message('You are banned from transmitting.');
+  }
+}
+
+Future<void> listRadioChannels(CommandContext ctx) async {
+  final GameObject c = await ctx.getCharacter();
+  final Menu m = Menu('Radio Channels');
+  m.items.add(MenuItem('Mute', 'selectRadioChannel', <String>[null]));
+  final Query<RadioChannel> q = Query<RadioChannel>(ctx.db);
+  for (final RadioChannel channel in await q.fetch()) {
+    m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name}', 'selectRadioChannel', <int>[channel.id]));
+  }
+  ctx.sendMenu(m);
+}
+
+Future<void> selectRadioChannel(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  RadioChannel channel;
+  if (id == null) {
+    ctx.message('You mute your radio.');
+  } else {
+    final Query<RadioChannel> q = Query<RadioChannel>(ctx.db)
+      ..where((RadioChannel c) => c.id).equalTo(id);
+    channel = await q.fetchOne();
+    if (channel == null) {
+      return ctx.sendError('Invalid channel ID.');
+    }
+  }
+  GameObject c = await ctx.getCharacter();
+  if (c.radioChannel != channel) {
+    final RadioChannel oldChannel = c.radioChannel;
+    final Query<GameObject> q = Query<GameObject>(ctx.db)
+      ..values.radioChannel = channel
+      ..where((GameObject o) => o.id).equalTo(ctx.characterId);
+    c = await q.updateOne();
+    if (oldChannel != null) {
+      await oldChannel.transmitRaw(ctx.db, '${c.name} leaves the channel.');
+    }
+  } else {
+    ctx.message('Channel unchanged.');
+  }
 }

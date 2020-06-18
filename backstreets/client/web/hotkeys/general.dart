@@ -318,3 +318,13 @@ void showActions() {
 }
 
 void showWho() => commandContext.send('who', null);
+
+void selectRadioChannel() {
+  commandContext.send('listRadioChannels', null);
+}
+
+void transmit() {
+  getString('Transmit', () => '', (String value) {
+    commandContext.send('transmit', <String>[value]);
+  }, label: 'Message');
+}

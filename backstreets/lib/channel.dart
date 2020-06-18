@@ -122,6 +122,10 @@ class BackstreetsChannel extends ApplicationChannel {
         actionSounds[path.basename(path.dirname(entity.path))].add(Sound(entity.path));
       }
     }
+    for (final FileSystemEntity entity in radioDirectory.listSync()) {
+      final String name = path.basenameWithoutExtension(entity.path);
+      radioSounds[name] = Sound(entity.path);
+    }
     final Query<GameMap> q = Query<GameMap>(databaseContext);
     if (await q.reduce.count() == 0) {
       q.values.name = 'Map 1';
@@ -207,6 +211,7 @@ class BackstreetsChannel extends ApplicationChannel {
         ctx.send('actionSounds', <dynamic>[name, <String>[for (final Sound s in sounds) s.url]]);
       });
       ctx.send('phrases', <List<String>>[phrases.keys.toList()]);
+      radioSounds.forEach((String name, Sound s) => ctx.send('radioSound', <String>[name, s.url]));
       socket.listen((dynamic payload) async {
         ctx.lastActive = DateTime.now();
         if (payload is! String) {
