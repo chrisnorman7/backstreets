@@ -149,11 +149,12 @@ class BackstreetsChannel extends ApplicationChannel {
     // Setup the websocket.
     router.route('/ws').linkFunction((Request request) async {
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
-      final Logger socketLogger = Logger('${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}');
+      final String connectionName = '${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}';
+      final Logger socketLogger = Logger(connectionName);
       socketLogger.info('Connection established.');
       final File motdFile = File('motd.txt');
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
-      await GameObject.notifyAdmins(ctx.db, 'Incoming conection from ${socketLogger.name}.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')));
+      await GameObject.notifyAdmins(ctx.db, 'Incoming conection from $connectionName.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')));
       CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
       ctx.message(motd);
@@ -233,7 +234,7 @@ class BackstreetsChannel extends ApplicationChannel {
         }
       }, onError: (dynamic error) => logger.warning(error),
       onDone: () async {
-        await GameObject.notifyAdmins(ctx.db, '${socketLogger.name} has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')));
+        await GameObject.notifyAdmins(ctx.db, '$connectionName has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')));
         if (ctx.characterId != null) {
           final GameObject c = await ctx.setConnected(false);
           await c.doSocial(ctx.db, c.disconnectSocial);
