@@ -250,9 +250,11 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   ///
   /// Used for sending to a connection.
   Future<Map<String, dynamic>> toJson(ManagedContext db) async {
+    Duration lastActive;
     int secondsInactive;
     if (commandContext != null && commandContext.lastActive != null) {
-      secondsInactive = DateTime.now().millisecondsSinceEpoch - commandContext.lastActive.millisecondsSinceEpoch;
+      lastActive = DateTime.now().difference(commandContext.lastActive);
+      secondsInactive = lastActive.inSeconds;
     }
     return <String, dynamic>{
       'id': id,
@@ -277,7 +279,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'ownerName': owner?.name,
       'connected': connected,
       'secondsInactive': secondsInactive,
-      'lastActive': secondsInactive == null ? null : formatDuration(Duration(seconds: secondsInactive)),
+      'lastActive': lastActive == null ? null : formatDuration(lastActive, suffix: ' ago', noTime: 'Active now'),
     };
   }
 

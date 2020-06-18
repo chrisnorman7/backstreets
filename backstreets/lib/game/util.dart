@@ -78,7 +78,7 @@ DivmodResult divmod(num x, num y) {
 }
 
 /// Format [duration] with [englishList].
-String formatDuration(Duration duration) {
+String formatDuration(Duration duration, {String suffix = '', String noTime = 'No time at all'}) {
   final List<String> details = <String>[];
   int remaining = duration.inSeconds;
   DivmodResult dr = divmod(remaining, 24 * 3600);
@@ -102,5 +102,9 @@ String formatDuration(Duration duration) {
   if (remaining > 0) {
     details.add('$remaining ${pluralise(remaining, "second")}');
   }
-  return englishList(details, emptyString: 'No time at all');
+  if (details.isEmpty) {
+    return noTime;
+  } else {
+    return englishList(details) + suffix;
+  }
 }
