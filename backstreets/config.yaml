@@ -1,7 +1,0 @@
-maxConnections: 300
-database:
-  username: backstreets_user
-  password: Backstreets123!
-  host: localhost
-  port: 5432
-  databaseName: backstreets
