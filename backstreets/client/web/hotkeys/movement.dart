@@ -94,7 +94,7 @@ void showExits() {
     }
   });
   if (exits.isEmpty) {
-    showMessage('There are no exits here.', important: false);
+    showMessage('There are no exits at your current coordinates.', important: false);
   } else {
     showMessage('Exits: ${englishList(exits)}.', important: false);
   }
