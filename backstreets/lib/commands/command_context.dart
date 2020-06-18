@@ -84,6 +84,7 @@ class CommandContext{
       return null;
     }
     final Query<GameObject> q = Query<GameObject>(db)
+      ..join(object: (GameObject o) => o.radioChannel)
       ..where((GameObject c) => c.id).equalTo(characterId);
     return await q.fetchOne();
   }
