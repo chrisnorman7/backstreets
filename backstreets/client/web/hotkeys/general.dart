@@ -241,15 +241,23 @@ void enterKey() {
   }
   if (staffOnly()) {
     if (commandContext.mapSectionResizer != null || commandContext.mapSectionMover != null) {
+      MapSection s;
+      String action;
+      if (commandContext.mapSectionMover == null ) {
+        s = commandContext.mapSectionResizer.section;
+        action = 'resizing';
+      } else {
+        s = commandContext.mapSectionMover.section;
+        action = 'moving';
+      }
       lines.add(Line(b, () {
-        clearBook();
-        b.push(mapSectionPage(b, commandContext.mapSectionResizer == null? commandContext.mapSectionMover.section : commandContext.mapSectionResizer.section, commandContext, onUpload: () {
+        b.push(mapSectionPage(b, s, commandContext, onUpload: () {
           commandContext.section = null;
           clearBook();
         }, onCancel: doCancel));
         commandContext.mapSectionResizer = null;
         commandContext.mapSectionMover = null;
-      }, titleString: 'Finish Resizing ${commandContext.mapSectionResizer.section.name}'));
+      }, titleString: 'Finish $action ${s.name}'));
     }
     if (commandContext.exit != null) {
       lines.add(Line(b, () {
@@ -274,9 +282,7 @@ void enterKey() {
       }, titleString: 'Finish Summoning'));
     }
   }
-  if (lines.isEmpty) {
-    showMessage('Nothing to do.', important: false);
-  } else {
+  if (lines.isNotEmpty) {
     commandContext.book = b;
     if (lines.length == 1) {
       lines[0].func();
