@@ -38,7 +38,7 @@ class Permissions {
 /// As created by the [playerList] command.
 class GameObject {
   /// Create a player or other object.
-  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId, this.ownerName);
+  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId, this.ownerName, this.connected, this.secondsInactive, this.lastActive);
 
   /// The id of the Character.
   int id;
@@ -78,6 +78,15 @@ class GameObject {
 
   /// Whether or not this object can leave the current map.
   bool canLeaveMap;
+
+  //// Whether or not this object is connected.
+  bool connected;
+
+  /// How many seconds this player has been inactive.
+  int secondsInactive;
+
+  /// How long it has been since this object was active on the server.
+  String lastActive;
 
   /// A list of [Player] objects who are also connected to this account.
   List<GameObject> get relatedObjects => commandContext.objects.where((GameObject o) => o.account?.id == account?.id && o.id != id).toList();

@@ -59,6 +59,9 @@ class CommandContext{
   /// This list can be of any length (including 0), and its contents depends on the command being sent.
   List<dynamic> args;
 
+  /// The time this connection was last active.
+  DateTime lastActive;
+
   /// Get an [Account] instance, with an id of [accountId].
   Future<Account> getAccount() async {
     if (accountId == null) {

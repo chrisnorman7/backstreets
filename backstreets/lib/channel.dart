@@ -178,6 +178,7 @@ class BackstreetsChannel extends ApplicationChannel {
       });
       ctx.send('phrases', <List<String>>[phrases.keys.toList()]);
       socket.listen((dynamic payload) async {
+        ctx.lastActive = DateTime.now();
         if (payload is! String) {
           await socket.close(WebSocketStatus.unsupportedData, 'Binary communication is not supported.');
           return null;

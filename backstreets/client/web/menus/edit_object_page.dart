@@ -52,17 +52,16 @@ Page editObjectPage(Book b, GameObject o) {
       }, titleString: 'Revoke All Builder Permissions'),
     ]);
     if (commandContext.permissions.admin == true) {
-      lines.add(Line(b, () {
-        getString('Boot Player', () => 'You have been booted.', (String value) {
-          commandContext.send('bootPlayer', <dynamic>[o.id, value]);
-        }, emptyString: EmptyStringHandler.disallow);
-      }, titleString: 'Boot Player'));
-      if (o.account != null) {
-        lines.addAll(<Line>[
-          Line(b, () => lockAccount(o.account.id), titleString: 'Lock Account'),
-          Line(b, () => lockAccount(o.account.id, true), titleString: 'Unlock Account'),
-        ]);
-      }
+      lines.addAll(<Line>[
+        Line(b, resetFocus, titleString: o.connected ? 'Last active: ${o.lastActive} ago' : 'Not Connected'),
+        Line(b, () {
+          getString('Boot Player', () => 'You have been booted.', (String value) {
+            commandContext.send('bootPlayer', <dynamic>[o.id, value]);
+          }, emptyString: EmptyStringHandler.disallow);
+        }, titleString: 'Boot Player'),
+        Line(b, () => lockAccount(o.account.id), titleString: 'Lock Account'),
+        Line(b, () => lockAccount(o.account.id, true), titleString: 'Unlock Account'),
+      ]);
     }
   }
   lines.addAll(

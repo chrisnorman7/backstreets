@@ -80,6 +80,7 @@ void listOfObjects(CommandContext ctx) {
         data['id'] as int, data['name'] as String, coordinates,
         data['locationId'] as int, data['locationName'] as String, permissions, account,
         data['ownerId'] as int, data['ownerName'] as String,
+        data['connected'] as bool, data['secondsInactive'] as int, data['lastActive'] as String,
       )
         ..speed = data['speed'] as int
         ..maxMoveTime = data['maxMoveTime'] as int
