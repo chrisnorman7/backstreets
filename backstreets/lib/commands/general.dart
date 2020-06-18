@@ -217,9 +217,11 @@ Future<void> listRadioChannels(CommandContext ctx) async {
   final Menu m = Menu('Radio Channels');
   m.items.add(MenuItem('Mute', 'selectRadioChannel', <String>[null]));
   final Query<RadioChannel> q = Query<RadioChannel>(ctx.db)
+    ..join(set: (RadioChannel c) => c.listeners)
     ..sortBy((RadioChannel c) => c.name, QuerySortOrder.ascending);
   for (final RadioChannel channel in await q.fetch()) {
-    m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name}', 'selectRadioChannel', <int>[channel.id]));
+    final List<String> names = <String>[for (final GameObject o in channel.listeners) o.name];
+    m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name} (${englishList(names, emptyString: "Empty")})', 'selectRadioChannel', <int>[channel.id]));
   }
   if (await c.getStaff(ctx.db)) {
     m.items.add(MenuItem('Edit Channels', 'editRadioChannels', null));
