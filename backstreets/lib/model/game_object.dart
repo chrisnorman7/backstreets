@@ -290,7 +290,6 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       ..where((GameObject o) => o.admin).equalTo(true);
     for (final GameObject o in await q.fetch()) {
       final CommandContext ctx = commandContexts[o.id];
-      print(o.id);
       if (ctx != null) {
         ctx.message(message);
         if (sound != null) {

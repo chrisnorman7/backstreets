@@ -276,7 +276,6 @@ class CommandContext{
     for (final Exit e in await exitsQuery.fetch()) {
       mapData['exits'].add(e.toJson());
     }
-    print(mapData);
     send('mapData', <Map<String, dynamic>>[mapData]);
     final int total = DateTime.now().millisecondsSinceEpoch - started;
     logger.info('Sent map data in ${(total / 1000).toStringAsFixed(2)} seconds.');
