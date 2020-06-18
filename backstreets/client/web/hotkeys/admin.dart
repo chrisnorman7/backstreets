@@ -17,6 +17,10 @@ void adminMenu() {
           commandContext.send('addMap', <String>[]);
           clearBook();
         }, titleString: 'New Map'),
+        Line(commandContext.book, () => getString('Broadcast Announcement', () => '', (String value) {
+          clearBook();
+          commandContext.send('broadcast', <String>[value]);
+        }, emptyString: EmptyStringHandler.disallow), titleString: 'Broadcast'),
         Line(commandContext.book, () {
           clearBook();
           commandContext.getObjectList(editObjects, 'adminPlayerList');

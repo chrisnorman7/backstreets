@@ -4,11 +4,13 @@ library admin;
 import 'dart:io';
 
 import 'package:aqueduct/aqueduct.dart';
-import 'package:backstreets/model/builder_permission.dart';
+import 'package:path/path.dart' as path;
 
 import '../model/account.dart';
+import '../model/builder_permission.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
+import '../sound.dart';
 import 'command_context.dart';
 
 Future<void> adminPlayerList(CommandContext ctx) async {
@@ -140,4 +142,17 @@ Future<void> accounts(CommandContext ctx) async {
     });
   }
   ctx.send('accounts', <List<Map<String, dynamic>>>[accounts]);
+}
+
+Future<void> broadcast(CommandContext ctx) async {
+  final String message = ctx.args[0] as String;
+  final GameObject c = await ctx.getCharacter();
+  final Sound s = Sound(path.join(soundsDirectory, 'notifications', 'announcement.wav'));
+  final Query<GameObject> q = Query<GameObject>(ctx.db)
+    ..where((GameObject o) => o.connected).equalTo(true);
+  for (final GameObject o in await q.fetch()) {
+    o.commandContext
+      ..message('Announcement from ${c.name}: $message')
+      ..sendInterfaceSound(s);
+  }
 }
