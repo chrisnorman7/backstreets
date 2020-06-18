@@ -160,7 +160,6 @@ void escapeKey() {
       ..push(
         Page(
           lines: <Line>[
-            Line(commandContext.book, () => commandContext.send('serverTime', null), titleString: 'Server Time'),
             Line(commandContext.book, () {
               clearBook();
               commandContext?.map?.stop();
@@ -185,7 +184,8 @@ void escapeKey() {
                 ..addElement('newPassword', label: 'New password', validator: notEmptyValidator, element: PasswordInputElement())
                 ..addElement('confirmPassword', label: 'Confirm password', element: PasswordInputElement())
                 ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-            }, titleString: 'Reset Password')
+            }, titleString: 'Reset Password'),
+            Line(commandContext.book, () => commandContext.send('serverTime', null), titleString: 'Server Time'),
           ], onCancel: doCancel, titleString: 'Player Menu'
         )
       );
