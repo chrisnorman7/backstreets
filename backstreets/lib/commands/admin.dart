@@ -148,10 +148,8 @@ Future<void> broadcast(CommandContext ctx) async {
   final String message = ctx.args[0] as String;
   final GameObject c = await ctx.getCharacter();
   final Sound s = Sound(path.join(soundsDirectory, 'notifications', 'announcement.wav'));
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..where((GameObject o) => o.connected).equalTo(true);
-  for (final GameObject o in await q.fetch()) {
-    o.commandContext
+  for (final CommandContext context in CommandContext.instances) {
+    context
       ..message('Announcement from ${c.name}: $message')
       ..sendInterfaceSound(s);
   }
