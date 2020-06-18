@@ -22,4 +22,10 @@ class Options {
 
   /// The mouse sensitivity.
   int mouseSensitivity;
+
+  /// Whether or not to show new connections.
+  bool connectNotifications;
+
+  /// Whether or not to show disconnections.
+  bool disconnectNotifications;
 }

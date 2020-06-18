@@ -52,6 +52,12 @@ Future<void> playerOption(CommandContext ctx) async {
     case 'mouseSensitivity':
       q.values.mouseSensitivity = value as int;
       break;
+    case 'connectNotifications':
+    q.values.connectNotifications = value as bool;
+    break;
+  case 'disconnectNotifications':
+    q.values.disconnectNotifications = value as bool;
+    break;
     default:
       return ctx.sendError('Invalid option name "$name".');
       break;

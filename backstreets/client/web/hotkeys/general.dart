@@ -156,39 +156,52 @@ void escapeKey() {
     commandContext.message('Summon cancelled.');
     commandContext.summonObjectId = null;
   } else {
-    commandContext.book = Book(bookOptions)
-      ..push(
-        Page(
-          lines: <Line>[
-            Line(commandContext.book, () {
-              clearBook();
-              commandContext?.map?.stop();
-              commandContext
-                ..map = null
-                ..lastMoved = 0
-                ..characterName = null
-                ..send('logout', null);
-            }, titleString: 'Log out'),
-            Line(commandContext.book, () => commandContext.send('connectedTime', null), titleString: 'Time Connected'),
-            Line(commandContext.book, () => commandContext.send('stepCount', null), titleString: 'Step Count'),
-            Line(commandContext.book, () {
-              FormBuilder('Reset Password', (Map<String, String> data) {
-                if (data['confirmPassword'] == data['newPassword']) {
-                  commandContext.send('resetPassword', <String>[data['oldPassword'], data['newPassword']]);
-                  clearBook();
-                } else {
-                  showMessage('Passwords do not match.');
-                }
-              }, showMessage, onCancel: doCancel, submitLabel: 'Change Password')
-                ..addElement('oldPassword', label: 'Old password', validator: notEmptyValidator, element: PasswordInputElement())
-                ..addElement('newPassword', label: 'New password', validator: notEmptyValidator, element: PasswordInputElement())
-                ..addElement('confirmPassword', label: 'Confirm password', element: PasswordInputElement())
-                ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
-            }, titleString: 'Reset Password'),
-            Line(commandContext.book, () => commandContext.send('serverTime', null), titleString: 'Server Time'),
-          ], onCancel: doCancel, titleString: 'Player Menu'
-        )
-      );
+    commandContext.book = Book(bookOptions);
+    final List<Line> lines = <Line>[
+      Line(commandContext.book, () {
+        clearBook();
+        commandContext?.map?.stop();
+        commandContext
+          ..map = null
+          ..lastMoved = 0
+          ..characterName = null
+          ..send('logout', null);
+      }, titleString: 'Log out'),
+      Line(commandContext.book, () => commandContext.send('connectedTime', null), titleString: 'Time Connected'),
+      Line(commandContext.book, () => commandContext.send('stepCount', null), titleString: 'Step Count'),
+      Line(commandContext.book, () {
+        FormBuilder('Reset Password', (Map<String, String> data) {
+          if (data['confirmPassword'] == data['newPassword']) {
+            commandContext.send('resetPassword', <String>[data['oldPassword'], data['newPassword']]);
+            clearBook();
+          } else {
+            showMessage('Passwords do not match.');
+          }
+        }, showMessage, onCancel: doCancel, submitLabel: 'Change Password')
+          ..addElement('oldPassword', label: 'Old password', validator: notEmptyValidator, element: PasswordInputElement())
+          ..addElement('newPassword', label: 'New password', validator: notEmptyValidator, element: PasswordInputElement())
+          ..addElement('confirmPassword', label: 'Confirm password', element: PasswordInputElement())
+          ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+      }, titleString: 'Reset Password'),
+      Line(commandContext.book, () => commandContext.send('serverTime', null), titleString: 'Server Time'),
+    ];
+    if (commandContext.permissions.admin == true) {
+      lines.addAll(<Line>[
+        Line.checkboxLine(commandContext.book, () => '${commandContext.options.connectNotifications ? "Disable" : "Enable"} Connect Notifications', () => commandContext.options.connectNotifications, (bool value) {
+          commandContext.options.connectNotifications = value;
+          commandContext.send('playerOption', <dynamic>['connectNotifications', commandContext.options.connectNotifications]);
+        }),
+        Line.checkboxLine(commandContext.book, () => '${commandContext.options.disconnectNotifications ? "Disable" : "Enable"} Disconnect Notifications', () => commandContext.options.disconnectNotifications, (bool value) {
+          commandContext.options.disconnectNotifications = value;
+          commandContext.send('playerOption', <dynamic>['disconnectNotifications', commandContext.options.disconnectNotifications]);
+        }),
+      ]);
+    }
+    commandContext.book.push(
+      Page(
+        lines: lines, onCancel: doCancel, titleString: 'Player Menu'
+      )
+    );
   }
 }
 

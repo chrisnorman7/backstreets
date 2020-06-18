@@ -13,17 +13,14 @@ import 'actions/actions.dart';
 import 'commands/command.dart';
 import 'commands/command_context.dart';
 import 'commands/commands.dart';
-
 import 'config.dart';
-
 import 'game/npc.dart';
 import 'game/tile.dart';
-
 import 'model/account.dart';
 import 'model/connection_record.dart';
 import 'model/game_map.dart';
 import 'model/game_object.dart';
-
+import 'model/player_options.dart';
 import 'socials_factory.dart';
 import 'sound.dart';
 
@@ -159,7 +156,12 @@ class BackstreetsChannel extends ApplicationChannel {
       socketLogger.info('Connection established.');
       final File motdFile = File('motd.txt');
       final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
-      await GameObject.notifyAdmins(ctx.db, 'Incoming conection from $connectionName.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')));
+      await GameObject.notifyAdmins(ctx.db, 'Incoming conection from $connectionName.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')), filterFunc: (GameObject o) async {
+        final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
+          ..where((PlayerOptions o) => o.object).identifiedBy(o.id);
+        final PlayerOptions options = await q.fetchOne();
+        return options.connectNotifications;
+      });
       CommandContext.instances.add(ctx);
       final String motd = motdFile.readAsStringSync();
       ctx.message(motd);
@@ -240,7 +242,12 @@ class BackstreetsChannel extends ApplicationChannel {
         }
       }, onError: (dynamic error) => logger.warning(error),
       onDone: () async {
-        await GameObject.notifyAdmins(ctx.db, '$connectionName has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')));
+        await GameObject.notifyAdmins(ctx.db, '$connectionName has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')), filterFunc: (GameObject o) async {
+        final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
+          ..where((PlayerOptions o) => o.object).identifiedBy(o.id);
+        final PlayerOptions options = await q.fetchOne();
+        return options.disconnectNotifications;
+        });
         if (ctx.characterId != null) {
           final GameObject c = await ctx.setConnected(false);
           await c.doSocial(ctx.db, c.disconnectSocial);

@@ -52,6 +52,14 @@ class _PlayerOptions with PrimaryKeyMixin {
   /// The mouse sensitivity.
   @Column(defaultValue: '5')
   int mouseSensitivity;
+
+  /// Whether or not this object wants to hear about new connections.
+  @Column(defaultValue: 'true')
+  bool connectNotifications;
+
+  /// Whether or not this object wants to hear about connections dropping.
+  @Column(defaultValue: 'true')
+  bool disconnectNotifications;
 }
 
 /// A class to hold player options.

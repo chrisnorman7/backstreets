@@ -52,7 +52,9 @@ void playerOptions(CommandContext ctx) {
     ..echoSound = data['echoSound'] as String
     ..airbornElevate = data['airbornElevate'] as int
     ..wallFilterAmount = data['wallFilterAmount'] as int
-    ..mouseSensitivity = data['mouseSensitivity'] as int;
+    ..mouseSensitivity = data['mouseSensitivity'] as int
+    ..connectNotifications = data['connectNotifications'] as bool
+    ..disconnectNotifications = data['disconnectNotifications'] as bool;
 }
 
 /// A list of objects has been sent.

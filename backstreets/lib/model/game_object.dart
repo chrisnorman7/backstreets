@@ -284,11 +284,14 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   }
 
   /// Notify all connected admins of something.
-  static Future<void> notifyAdmins(ManagedContext db, String message, {Sound sound}) async {
+  static Future<void> notifyAdmins(ManagedContext db, String message, {Sound sound, Future<bool> Function(GameObject) filterFunc}) async {
     final Query<GameObject> q = Query<GameObject>(db)
       ..where((GameObject o) => o.connected).equalTo(true)
       ..where((GameObject o) => o.admin).equalTo(true);
     for (final GameObject o in await q.fetch()) {
+      if (filterFunc != null && !(await filterFunc(o))) {
+        continue;
+      }
       final CommandContext ctx = commandContexts[o.id];
       if (ctx != null) {
         ctx.message(message);
