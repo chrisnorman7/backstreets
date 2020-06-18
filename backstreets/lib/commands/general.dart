@@ -216,7 +216,8 @@ Future<void> listRadioChannels(CommandContext ctx) async {
   final GameObject c = await ctx.getCharacter();
   final Menu m = Menu('Radio Channels');
   m.items.add(MenuItem('Mute', 'selectRadioChannel', <String>[null]));
-  final Query<RadioChannel> q = Query<RadioChannel>(ctx.db);
+  final Query<RadioChannel> q = Query<RadioChannel>(ctx.db)
+    ..sortBy((RadioChannel c) => c.name, QuerySortOrder.ascending);
   for (final RadioChannel channel in await q.fetch()) {
     m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name}', 'selectRadioChannel', <int>[channel.id]));
   }
