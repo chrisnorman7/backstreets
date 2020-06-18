@@ -60,8 +60,13 @@ class BackstreetsChannel extends ApplicationChannel {
       config.database.port,
       config.database.databaseName
     );
-    databaseContext = ManagedContext(dataModel, psc);
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
+    databaseContext = ManagedContext(dataModel, psc);
+    final Query<GameObject> characterQuery = Query<GameObject>(databaseContext)
+      ..where((GameObject o) => o.connected).equalTo(true)
+      ..values.connected = false;
+    final int updated = (await characterQuery.update()).length;
+    logger.info('Objects cleaned up from last run: $updated.');
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
       if (entity is Directory) {
         final String name = path.basename(entity.path);
