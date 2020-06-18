@@ -78,6 +78,7 @@ void echoSoundsMenu() {
       }, titleFunc: () => '${name == commandContext.options.echoSound ? "* " : ""}$name', soundUrl: () => url)
     );
   });
+  lines.sort((Line a, Line b) => a.getTitle().toLowerCase().compareTo(b.getTitle().toLowerCase()));
   commandContext.book.push(Page(lines: lines, titleString: 'Echo Sounds', onCancel: clearBook));
 }
 
