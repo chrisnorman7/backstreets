@@ -241,7 +241,7 @@ Future<void> selectRadioChannel(CommandContext ctx) async {
     }
   }
   GameObject c = await ctx.getCharacter();
-  if (c.radioChannel != channel) {
+  if (c.radioChannel?.id != channel?.id) {
     final RadioChannel oldChannel = c.radioChannel;
     final Query<GameObject> q = Query<GameObject>(ctx.db)
       ..values.radioChannel = channel
