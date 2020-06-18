@@ -1,4 +1,5 @@
 maxConnections: 300
+maxConnectionsPerHost: 25
 database:
   username: dart
   password: dart

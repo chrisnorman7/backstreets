@@ -40,8 +40,11 @@ class BackstreetsChannel extends ApplicationChannel {
 
   /// The configuration object.
   ///
-  /// Leave it here so that [entrypoint] can access it.
+  /// Leave it here so that [entryPoint] can access it.
   BackstreetsConfiguration config;
+
+  /// The number of connections per host.
+  final Map<String, int> hostConnections = <String, int>{};
 
   /// Initialize services in this method.
   ///
@@ -64,6 +67,7 @@ class BackstreetsChannel extends ApplicationChannel {
     );
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
     logger.info('Maximum connections allowed: ${config.maxConnections}.');
+    logger.info('Maximum connections per host allowed: ${config.maxConnectionsPerHost}.');
     databaseContext = ManagedContext(dataModel, psc);
     final Query<GameObject> characterQuery = Query<GameObject>(databaseContext)
       ..where((GameObject o) => o.connected).equalTo(true)
@@ -156,12 +160,21 @@ class BackstreetsChannel extends ApplicationChannel {
 
     // Setup the websocket.
     router.route('/ws').linkFunction((Request request) async {
+      final String hostname = request.connectionInfo.remoteAddress.address;
       if (CommandContext.instances.length >= config.maxConnections) {
-        logger.shout('!!! MAXIMUM CONNECTIONS EXCEEDED !!!');
+        logger.shout('!!! maximum connections exceeded !!!');
+        return null;
+      } else if (hostConnections.containsKey(hostname) && hostConnections[hostname] >= config.maxConnectionsPerHost) {
+        logger.shout('!!! Too many connections from $hostname !!!');
         return null;
       }
       final WebSocket socket = await WebSocketTransformer.upgrade(request.raw);
-      final String connectionName = '${request.connectionInfo.remoteAddress.address}:${request.connectionInfo.remotePort}';
+      if (!hostConnections.containsKey(hostname)) {
+        hostConnections[hostname] = 1;
+      } else {
+        hostConnections[hostname]++;
+      }
+      final String connectionName = '$hostname:${request.connectionInfo.remotePort}';
       final Logger socketLogger = Logger(connectionName);
       socketLogger.info('Connection established.');
       final File motdFile = File('motd.txt');
@@ -250,8 +263,9 @@ class BackstreetsChannel extends ApplicationChannel {
           socketLogger.severe('Error parsing command.', e, s);
           ctx.sendError(e.toString());
         }
-      }, onError: (dynamic error) => logger.warning(error),
+      }, onError: (dynamic error) => socketLogger.warning('Websocket error.', error),
       onDone: () async {
+        hostConnections[hostname]--;
         await GameObject.notifyAdmins(ctx.db, '$connectionName has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')), filterFunc: (GameObject o) async {
         final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
           ..where((PlayerOptions o) => o.object).identifiedBy(o.id);

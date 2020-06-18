@@ -13,4 +13,7 @@ class BackstreetsConfiguration extends Configuration {
 
   /// The maximum number of allowed connections.
   int maxConnections;
+
+  /// The maximum number of connections per hostname.
+  int maxConnectionsPerHost;
 }
