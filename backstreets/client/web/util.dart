@@ -244,7 +244,7 @@ void moveMapSection(Directions d) {
     ..section.startY += da.y
     ..section.endX += da.x
     ..section.endY += da.y;
-  commandContext.message(relativeDirections(commandContext.mapSectionMover.startCoordinates, commandContext.mapSectionMover.endCoordinates).toString());
+  commandContext.message(relativeDirections(commandContext.mapSectionMover.startCoordinates, commandContext.mapSectionMover.section.startCoordinates).toString());
 }
 
 /// Instantly move the character.
