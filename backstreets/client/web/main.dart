@@ -265,7 +265,7 @@ void main() {
       }
     }
   });
-  document.onContextMenu.listen((MouseEvent e) => e.preventDefault());
+  // document.onContextMenu.listen((MouseEvent e) => e.preventDefault());
   for (final Element e in querySelectorAll('.controls')) {
     e.onClick.listen((MouseEvent e) {
       e.stopPropagation();
