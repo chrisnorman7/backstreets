@@ -42,12 +42,11 @@ void account(CommandContext ctx) {
             resetFocus();
             ctx.book = Book(bookOptions)
               ..push(
-                mapReferencePage('Create Character', (MapReference m) {
+                mapReferencePage('Select Starting Map', (MapReference m) {
                   clearBook();
                   ctx.message('Creating character...');
                   ctx.send('createCharacter', <dynamic>[m.id, data['name']]);
-                }, shouldInclude: (MapReference r) => r.playersCanCreate,
-                onCancel: () {
+                }, shouldInclude: (MapReference r) => r.playersCanCreate, onCancel: () {
                   ctx.args = <dynamic>[ctx.username, characterList];
                   account(ctx);
                 })
