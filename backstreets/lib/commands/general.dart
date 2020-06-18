@@ -220,6 +220,9 @@ Future<void> listRadioChannels(CommandContext ctx) async {
   for (final RadioChannel channel in await q.fetch()) {
     m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name}', 'selectRadioChannel', <int>[channel.id]));
   }
+  if (await c.getStaff(ctx.db)) {
+    m.items.add(MenuItem('Edit Channels', 'editRadioChannels', null));
+  }
   ctx.sendMenu(m);
 }
 
