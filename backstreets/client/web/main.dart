@@ -186,7 +186,7 @@ void main() {
       leftSnapHotkey,
       Hotkey(keyboard, 'd', right, shift: true, runWhen: validMap, titleString: 'Turn right a bit'),
       rightSnapHotkey,
-      Hotkey(keyboard, 's', aboutFace, runWhen: validMap, titleString: 'Turn around'),
+      Hotkey(keyboard, ' ', aboutFace, runWhen: validMap, titleString: 'Turn around'),
       Hotkey(keyboard, 'v', sectionSize, shift: true, runWhen: validMap, titleString: 'Show the size of the current section.'),
       Hotkey(keyboard, 'c', mapSize, shift: true, runWhen: validMap, titleString: 'Show the size of the current map.'),
       Hotkey(keyboard, 'x', showExits, runWhen: validMap, titleString: 'Show any exits that are at your current coordinates.'),
