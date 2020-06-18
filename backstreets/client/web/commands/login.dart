@@ -52,10 +52,7 @@ void account(CommandContext ctx) {
                   account(ctx);
                 })
               );
-          }, showMessage,
-          subTitle: 'Enter the name for your new character',
-          submitLabel: 'Create Character',
-          cancellable: true, onCancel: doCancel
+          }, showMessage, subTitle: 'Enter the name for your new character', submitLabel: 'Create Character', onCancel: resetFocus
         )
           ..addElement('name', label: 'Character Name', validator: notEmptyValidator)
           ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
