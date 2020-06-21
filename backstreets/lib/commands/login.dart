@@ -27,9 +27,9 @@ Future<void> createAccount(CommandContext ctx) async {
     ..setPassword(password);
   try {
     a = await ctx.db.insertObject(a);
-    ctx.logger.info('Created account $username.');
     ctx.account = a;
     await ctx.sendAccount();
+    ctx.logger.info('Account created.');
     ctx.sendInterfaceSound(Sound(loginSound));
   }
   catch(e) {
@@ -50,9 +50,9 @@ Future<void> login(CommandContext ctx) async {
       ctx.logger.info('Blocked access to locked account $username.');
       return ctx.socket.close(WebSocketStatus.normalClosure, a.lockedMessage);
     }
-    ctx.logger.info('Authenticated as $username.');
     ctx.account = a;
     await ctx.sendAccount();
+    ctx.logger.info('Authenticated as $username.');
     return ctx.sendInterfaceSound(Sound(loginSound));
   }
   ctx.logger.info('Failed to authenticate as $username.');
@@ -118,7 +118,7 @@ Future<void> connectCharacter(CommandContext ctx) async {
   ctx.character = c;
   ctx.map = c.location;
   await ctx.sendCharacter();
-  ctx.logger.info('Connected to object $c.');
+  ctx.logger.info('Authenticated.');
 }
 
 Future<void> logout(CommandContext ctx) async {
