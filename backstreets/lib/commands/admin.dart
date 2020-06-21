@@ -177,5 +177,5 @@ Future<void> radioChannelHistory(CommandContext ctx) async {
 Future<void> editRadioChannel(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
   final RadioChannel channel = await ctx.db.fetchObjectWithID<RadioChannel>(id);
-  ctx.message(channel.asMap().toString());
+  ctx.send('editRadioChannel', <Map<String, dynamic>>[channel.asMap()]);
 }
