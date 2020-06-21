@@ -348,7 +348,8 @@ class CommandContext{
     final Query<GameObject> q = Query<GameObject>(db)
       ..values.connectionName = disconnected ? null : '${connectionInfo.remoteAddress.address}:${connectionInfo.remotePort}'
       ..where((GameObject o) => o.id).equalTo(characterId);
-    return q.updateOne();
+    final GameObject c = await q.updateOne();
+    return c;
   }
 
   /// Send a menu to the client.

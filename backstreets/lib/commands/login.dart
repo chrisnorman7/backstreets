@@ -123,10 +123,7 @@ Future<void> connectCharacter(CommandContext ctx) async {
 
 Future<void> logout(CommandContext ctx) async {
   ctx.message('Logging you out.');
-  final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..values.connectionName = null
-    ..where((GameObject o) => o.id).equalTo(ctx.characterId);
-  await q.update();
+  await ctx.setConnectionName(disconnected: true);
   ctx.character = null;
   await ctx.sendAccount();
 }

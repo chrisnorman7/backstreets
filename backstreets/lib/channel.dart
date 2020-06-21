@@ -272,12 +272,6 @@ class BackstreetsChannel extends ApplicationChannel {
       }, onError: (dynamic error) => socketLogger.warning('Websocket error.', error),
       onDone: () async {
         hostConnections[hostname]--;
-        await GameObject.notifyAdmins(ctx.db, '$connectionName has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')), filterFunc: (GameObject o) async {
-        final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
-          ..where((PlayerOptions o) => o.object).identifiedBy(o.id);
-        final PlayerOptions options = await q.fetchOne();
-        return options.disconnectNotifications;
-        });
         if (ctx.characterId != null) {
           final GameObject c = await ctx.setConnectionName(disconnected: true);
           await c.doSocial(ctx.db, c.disconnectSocial);
@@ -288,6 +282,12 @@ class BackstreetsChannel extends ApplicationChannel {
             ..where((ConnectionRecord c) => c.disconnected).isNull();
           await q.update();
         }
+        await GameObject.notifyAdmins(ctx.db, '$connectionName has disconnected.', sound: Sound(path.join(soundsDirectory, 'notifications/disconnected.wav')), filterFunc: (GameObject o) async {
+          final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
+            ..where((PlayerOptions o) => o.object).identifiedBy(o.id);
+          final PlayerOptions options = await q.fetchOne();
+          return options.disconnectNotifications;
+        });
         CommandContext.instances.remove(ctx);
         socketLogger.info('Websocket closed.');
       });

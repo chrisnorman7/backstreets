@@ -214,9 +214,12 @@ Future<void> transmit(CommandContext ctx) async {
 
 Future<void> listRadioChannels(CommandContext ctx) async {
   final String command = ctx.args[0] as String;
+  final String nullName = ctx.args[1] as String;
   final GameObject c = await ctx.getCharacter();
   final Menu m = Menu('Radio Channels');
-  m.items.add(MenuItem('Mute', 'selectRadioChannel', <String>[null]));
+  if (nullName != null) {
+    m.items.add(MenuItem(nullName, 'selectRadioChannel', <String>[null]));
+  }
   final Query<RadioChannel> q = Query<RadioChannel>(ctx.db)
     ..sortBy((RadioChannel c) => c.name, QuerySortOrder.ascending);
   for (final RadioChannel channel in await q.fetch()) {
@@ -229,8 +232,8 @@ Future<void> listRadioChannels(CommandContext ctx) async {
   }
   if (c.admin) {
     m.items.addAll(<MenuItem>[
-      MenuItem('Message History', 'listRadioChannels', <String>['radioChannelHistory']),
-      MenuItem('Edit Channels', 'listRadioChannels', <String>['editRadioChannel'])
+      MenuItem('Message History', 'listRadioChannels', <String>['radioChannelHistory', null]),
+      MenuItem('Edit Channels', 'listRadioChannels', <String>['editRadioChannel', null])
     ]);
   }
   ctx.sendMenu(m);

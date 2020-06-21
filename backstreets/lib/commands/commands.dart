@@ -36,6 +36,7 @@ Map<String, Command> commands = <String, Command>{
   'accounts': Command(accounts, authenticationType: AuthenticationTypes.admin),
   'broadcast': Command(broadcast, authenticationType: AuthenticationTypes.admin),
   'radioChannelHistory': Command(radioChannelHistory, authenticationType: AuthenticationTypes.admin),
+  'editRadioChannel': Command(editRadioChannel, authenticationType: AuthenticationTypes.admin),
 
   // Building commands (marked as "Staff-only"):
   'renameMap': Command(renameMap, authenticationType: AuthenticationTypes.staff),

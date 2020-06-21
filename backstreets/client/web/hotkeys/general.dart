@@ -320,7 +320,7 @@ void showActions() {
 void showWho() => commandContext.send('who', null);
 
 void selectRadioChannel() {
-  commandContext.send('listRadioChannels', <String>['selectRadioChannel']);
+  commandContext.send('listRadioChannels', <String>['selectRadioChannel', 'Mute']);
 }
 
 void transmit() {
