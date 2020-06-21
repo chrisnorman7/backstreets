@@ -378,8 +378,8 @@ void getString(String title, String Function() getValue, void Function(String) s
     if (value.isEmpty && emptyString == EmptyStringHandler.makeNull) {
       value = null;
     }
-    resetFocus();
     setValue(value);
+    resetFocus();
   }, showMessage, onCancel: resetFocus)
     ..addElement('value', value: getValue(), validator: emptyString == EmptyStringHandler.disallow ? notEmptyValidator : null, label: label)
     ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);

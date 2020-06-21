@@ -176,6 +176,18 @@ Future<void> radioChannelHistory(CommandContext ctx) async {
 
 Future<void> editRadioChannel(CommandContext ctx) async {
   final int id = ctx.args[0] as int;
-  final RadioChannel channel = await ctx.db.fetchObjectWithID<RadioChannel>(id);
-  ctx.send('editRadioChannel', <Map<String, dynamic>>[channel.asMap()]);
+  try {
+    final Map<String, dynamic> data = ctx.args[1] as Map<String, dynamic>;
+    final Query<RadioChannel> q = Query<RadioChannel>(ctx.db)
+      ..values.name = data['name'] as String
+      ..values.transmitSound = data['transmitSound'] as String
+      ..values.admin = data['admin'] as bool
+      ..where((RadioChannel c) => c.id).equalTo(id);
+    final RadioChannel c = await q.updateOne();
+    ctx.message('Updated channel ${c.name}.');
+  }
+  on RangeError {
+    final RadioChannel channel = await ctx.db.fetchObjectWithID<RadioChannel>(id);
+    ctx.send('editRadioChannel', <Map<String, dynamic>>[channel.asMap()]);
+  }
 }

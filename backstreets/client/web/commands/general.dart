@@ -8,6 +8,8 @@ import 'package:game_utils/game_utils.dart';
 import '../authentication.dart';
 import '../constants.dart';
 import '../game/game_object.dart';
+import '../game/radio_channel.dart';
+import '../menus/edit_radio_channel_page.dart';
 import '../menus/main_menu.dart';
 import '../util.dart';
 import 'command_context.dart';
@@ -155,4 +157,15 @@ void menu(CommandContext ctx) {
   }
   commandContext.book = b
     ..push(Page(lines: lines, titleString: title, onCancel: doCancel));
+}
+
+void editRadioChannel(CommandContext ctx) {
+  final Map<String, dynamic> data = ctx.args[0] as Map<String, dynamic>;
+  final int id = data['id'] as int;
+  final String name = data['name'] as String;
+  final String transmitSound = data['transmitSound'] as String;
+  final bool admin = data['admin'] as bool;
+  final RadioChannel channel = RadioChannel(id, name, transmitSound, admin);
+  ctx.book = Book(bookOptions);
+  ctx.book.push(editRadioChannelPage(ctx.book, channel));
 }

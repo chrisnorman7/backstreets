@@ -21,6 +21,7 @@ Map<String, CommandType> commands = <String, CommandType>{
   'confirmAction': confirmAction,
   'accounts': accounts,
   'menu': menu,
+  'editRadioChannel': editRadioChannel,
 
   // Login commands:
   'account': account,
