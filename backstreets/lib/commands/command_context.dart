@@ -346,7 +346,7 @@ class CommandContext{
   /// Set the connected state of the attached character, and return the character.
   Future<GameObject> setConnectionName({bool disconnected = false}) async {
     final Query<GameObject> q = Query<GameObject>(db)
-      ..values.connectionName = disconnected ? null : '${(await connectionInfo.remoteAddress.reverse()).address}:${connectionInfo.remotePort}'
+      ..values.connectionName = disconnected ? null : '${connectionInfo.remoteAddress.address}:${connectionInfo.remotePort}'
       ..where((GameObject o) => o.id).equalTo(characterId);
     return q.updateOne();
   }
