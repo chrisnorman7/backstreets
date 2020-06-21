@@ -6,10 +6,13 @@ import 'dart:io';
 import 'package:aqueduct/aqueduct.dart';
 import 'package:path/path.dart' as path;
 
+import '../game/menu.dart';
+import '../game/util.dart';
 import '../model/account.dart';
 import '../model/builder_permission.dart';
 import '../model/game_map.dart';
 import '../model/game_object.dart';
+import '../model/radio.dart';
 import '../sound.dart';
 import 'command_context.dart';
 
@@ -153,4 +156,20 @@ Future<void> broadcast(CommandContext ctx) async {
       ..message('Announcement from ${c.name}: $message')
       ..sendInterfaceSound(s);
   }
+}
+
+Future<void> radioChannelHistory(CommandContext ctx) async {
+  final int id = ctx.args[0] as int;
+  final RadioChannel channel = await ctx.db.fetchObjectWithID<RadioChannel>(id);
+  final Menu m = Menu('Radio Transmissions');
+  final Query<RadioTransmission> q = Query<RadioTransmission>(ctx.db)
+    ..join(object: (RadioTransmission t) => t.object)
+    ..where((RadioTransmission t) => t.channel).identifiedBy(channel.id)
+    ..sortBy((RadioTransmission t) => t.sentAt, QuerySortOrder.descending);
+  final DateTime now = DateTime.now();
+  for (final RadioTransmission t in await q.fetch()) {
+    final Duration d = now.difference(t.sentAt);
+    m.items.add(MenuItem('${t.object.name}: "${t.message}" (${formatDuration(d, suffix: " ago")})', null, null));
+  }
+  ctx.sendMenu(m);
 }

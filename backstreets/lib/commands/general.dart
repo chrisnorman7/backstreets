@@ -213,6 +213,7 @@ Future<void> transmit(CommandContext ctx) async {
 }
 
 Future<void> listRadioChannels(CommandContext ctx) async {
+  final String command = ctx.args[0] as String;
   final GameObject c = await ctx.getCharacter();
   final Menu m = Menu('Radio Channels');
   m.items.add(MenuItem('Mute', 'selectRadioChannel', <String>[null]));
@@ -224,10 +225,13 @@ Future<void> listRadioChannels(CommandContext ctx) async {
       ..where((GameObject o) => o.radioChannel).identifiedBy(channel.id)
       ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
     final List<String> names = <String>[for (final GameObject o in await listenersQuery.fetch()) o.name];
-    m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name} (${englishList(names, emptyString: "Nobody listening")})', 'selectRadioChannel', <int>[channel.id]));
+    m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name} (${englishList(names, emptyString: "Nobody listening")})', command, <int>[channel.id]));
   }
-  if (await c.getStaff(ctx.db)) {
-    m.items.add(MenuItem('Edit Channels', 'editRadioChannels', null));
+  if (c.admin) {
+    m.items.addAll(<MenuItem>[
+      MenuItem('Message History', 'listRadioChannels', <String>['radioChannelHistory']),
+      MenuItem('Edit Channels', 'listRadioChannels', <String>['editRadioChannel'])
+    ]);
   }
   ctx.sendMenu(m);
 }
