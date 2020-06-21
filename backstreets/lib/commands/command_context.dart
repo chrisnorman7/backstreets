@@ -32,7 +32,7 @@ class CommandContext{
   final WebSocket socket;
 
   /// The logger that describes [socket].
-  final Logger logger;
+  Logger logger;
 
   /// The interface to the database.
   ManagedContext db;
@@ -177,6 +177,7 @@ class CommandContext{
   Future<void> sendAccount() async {
     final List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
     final Account account = await getAccount();
+    logger = Logger('Account ${account.username} (#${account.id})');
     final Query<GameObject> charactersQuery = Query<GameObject>(db)
       ..where((GameObject o) => o.account).identifiedBy(accountId)
       ..sortBy((GameObject o) => o.createdAt, QuerySortOrder.ascending);
@@ -196,6 +197,7 @@ class CommandContext{
   /// I feel like this function should send one big data package, like [sendMap] does, but as player stuff is most likely only going to get sent once - when the player connects, it's probably not all that important.
   Future<void> sendCharacter() async {
     final GameObject c = await setConnected(true);
+    logger = Logger('${c.name} (#${c.id})');
     for (final CommandContext ctx in CommandContext.instances) {
       if (ctx.characterId == c.id && ctx != this) {
         await ctx.socket.close(WebSocketStatus.policyViolation, 'Logging you in from somewhere else.');
