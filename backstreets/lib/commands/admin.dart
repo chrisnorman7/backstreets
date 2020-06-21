@@ -121,7 +121,7 @@ Future<void> lockAccount(CommandContext ctx) async {
   }
   if (a.locked) {
     final Query<GameObject> connectedQuery = Query<GameObject>(ctx.db)
-      ..where((GameObject o) => o.connected).equalTo(true)
+      ..where((GameObject o) => o.connectionName).isNotNull()
       ..where((GameObject o) => o.account).identifiedBy(a.id);
     for (final GameObject o in await connectedQuery.fetch()) {
       await o.commandContext.socket.close(WebSocketStatus.normalClosure, 'Your account has been locked: ${a.lockedMessage}');

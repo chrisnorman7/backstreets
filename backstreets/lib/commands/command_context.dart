@@ -1,5 +1,5 @@
 /// Provides the [CommandContext] class.
-library command_arguments;
+library command_context;
 
 import 'dart:convert';
 import 'dart:io';
@@ -23,7 +23,7 @@ import 'commands.dart';
 /// Used when calling commands.
 class CommandContext{
   /// Pass this object to a command in the [commands] dictionary.
-  CommandContext(this.socket, this.logger, this.db, this.host);
+  CommandContext(this.socket, this.db, this.connectionInfo);
 
   /// All instances.
   static List<CommandContext> instances = <CommandContext>[];
@@ -31,14 +31,14 @@ class CommandContext{
   /// The [WebSocket] that called this command.
   final WebSocket socket;
 
-  /// The logger that describes [socket].
-  Logger logger;
+  /// Connection information.
+  final HttpConnectionInfo connectionInfo;
 
   /// The interface to the database.
   ManagedContext db;
 
-  /// The hostname [socket] is connecting from.
-  String host;
+  /// The logger that describes [socket].
+  Logger logger;
 
   /// The id of the [Account] that [socket] is logged in on.
   ///
@@ -85,6 +85,7 @@ class CommandContext{
     }
     final Query<GameObject> q = Query<GameObject>(db)
       ..join(object: (GameObject o) => o.radioChannel)
+      ..join(object: (GameObject o) => o.location)
       ..where((GameObject c) => c.id).equalTo(characterId);
     return await q.fetchOne();
   }
@@ -177,7 +178,7 @@ class CommandContext{
   Future<void> sendAccount() async {
     final List<Map<String, dynamic>> objects = <Map<String, dynamic>>[];
     final Account account = await getAccount();
-    logger = Logger('Account ${account.username} (#${account.id})');
+    await setLogger();
     final Query<GameObject> charactersQuery = Query<GameObject>(db)
       ..where((GameObject o) => o.account).identifiedBy(accountId)
       ..sortBy((GameObject o) => o.createdAt, QuerySortOrder.ascending);
@@ -196,8 +197,8 @@ class CommandContext{
   ///
   /// I feel like this function should send one big data package, like [sendMap] does, but as player stuff is most likely only going to get sent once - when the player connects, it's probably not all that important.
   Future<void> sendCharacter() async {
-    final GameObject c = await setConnected(true);
-    logger = Logger('${c.name} (#${c.id})');
+    final GameObject c = await setConnectionName();
+    await setLogger();
     for (final CommandContext ctx in CommandContext.instances) {
       if (ctx.characterId == c.id && ctx != this) {
         await ctx.socket.close(WebSocketStatus.policyViolation, 'Logging you in from somewhere else.');
@@ -205,7 +206,7 @@ class CommandContext{
       }
     }
     final ConnectionRecord cr = ConnectionRecord()
-      ..host = host
+      ..host = connectionInfo.remoteAddress.address
       ..object = c
       ..connected = DateTime.now();
     await db.insertObject(cr);
@@ -343,9 +344,9 @@ class CommandContext{
   }
 
   /// Set the connected state of the attached character, and return the character.
-  Future<GameObject> setConnected(bool value) {
+  Future<GameObject> setConnectionName({bool disconnected = false}) {
     final Query<GameObject> q = Query<GameObject>(db)
-      ..values.connected = value
+      ..values.connectionName = disconnected ? null : '${connectionInfo.remoteAddress.address}:${connectionInfo.remotePort}'
       ..where((GameObject o) => o.id).equalTo(characterId);
     return q.updateOne();
   }
@@ -353,5 +354,18 @@ class CommandContext{
   /// Send a menu to the client.
   void sendMenu(Menu m) {
     send('menu', <Map<String, dynamic>>[m.toJson()]);
+  }
+
+  /// Set the logger name depending on where we are in the authentication flow.
+  Future<void> setLogger() async {
+    if (characterId != null) {
+      final GameObject c = await getCharacter();
+      logger = Logger('${c.name} (#${c.id}) at ${c.location.name} (#${c.location.id}) [${c.x.floor()}, ${c.y.floor()}]');
+    } else if (accountId != null) {
+      final Account a = await getAccount();
+      logger = Logger('Account ${a.username} (#${a.id})');
+    } else {
+      logger = Logger('${connectionInfo.remoteAddress.address}:${connectionInfo.remotePort}');
+    }
   }
 }

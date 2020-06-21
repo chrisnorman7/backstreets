@@ -41,7 +41,7 @@ class RadioChannel extends ManagedObject<_RadioChannel> implements _RadioChannel
   /// Used as the backend for [transmit].
   Future<void> transmitRaw(ManagedContext db, String text) async {
     final Query<GameObject> q = Query<GameObject>(db)
-      ..where((GameObject o) => o.connected).equalTo(true)
+      ..where((GameObject o) => o.connectionName).isNotNull()
       ..where((GameObject o) => o.radioChannel).identifiedBy(id);
     for (final GameObject o in await q.fetch()) {
       o.commandContext.message('[$name] $text');

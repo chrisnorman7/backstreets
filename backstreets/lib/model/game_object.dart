@@ -103,8 +103,8 @@ class _GameObject with PrimaryKeyMixin, DoubleCoordinatesMixin, NameMixin, Ambie
   bool canLeaveMap;
 
   /// Whether or not this object is connected.
-  @Column(defaultValue: 'false')
-  bool connected;
+  @Column(nullable: true)
+  String connectionName;
 
   /// The object that owns this object.
   @Relate(#ownedObjects)
@@ -289,7 +289,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
       'canLeaveMap': canLeaveMap,
       'ownerId': owner?.id,
       'ownerName': owner?.name,
-      'connected': connected,
+      'connectionName': connectionName,
       'secondsInactive': secondsInactive,
       'lastActive': lastActive == null ? null : formatDuration(lastActive, suffix: ' ago', noTime: 'Active now'),
     };
@@ -298,7 +298,7 @@ class GameObject extends ManagedObject<_GameObject> implements _GameObject {
   /// Notify all connected admins of something.
   static Future<void> notifyAdmins(ManagedContext db, String message, {Sound sound, Future<bool> Function(GameObject) filterFunc}) async {
     final Query<GameObject> q = Query<GameObject>(db)
-      ..where((GameObject o) => o.connected).equalTo(true)
+      ..where((GameObject o) => o.connectionName).isNotNull()
       ..where((GameObject o) => o.admin).equalTo(true);
     for (final GameObject o in await q.fetch()) {
       if (filterFunc != null && !(await filterFunc(o))) {

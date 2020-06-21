@@ -53,7 +53,7 @@ Page editObjectPage(Book b, GameObject o) {
     ]);
     if (commandContext.permissions.admin == true) {
       lines.addAll(<Line>[
-        Line(b, resetFocus, titleString: o.connected ? 'Last active: ${o.lastActive}' : 'Not Connected'),
+        Line(b, resetFocus, titleString: o.connectionName == null ? 'Not Connected' : 'Last active: ${o.lastActive} from ${o.connectionName}'),
         Line(b, () {
           getString('Boot Player', () => 'You have been booted.', (String value) {
             commandContext.send('bootPlayer', <dynamic>[o.id, value]);

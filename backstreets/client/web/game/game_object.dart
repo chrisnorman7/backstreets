@@ -38,7 +38,7 @@ class Permissions {
 /// As created by the [playerList] command.
 class GameObject {
   /// Create a player or other object.
-  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId, this.ownerName, this.connected, this.secondsInactive, this.lastActive);
+  GameObject(this.id, this.name, this.coordinates, this.locationId, this.locationName, this.permissions, this.account, this.ownerId, this.ownerName, this.connectionName, this.secondsInactive, this.lastActive);
 
   /// The id of the Character.
   int id;
@@ -80,7 +80,7 @@ class GameObject {
   bool canLeaveMap;
 
   //// Whether or not this object is connected.
-  bool connected;
+  String connectionName;
 
   /// How many seconds this player has been inactive.
   int secondsInactive;

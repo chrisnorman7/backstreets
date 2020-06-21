@@ -123,7 +123,7 @@ Future<void> who(CommandContext ctx) async {
   final List<String> here = <String>[];
   final List<String> elsewhere = <String>[];
   final Query<GameObject> q = Query<GameObject>(ctx.db)
-    ..where((GameObject o) => o.connected).equalTo(true)
+    ..where((GameObject o) => o.connectionName).isNotNull()
     ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
   for (final GameObject o in await q.fetch()) {
     if (o.location.id == ctx.mapId) {
@@ -217,10 +217,13 @@ Future<void> listRadioChannels(CommandContext ctx) async {
   final Menu m = Menu('Radio Channels');
   m.items.add(MenuItem('Mute', 'selectRadioChannel', <String>[null]));
   final Query<RadioChannel> q = Query<RadioChannel>(ctx.db)
-    ..join(set: (RadioChannel c) => c.listeners)
     ..sortBy((RadioChannel c) => c.name, QuerySortOrder.ascending);
   for (final RadioChannel channel in await q.fetch()) {
-    final List<String> names = <String>[for (final GameObject o in channel.listeners) o.name];
+    final Query<GameObject> listenersQuery = Query<GameObject>(ctx.db)
+      ..where((GameObject o) => o.connectionName).isNotNull()
+      ..where((GameObject o) => o.radioChannel).identifiedBy(channel.id)
+      ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
+    final List<String> names = <String>[for (final GameObject o in await listenersQuery.fetch()) o.name];
     m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name} (${englishList(names, emptyString: "Empty")})', 'selectRadioChannel', <int>[channel.id]));
   }
   if (await c.getStaff(ctx.db)) {

@@ -70,8 +70,8 @@ class BackstreetsChannel extends ApplicationChannel {
     logger.info('Maximum connections per host allowed: ${config.maxConnectionsPerHost}.');
     databaseContext = ManagedContext(dataModel, psc);
     final Query<GameObject> characterQuery = Query<GameObject>(databaseContext)
-      ..where((GameObject o) => o.connected).equalTo(true)
-      ..values.connected = false;
+      ..where((GameObject o) => o.connectionName).isNotNull()
+      ..values.connectionName = null;
     final int updated = (await characterQuery.update()).length;
     logger.info('Objects cleaned up from last run: $updated.');
     for (final FileSystemEntity entity in tileSoundsDirectory.listSync()) {
@@ -182,7 +182,8 @@ class BackstreetsChannel extends ApplicationChannel {
       final Logger socketLogger = Logger(connectionName);
       socketLogger.info('Connection established.');
       final File motdFile = File('motd.txt');
-      final CommandContext ctx = CommandContext(socket, socketLogger, databaseContext, request.connectionInfo.remoteAddress.address);
+      final CommandContext ctx = CommandContext(socket, databaseContext, request.connectionInfo);
+      await ctx.setLogger();
       await GameObject.notifyAdmins(ctx.db, 'Incoming conection from $connectionName.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')), filterFunc: (GameObject o) async {
         final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)
           ..where((PlayerOptions o) => o.object).identifiedBy(o.id);
@@ -278,7 +279,7 @@ class BackstreetsChannel extends ApplicationChannel {
         return options.disconnectNotifications;
         });
         if (ctx.characterId != null) {
-          final GameObject c = await ctx.setConnected(false);
+          final GameObject c = await ctx.setConnectionName(disconnected: true);
           await c.doSocial(ctx.db, c.disconnectSocial);
           GameObject.commandContexts.remove(ctx.characterId);
           final Query<ConnectionRecord> q = Query<ConnectionRecord>(ctx.db)
