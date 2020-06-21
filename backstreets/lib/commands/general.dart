@@ -232,7 +232,7 @@ Future<void> listRadioChannels(CommandContext ctx) async {
   }
   if (c.admin) {
     m.items.addAll(<MenuItem>[
-      MenuItem('Message History', 'listRadioChannels', <String>['radioChannelHistory', null]),
+      MenuItem('History', 'listRadioChannels', <String>['radioChannelHistory', null]),
       MenuItem('Edit Channels', 'listRadioChannels', <String>['editRadioChannel', null])
     ]);
   }
