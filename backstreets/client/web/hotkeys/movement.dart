@@ -87,16 +87,14 @@ void mapSize() {
 }
 
 void showExits() {
-  final List<String> exits = <String>[];
-  commandContext.map.exits.forEach((int id, Exit e) {
-    if (e.x == commandContext.coordinates.x.floor() && e.y == commandContext.coordinates.y.floor()) {
-      exits.add(e.name);
-    }
-  });
+  final Point<int> c = getIntCoordinates();
+  final List<Exit> exits = commandContext.map.exits.values.toList()
+    ..sort((Exit a, Exit b) => a.coordinates.distanceTo(c).compareTo(b.coordinates.distanceTo(c)));
   if (exits.isEmpty) {
     showMessage('There are no exits at your current coordinates.', important: false);
   } else {
-    showMessage('Exits: ${englishList(exits)}.', important: false);
+    final List<String> exitDescriptions = <String>[for (final Exit x in exits) '${x.name} (${relativeDirections(c, x.coordinates)})'];
+    showMessage('Exits: ${englishList(exitDescriptions)}.', important: false);
   }
 }
 
