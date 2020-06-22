@@ -91,7 +91,7 @@ void showExits() {
   final List<Exit> exits = commandContext.map.exits.values.toList()
     ..sort((Exit a, Exit b) => a.coordinates.distanceTo(c).compareTo(b.coordinates.distanceTo(c)));
   if (exits.isEmpty) {
-    showMessage('There are no exits at your current coordinates.', important: false);
+    showMessage('There are no exits on this map.', important: false);
   } else {
     final List<String> exitDescriptions = <String>[for (final Exit x in exits) '${x.name} (${relativeDirections(c, x.coordinates)})'];
     showMessage('Exits: ${englishList(exitDescriptions)}.', important: false);
