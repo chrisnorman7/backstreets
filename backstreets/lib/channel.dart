@@ -157,7 +157,11 @@ class BackstreetsChannel extends ApplicationChannel {
     });
 
     // Serve out of build.
-    router.route('/*').link(() => FileController('client/build/'));
+    router.route('/*').link(() {
+      final FileController fc = FileController('client/build/')
+        ..addCachePolicy(const CachePolicy(preventCaching: true), (String path) => path.endsWith('.js'));
+      return fc;
+    });
 
     // Serve API docs.
     router.route('/doc/api/*').link(() => FileController('doc/api/'));
