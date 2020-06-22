@@ -228,7 +228,7 @@ Future<void> listRadioChannels(CommandContext ctx) async {
       ..where((GameObject o) => o.radioChannel).identifiedBy(channel.id)
       ..sortBy((GameObject o) => o.name, QuerySortOrder.ascending);
     final List<String> names = <String>[for (final GameObject o in await listenersQuery.fetch()) o.name];
-    m.items.add(MenuItem('${channel == c.radioChannel ? "* " : ""}${channel.name} (${englishList(names, emptyString: "Nobody listening")})', command, <int>[channel.id]));
+    m.items.add(MenuItem('${channel.id == c.radioChannel.id ? "* " : ""}${channel.name} (${englishList(names, emptyString: "Nobody listening")})', command, <int>[channel.id]));
   }
   if (c.admin) {
     m.items.addAll(<MenuItem>[
