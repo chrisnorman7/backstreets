@@ -37,7 +37,7 @@ Page fileChooserPage(
     lines.add(
       Line(
         b, () => setFile(filename),
-        titleFunc: () => '${currentFile != null && friendlyCurrentFile == friendlyFilename ? "* " : ""}$friendlyFilename} (File)',
+        titleFunc: () => '${currentFile != null && friendlyCurrentFile == friendlyFilename ? "* " : ""}$friendlyFilename (File)',
         soundUrl: soundUrl == null ? null : () => soundUrl(filename)
       )
     );
