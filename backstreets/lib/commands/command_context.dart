@@ -98,6 +98,14 @@ class CommandContext{
     characterId = c?.id;
     if (characterId != null) {
       GameObject.commandContexts[characterId] = this;
+      for (final CommandContext ctx in CommandContext.instances) {
+        if (ctx.characterId == c.id && ctx != this) {
+          // First clear the character id, so they don't appear disconnected.
+          ctx.characterId = null;
+          ctx.socket.close(WebSocketStatus.policyViolation, 'Logging you in from somewhere else.');
+          message('Kicked out the old connection.');
+        }
+      }
     }
   }
 
@@ -199,14 +207,6 @@ class CommandContext{
   Future<void> sendCharacter() async {
     final GameObject c = await setConnectionName();
     await setLogger();
-    for (final CommandContext ctx in CommandContext.instances) {
-      if (ctx.characterId == c.id && ctx != this) {
-        // First clear the character id, so they don't appear disconnected.
-        ctx.character = null;
-        await ctx.socket.close(WebSocketStatus.policyViolation, 'Logging you in from somewhere else.');
-        message('Kicked out the old connection.');
-      }
-    }
     final ConnectionRecord cr = ConnectionRecord()
       ..host = connectionInfo.remoteAddress.address
       ..object = c
