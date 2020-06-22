@@ -1,6 +1,7 @@
 /// Provides the [BackstreetsChannel] class.
 library channel;
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,6 +17,7 @@ import 'commands/commands.dart';
 import 'config.dart';
 import 'game/npc.dart';
 import 'game/tile.dart';
+import 'game/util.dart';
 import 'model/account.dart';
 import 'model/connection_record.dart';
 import 'model/game_map.dart';
@@ -34,6 +36,9 @@ class BackstreetsChannel extends ApplicationChannel {
 
   /// Allows us to get a number of commits, to use as a get argument.
   GitDir git;
+
+  /// The duration for disconnecting inactive sockets.
+  Duration inactiveTimeout;
 
   /// All the loaded impulses.
   Map<String, dynamic> impulses;
@@ -68,6 +73,8 @@ class BackstreetsChannel extends ApplicationChannel {
     logger.onRecord.listen((LogRecord rec) => print('$rec ${rec.error ?? ""} ${rec.stackTrace ?? ""}'));
     logger.info('Maximum connections allowed: ${config.maxConnections}.');
     logger.info('Maximum connections per host allowed: ${config.maxConnectionsPerHost}.');
+    inactiveTimeout = Duration(seconds: config.inactiveTimeout);
+    logger.info('Inactive sockets will be disconnected after ${formatDuration(inactiveTimeout)}.');
     databaseContext = ManagedContext(dataModel, psc);
     final Query<GameObject> characterQuery = Query<GameObject>(databaseContext)
       ..where((GameObject o) => o.connectionName).isNotNull()
@@ -187,6 +194,12 @@ class BackstreetsChannel extends ApplicationChannel {
       socketLogger.info('Connection established.');
       final File motdFile = File('motd.txt');
       final CommandContext ctx = CommandContext(socket, databaseContext, request.connectionInfo);
+      Timer(inactiveTimeout, () async {
+        if (ctx.characterId == null && ctx.accountId == null && ctx.socket.readyState == WebSocket.open) {
+          ctx.logger.info('Disconnecting inactive socket.');
+          await ctx.socket.close(WebSocketStatus.policyViolation, 'Logging you out for inactivity.');
+        }
+      });
       await ctx.setLogger();
       await GameObject.notifyAdmins(ctx.db, 'Incoming conection from $connectionName.', sound: Sound(path.join(soundsDirectory, 'notifications/connected.wav')), filterFunc: (GameObject o) async {
         final Query<PlayerOptions> q = Query<PlayerOptions>(ctx.db)

@@ -16,4 +16,7 @@ class BackstreetsConfiguration extends Configuration {
 
   /// The maximum number of connections per hostname.
   int maxConnectionsPerHost;
+
+  /// How many seconds to wait before disconnecting inactive sockets.
+  int inactiveTimeout;
 }
