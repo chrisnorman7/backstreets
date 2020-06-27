@@ -52,9 +52,11 @@ class Ambience {
         stop();
         sound = playSoundAtCoordinates(url, coordinates: coordinates, output: output, loop: true, size: distance);
       } else {
-        sound.panner
-          ..positionX.value = coordinates.x
-          ..positionY.value = coordinates.y;
+        if (sound.panner != null) {
+          sound.panner
+            ..positionX.value = coordinates.x
+            ..positionY.value = coordinates.y;
+        }
       }
     }
   }

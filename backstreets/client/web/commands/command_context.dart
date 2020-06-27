@@ -122,7 +122,6 @@ class CommandContext {
           s.filter.disconnect();
           s.filter = null;
           s.sound.output.connectNode(s.panner);
-        } else {
         }
       }
     }

@@ -172,16 +172,41 @@ void moveCharacter(Point<double> coordinates, {MoveModes mode = MoveModes.normal
       return commandContext.message('You cannot go that way.');
     }
   }
-  if (mode != MoveModes.silent && newSection?.name != oldSection?.name) {
-    String action, name;
-    if (oldSection == null || (newSection != null && newSection.area < oldSection.area)) {
-      action = 'Entering';
-      name = newSection?.name ?? 'Nowhere';
-    } else {
-      action = 'Leaving';
-      name = oldSection?.name ?? 'Nowhere';
+  if (newSection?.name != oldSection?.name) {
+    if (mode != MoveModes.silent) {
+      String action, name;
+      if (oldSection == null || (newSection != null && newSection.area < oldSection.area)) {
+        action = 'Entering';
+        name = newSection?.name ?? 'Nowhere';
+      } else {
+        action = 'Leaving';
+        name = oldSection?.name ?? 'Nowhere';
+      }
+      commandContext.message('$action $name.');
     }
-    commandContext.message('$action $name.');
+    if (oldSection != null && !oldSection.rect.containsPoint(tileCoordinates) && oldSection.ambience.sound != null && oldSection.ambience.sound.panner == null) {
+      // Let's add a panner, so the sound doesn't come from everywhere.
+      oldSection.ambience.sound.panner = oldSection.ambience.sounds.audioContext.createPanner()
+        ..positionX.value = oldSection.ambienceCoordinates.x
+        ..positionY.value = oldSection.ambienceCoordinates.y
+        ..connectNode(oldSection.ambience.sounds.ambienceOutput);
+      if (oldSection.ambience.distance != null) {
+        oldSection.ambience.sound.panner.refDistance = oldSection.ambience.distance;
+      }
+      commandContext.map.pannedSounds.add(oldSection.ambience.sound);
+      oldSection.ambience.sound.sound.output
+        ..disconnect()
+        ..connectNode(oldSection.ambience.sound.panner);
+    }
+    if (newSection != null && newSection.rect.containsPoint(tileCoordinates) && newSection.ambience.sound != null && newSection.ambience.sound.panner != null) {
+      // Clear the panner, so the sound appears to be everywhere.
+      newSection.ambience.sound.panner.disconnect();
+      newSection.ambience.sound.panner = null;
+      newSection.ambience.sound.sound.output
+        ..disconnect()
+        ..connectNode(newSection.ambience.sounds.ambienceOutput);
+      commandContext.map.pannedSounds.remove(newSection.ambience.sound);
+    }
   }
   commandContext.coordinates = coordinates;
   if (mode != MoveModes.silent) {
@@ -264,7 +289,7 @@ BiquadFilterNode getWallFilter(Point<double> coordinates){
 }
 
 /// Play a sound at a specific set of coordinates.
-PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, bool loop = false, int size, bool airborn = false, int id}) {
+PannedSound playSoundAtCoordinates(String url, {Point<double> coordinates, double volume = 1.0, bool dry = false, AudioNode output, int size, bool loop = false, bool airborn = false, int id}) {
   output ??= commandContext.sounds.soundOutput;
   final GainNode gain = commandContext.sounds.audioContext.createGain()
     ..gain.value = volume;

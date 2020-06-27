@@ -107,19 +107,7 @@ Page mapSectionPage(Book b, MapSection s, CommandContext ctx, {void Function() o
     ), titleFunc: () => 'Ambience (${s.ambience.url})',
     soundUrl: () => s.ambience.url == null ? null : commandContext.ambiences[s.ambience.url]),
     Line(b, () {
-      final NumberInputElement e = NumberInputElement()
-        ..min = '0'
-        ..step = '1';
-      FormBuilder('Ambience Distance', (Map<String, String> data) {
-        int value = int.tryParse(data['distance']);
-        if (value == 0) {
-          value = null;
-        }
-        s.ambience.distance = value;
-        commandContext.message('Ambience distance updated.');
-      }, showMessage, onCancel: resetFocus)
-        ..addElement('distance', element: e, label: 'Ambience Distance (0 = null)', value: (s.ambience.distance == null ? '0' : s.ambience.distance.toString()))
-        ..render(formBuilderDiv, beforeRender: keyboard.releaseAll);
+      getInt('Ambience Distance', () => s.ambience.distance, (int value) => s.ambience.distance = value);
     }, titleFunc: () => 'Ambience Distance (${s.ambience.distance})'),
     Line(b, () => b.push(editConvolverPage(b, s.convolver)), titleString: 'Convolver'),
     Line(b, () {
